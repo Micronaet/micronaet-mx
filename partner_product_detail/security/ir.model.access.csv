@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mx_stock_move_manager,stock.move manager,model_mx_stock_move,stock.group_stock_manager,1,1,1,1
+access_mx_stock_move_user,stock.move user,model_mx_stock_move,stock.group_stock_user,1,1,1,0
+
