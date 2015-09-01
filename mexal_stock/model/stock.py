@@ -74,14 +74,12 @@ class MxStockMove(orm.Model):
             @return: True or False
         """
         for move in self.browse(cr, uid, ids, context=context):
-            if not move.prodlot_id and \
-                    #(move.state == 'done' and \
-                    (( \
-                        (move.product_id.track_production and move.location_id.usage == 'production') or \
-                        (move.product_id.track_production and move.location_dest_id.usage == 'production') or \
-                        (move.product_id.track_incoming and move.location_id.usage == 'supplier') or \
-                        (move.product_id.track_outgoing and move.location_dest_id.usage == 'customer') or \
-                        (move.product_id.track_incoming and move.location_id.usage == 'inventory') \
+            if not move.prodlot_id and ((
+                    (move.product_id.track_production and move.location_id.usage == 'production') or \
+                    (move.product_id.track_production and move.location_dest_id.usage == 'production') or \
+                    (move.product_id.track_incoming and move.location_id.usage == 'supplier') or \
+                    (move.product_id.track_outgoing and move.location_dest_id.usage == 'customer') or \
+                    (move.product_id.track_incoming and move.location_id.usage == 'inventory') \
                     )):
                 return False
         return True
@@ -91,7 +89,7 @@ class MxStockMove(orm.Model):
             @return: True or False
         """
         for move in self.browse(cr, uid, ids, context=context):
-            if move.prodlot_id move.prodlot_id.product_id.id != move.product_id.id:
+            if move.prodlot_id and move.prodlot_id.product_id.id != move.product_id.id:
                 return False
         return True
 
@@ -118,23 +116,25 @@ class MxStockMove(orm.Model):
         'product_qty': fields.float(
             'Quantity', 
             digits_compute=dp.get_precision('Product Unit of Measure'),
-            states={'done': [('readonly', True)]},
             help='This is the quantity of products from an inventory '
-                'point of view. For moves in the state 'done', this is the '
+                'point of view. For moves in the state \'done\', this is the '
                 'quantity of products that were actually moved. For other '
                 'moves, this is the quantity of product that is planned to '
                 'be moved. Lowering this quantity does not generate a '
                 'backorder. Changing this quantity on assigned moves affects '
-                'the product reservation, and should be done with care.'
+                'the product reservation, and should be done with care.',
         ),
         'product_uom': fields.many2one(
             'product.uom', 'Unit of Measure', 
             states={'done': [('readonly', True)]}),
-        #'product_uos_qty': fields.float('Quantity (UOS)', 
-        #    digits_compute=dp.get_precision('Product Unit of Measure'), 
-        #    states={'done': [('readonly', True)]}),
-        #'product_uos': fields.many2one('product.uom', 'Product UOS', 
-        #    states={'done': [('readonly', True)]}),
+            
+        # TODO remove:
+        'product_uos_qty': fields.float('Quantity (UOS)', 
+            digits_compute=dp.get_precision('Product Unit of Measure'), 
+            states={'done': [('readonly', True)]}),
+        'product_uos': fields.many2one('product.uom', 'Product UOS', 
+            states={'done': [('readonly', True)]}),
+        
         'product_packaging': fields.many2one(
             'product.packaging', 'Packaging', 
             help='It specifies attributes of packaging like type, quantity of '
@@ -175,16 +175,16 @@ class MxStockMove(orm.Model):
         #'move_history_ids2': fields.many2many('stock.move', 
         #    'stock_move_history_ids', 'child_id', 'parent_id', 
         #    'Move History (parent moves)'),
-        #'picking_id': fields.many2one('stock.picking', 'Reference', 
-        #    select=True, states={'done': [('readonly', True)]}),
+        'picking_id': fields.many2one('stock.picking', 'Reference', 
+            select=True, states={'done': [('readonly', True)]}),
         'note': fields.text('Notes'),
         'state': fields.selection([
         #    ('draft', 'New'),
         #    ('cancel', 'Cancelled'),
         #    ('waiting', 'Waiting Another Move'),
-            ('confirmed', 'Waiting Availability'),
+        #    ('confirmed', 'Waiting Availability'),
         #    ('assigned', 'Available'),
-        #    ('done', 'Done'),
+            ('done', 'Done'),
             ], 'Status', readonly=True, select=True,
         #     help= "* New: When the stock move is created and not yet "
         #           "confirmed.\n"\
@@ -207,21 +207,26 @@ class MxStockMove(orm.Model):
                 'costing method is used)'),
         'price_currency_id': fields.many2one(
             'res.currency', 'Currency for average price', 
-            help='Technical field used to record the currency chosen by the
-                ' user during a picking confirmation (when average price'
-                ' costing method is used)'),
+            help='Technical field used to record the currency chosen by the '
+                'user during a picking confirmation (when average price '
+                'costing method is used)'),
         'company_id': fields.many2one('res.company', 'Company',  select=True),
         #'backorder_id': fields.related('picking_id','backorder_id', 
-        # type='many2one', relation="stock.picking", string="Back Order of", 
-        # select=True),
+        #    type='many2one', relation="stock.picking", 
+        #    string="Back Order of", select=True),
         #'origin': fields.related(
         #    'picking_id','origin',type='char', size=64, 
         #    relation="stock.picking", string="Source", store=True),
         'origin': fields.char('Origin', size=20),
 
-        # used for colors in tree views:
-        #'scrapped': fields.related('location_dest_id','scrap_location',type='boolean',relation='stock.location',string='Scrapped', readonly=True),
-        'type': fields.related('picking_id', 'type', type='selection', selection=[('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')], string='Shipping Type'),
+        #'scrapped': fields.related('location_dest_id', 'scrap_location', 
+        #    type='boolean',relation='stock.location',string='Scrapped', 
+        #    readonly=True),
+        'type': fields.related('picking_id', 'type', type='selection', 
+            selection=[
+                ('out', 'Sending Goods'), 
+                ('in', 'Getting Goods'), 
+                ('internal', 'Internal'), ], string='Shipping Type'),
     }
 
     def _check_location(self, cr, uid, ids, context=None):
@@ -353,7 +358,7 @@ class MxStockMove(orm.Model):
         #'location_dest_id': _default_location_destination,
         #'partner_id': _default_destination_address,
         #'type': _default_move_type,
-        'state': 'confirmed',
+        'state': 'done',
         #'priority': '1',
         #'product_qty': 1.0,
         #'scrapped' :  False,
