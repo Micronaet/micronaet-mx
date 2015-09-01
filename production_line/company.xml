@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    <!--res.company--> 
+    <record model="ir.ui.view" id="res_company_production_parameter_form_view">
+        <field name="name">Company production parameters</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@string='General Information']" position="after">
+			    <page string="Production parameters">
+   	                <group colspan="4" col="4">
+			            <field name="production_export" />
+			            <field name="production_mount_mandatory" attrs="{'invisible': [('production_export','=',False)]}"/>
+			            <field name="production_demo" attrs="{'invisible': [('production_export','=',False)]}" />
+			        </group>
+			        <group colspan="4" col="4" attrs="{'invisible': [('production_export','=',False)]}">
+			           
+			           <separator string="XML RPC parameters:" colspan="4"/>
+			           <field name="production_host"  attrs="{'required': [('production_export','=',True)]}"/>
+			           <field name="production_port" attrs="{'required': [('production_export','=',True)]}"/>
+			           
+			           <!--<separator string="Mount point:" colspan="4" />
+			           <field name="production_path" />
+			           <field name="production_mount_unc" />
+
+			           <field name="production_mount_uid" />
+			           <field name="production_mount_gid" />
+
+			           <field name="production_mount_user" />
+			           <field name="production_mount_password" />
+			           
+			           <field name="production_mount_sudo_password" />-->
+
+			           <separator string="Exchange document:" colspan="4" />
+			           <field name="production_path" attrs="{'required': [('production_export','=',True)]}" />
+			           <field name="production_cl" attrs="{'required': [('production_export','=',True)]}" />
+			           <field name="production_cl_upd" attrs="{'required': [('production_export','=',True)]}" />
+			           <field name="production_sl" attrs="{'required': [('production_export','=',True)]}" />
+			           
+			        </group>
+			    </page>                
+            </xpath>
+        </field>
+    </record>    
+    </data>
+</openerp>    
+    

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+       <!-- mrp.production.confirm.wizard -->
+       <record id="mrp_production_confirm_wizard_view" model="ir.ui.view">
+            <field name="name">Lavoration final confirmation</field>
+            <field name="model">mrp.production.confirm.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Confirm Quantity" version="7.0">
+                   <header>                       
+                       <button string="Cancel" special="cancel" />
+                       <button name = "action_confirm_mrp_production_order" string="Confirm" type="object" icon="gtk-jump-to" class="oe_highlight" />
+                       <field name='state' widget="statusbar" statusbar_visible="material,product" />
+                   </header>                   
+                   <group colspan="4" col="6" string="Confirm production (User)" attrs="{'invisible':[('state','=','material')]}">
+                        <field name="recycle" />
+                        <field name="wrong" />
+                        <newline />
+
+                        <field name="product_id" readonly="1" colspan="6" attrs="{'invisible':[('recycle','=',True)],}"/>
+                        <field name="recycle_product_id" colspan="6" attrs="{'invisible':[('recycle','=',False)],'required':[('recycle','=',True)]}"/>
+
+                        <field name="real_product_qty" on_change="onchange_package_id(package_id,product_id,real_product_qty)"/>
+                        <field name="partial" />
+                        <newline />
+                        
+                        <field name="package_id" attrs="{'required':[('wrong','=',False),('state','=','product')]}" on_change="onchange_package_id(package_id,product_id,real_product_qty)"/>
+                        <field name="ul_qty"  attrs="{'required':[('package_id','!=',False),('state','=','product')]}"/>
+                        <newline />
+
+                        <field name="pallet_product_id" on_change="onchange_pallet_id(pallet_product_id, real_product_qty, pallet_max_weight)" domain="[('is_pallet','=',True)]"/>
+                        <field name="pallet_max_weight" on_change="onchange_pallet_id(pallet_product_id, real_product_qty, pallet_max_weight)" />
+                        <field name="pallet_qty" attrs="{'required':[('pallet_product_id','!=',False)],'invisible':[('pallet_product_id','=',False)]}"/>
+                   </group>
+                   
+                   <group colspan="4" col="4" groups="stock.group_stock_manager" string="List of unload to confirm (Manager):" attrs="{'invisible':[('state','=','product')]}">
+                        <field name="list_unload" colspan="4" nolabel="1" readonly="1"/>
+                   </group>
+                   <group colspan="4" col="4" string="Wrong production comment:" attrs="{'invisible':[('wrong','=',False)]}">
+                        <field name="wrong_comment" colspan="4" nolabel="1"/>
+                   </group>
+                </form>
+            </field>
+      </record>
+      <record model="ir.actions.act_window" id="action_confirm_mrp_production_wizard_form">
+          <field name="name">Confirm production</field>
+          <field name="res_model">mrp.production.confirm.wizard</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="target">new</field>
+          <field name="view_id" ref="mrp_production_confirm_wizard_view"/>
+      </record>
+    </data>
+</openerp>

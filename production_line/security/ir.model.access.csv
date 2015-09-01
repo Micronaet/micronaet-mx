@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_mrp_production_material","mrp.production.material","model_mrp_production_material","mrp.group_mrp_user",1,1,1,1
+"access_mrp_production_workcenter_load","mrp.production.workcenter.load","model_mrp_production_workcenter_load","mrp.group_mrp_user",1,1,1,1
+"access_mrp_workcenter_history","mrp.workcenter.history","model_mrp_workcenter_history","mrp.group_mrp_user",1,1,1,1
+"access_mrp_production_package","mrp.production.package","model_mrp_production_package","mrp.group_mrp_user",1,1,1,1

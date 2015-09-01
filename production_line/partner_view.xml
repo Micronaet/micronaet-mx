@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    <!--res.partner--> 
+    <record model="ir.ui.view" id="view_partner_form_analysis_fields">
+        <field name="name">Analysis for partner</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="comment" position="before">
+                <group>
+                    <field name="analysis_required" />                    
+                <newline/>
+                </group>
+                <group attrs="{'invisible':[('analysis_required','=',False)]}">
+                    <field name="analysis_note" colspan="4" nolabel="1" placeholder="Insert note for analysis..."/>
+                </group>    
+            </field>
+        </field>
+    </record>       
+   </data>
+</openerp>   

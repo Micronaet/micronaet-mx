@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    <!--product.ul--> 
+    <record model="ir.ui.view" id="product_ul_tree_extra">
+        <field name="name">Product UL extra</field>
+        <field name="model">product.ul</field>
+        <field name="inherit_id" ref="product.product_ul_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="code" />
+            </field>
+            <field name="type" position="after">
+                <field name="linked_product_id" />
+            </field>
+        </field>
+    </record>    
+    <record model="ir.ui.view" id="product_ul_form_view_extra">
+        <field name="name">Product UL extra</field>
+        <field name="model">product.ul</field>
+        <field name="inherit_id" ref="product.product_ul_form_view" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="code" />
+            </field>
+            <field name="type" position="after">
+                <field name="linked_product_id" />
+            </field>
+        </field>
+    </record>  
+
+    <!--product.product--> 
+    <record model="ir.ui.view" id="product_search_form_view_extra">
+        <field name="name">Product accounting</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_search_form_view" />
+        <field name="arch" type="xml">
+            <filter string="Category" position="before">
+                <filter string='Supply method' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'supply_method'}"/>
+            </filter>
+        </field>
+    </record>  
+    <record model="ir.ui.view" id="product_normal_form_view_pallet">
+        <field name="name">Product pallet</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <field name="weight_net" position="after">
+                <group cospan="2" col="2">
+                    <separator string="Pallet product" colspan="2"/>
+                    <field name="is_pallet" />
+                    <field name="pallet_max_weight" attrs="{'invisible':[('is_pallet','=',False)]}"/>
+                </group>
+            </field>
+        </field>
+    </record>      
+    <record model="ir.ui.view" id="product_normal_form_view_extra">
+        <field name="name">Product accounting</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.view_normal_procurement_locations_form" />
+        <field name="arch" type="xml">
+            <field name="incoming_qty" position="before">
+                <field name="not_in_status" />           
+                <field name="accounting_qty" />
+                <field name="linked_accounting_qty"/>
+                <field name="minimum_qty" />
+                <field name="maximum_qty" />
+            </field>
+        </field>
+    </record>  
+     
+    <record model="ir.ui.view" id="product_normal_tree_view_extra">
+        <field name="name">Product accounting</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view" />
+        <field name="arch" type="xml">
+            <field name="qty_available" position="after">
+                <field name="accounting_qty" />
+                <field name="not_in_status" />
+                <field name="supply_method" />           
+            </field>
+            <field name="qty_available" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>    
+   </data>
+</openerp>   

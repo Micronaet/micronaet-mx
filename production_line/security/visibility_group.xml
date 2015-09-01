@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<openerp>
+  <data noupdate="0">
+
+    <record id="module_production_line" model="ir.module.category">
+        <field name="name">Production line</field>
+        <field name="sequence">10</field>
+        <field name="description">Manage production groups.</field>
+        <field name="visible" eval="1" />
+    </record>
+    
+    <record id="group_production_admin" model="res.groups">
+        <field name="name">Production visibility admin</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see all menus</field>
+    </record>
+
+    <record id="group_production_commercial" model="res.groups">
+        <field name="name">Production visibility commercial</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see commercial menus</field>
+    </record>
+
+    <record id="group_production_purchase" model="res.groups">
+        <field name="name">Production visibility purchase</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see purchase menus</field>
+    </record>
+
+    <record id="group_production_logistic" model="res.groups">
+        <field name="name">Production visibility logistic</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see logistic menus</field>
+    </record>
+    
+    <record id="group_production_production" model="res.groups">
+        <field name="name">Production visibility production</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see days production menus</field>
+    </record>
+    
+    <record id="group_production_stock" model="res.groups">
+        <field name="name">Production visibility stock</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see stock menus</field>
+    </record>
+    
+    <record id="group_production_knowledge" model="res.groups">
+        <field name="name">Production visibility knowledge</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see knowledge menus</field>
+    </record>
+    
+    <record id="group_production_report" model="res.groups">
+        <field name="name">Production visibility report</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see report menus</field>
+    </record>
+
+    <record id="group_production_accounting" model="res.groups">
+        <field name="name">Production visibility accounting</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see accounting menus</field>
+    </record>
+
+    <record id="group_production_comunication" model="res.groups">
+        <field name="name">Production visibility comunication</field>
+        <field name="category_id" ref="module_production_line" />
+        <field name="comment">User can see comunication menus</field>
+    </record>
+ </data>
+</openerp>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+       <!-- mrp.production.split.wizard -->
+       <record id="mrp_production_split_wizard_view" model="ir.ui.view">
+            <field name="name">Split lavoration</field>
+            <field name="model">mrp.production.split.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Confirm Quantity" version="7.0">
+                   <header>
+                       <button string="Cancel" special="cancel" />
+                       <button name="action_split_order" string="Split" type="object" icon="gtk-jump-to" class="oe_highlight" />
+                   </header>                   
+                   
+                   <group colspan="4" col="4">                        
+                        <separator string="Daily split lavoration" colspan="4" />
+                        <field name="split_daily" on_change="onchange_split_daily(split_daily,context)"/>                        
+                        <newline />                        
+                        <field name="split_daily_note" colspan="4" attrs="{'invisible':[('split_daily','=',False)]}" readonly="1"/> 
+                   </group>
+
+                   <group colspan="4" col="4" attrs="{'invisible':[('split_daily','=',True)],'required':[('split_daily','=',False)]}">
+                        <separator string="Posterize cycle not competed" colspan="4" />
+                        <field name="cycle_remain" />
+                        <field name="datetime" />
+                   </group>
+                                      
+                </form>
+            </field>
+      </record>
+
+      <record model="ir.actions.act_window" id="action_split_mrp_production_wizard_form">
+          <field name="name">Split lavoration</field>
+          <field name="res_model">mrp.production.split.wizard</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="target">new</field>
+          <field name="view_id" ref="mrp_production_split_wizard_view"/>
+      </record>
+      
+    </data>
+</openerp>

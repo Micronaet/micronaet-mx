@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+	    <record model="ir.sequence.type" id="seq_wcline_counter">
+		    <field name="name">Lavoration counter</field>
+		    <field name="code">wcline.number</field>
+	    </record>
+	    <record model="ir.sequence" id="seq_wcline_counter_sequence">
+		    <field name="name">Lavoration number</field>
+		    <field name="code">wcline.number</field>
+		    <field name="prefix">LAV/</field>
+		    <field name="padding">6</field>
+	    </record>
+    </data>
+</openerp>

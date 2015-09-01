@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+       <!-- mrp.print.lavoration.week.wizard -->
+       <record id="mrp_print_lavoration_week_wizard_view" model="ir.ui.view">
+            <field name="name">Print week planner for lavoration</field>
+            <field name="model">mrp.print.lavoration.week.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Print lavorarion week" version="7.0">
+                   <header>
+                       <button string="Cancel" special="cancel" />
+                       <button name="action_print_lavoration_week" string="Print" type="object" icon="gtk-jump-to" class="oe_highlight" />
+                   </header>                   
+                   
+                   <group colspan="4" col="4">                        
+                        <field name="date" on_change="onchange_reference_date(date)"/>
+                        <field name="workcenter_ids" widget="many2many_tags"/>                        
+                        <field name="extended" />
+                        <field name="only_open" />
+                        <field name="from_date" readonly="1"/> 
+                        <field name="to_date"   readonly="1"/>
+                        <field name="week" readonly="1"/>
+                   </group>                                      
+                </form>
+            </field>
+      </record>
+
+    <act_window
+        id="act_window_mrp_print_lavoration_week_wizard"
+        name="Weekly lavoration plan"
+        view_mode="form"
+        target="new"
+        res_model="mrp.print.lavoration.week.wizard"
+        key2="client_action_multi"
+        src_model="mrp.production.workcenter.line"/>
+
+      <record model="ir.actions.act_window" id="action_mrp_print_lavoration_week_wizard_view">
+          <field name="name">Weekly lavoration planner </field>
+          <field name="res_model">mrp.print.lavoration.week.wizard</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="target">new</field>
+          <field name="view_id" ref="mrp_print_lavoration_week_wizard_view"/>
+      </record>
+    </data>
+</openerp>

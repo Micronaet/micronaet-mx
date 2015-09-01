@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+       <!-- Manager Analysis  -->
+       <menuitem name="Dashboard" parent="mrp.menu_mrp_manufacturing" id="menu_base_manager_analysis_root" sequence="0" />
+          <menuitem name="Importation log" parent="menu_base_manager_analysis_root" id="menu_base_manager_analysis_scheduling" action="base_log_scheduler.action_log_activity" sequence="10" />
+    </data>
+</openerp>

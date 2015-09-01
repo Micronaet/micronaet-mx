@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data noupdate="1">
+        <!--Email template -->
+        <record id="email_scheduler_order_etl" model="email.template">
+            <field name="name">ETL: Order error</field>
+            <field name="email_from">openerp@micronaet.it</field>
+            <field name="subject">Scheduled ETL: Log operations</field>
+            <field name="email_recipients">${object.relation_manager_id.id}</field>
+            <field name="model_id" ref="base_calendar.model_crm_meeting"/>
+            <field name="auto_delete" eval="True"/>
+            <!--<field name="report_template" ref="report_relation_webkit_html"/>-->
+            <!--<field name="report_name">${(object.name or '').replace('/','_')}</field>-->
+            <field name="lang">it_IT</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+    <p>Scheduled operation: ETL Order import<br /></p>   
+</div>
+            ]]></field>
+        </record>
+    </data>
+</openerp>

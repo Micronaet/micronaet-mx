@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<openerp>
+<data noupdate="1">
+    <record id="aeroo_mrp_lavoration_weekly_planner" model="ir.actions.report.xml">
+        <field name="name">Lavoration Weekly Planner</field>
+        <field name="type">ir.actions.report.xml</field>
+        <field name="model">mrp.production.workcenter.line</field>
+        <field name="report_name">lavoration_weekly_planner_report</field>
+        <field name="report_type">aeroo</field>
+        <field name="in_format">oo-odt</field>
+        <field name="parser_loc">production_line/report/workcenter_lavoration_parser.py</field>
+        <field name="report_rml">production_line/report/workcenter_lavoration.odt</field>
+        <field name="parser_state">loc</field>
+        <field name="tml_source">file</field>
+    </record>
+
+    <ir_set>
+        <field eval="'action'" name="key"/>
+        <field eval="'client_print_multi'" name="key2"/>
+        <field eval="['mrp.production.workcenter.line']" name="models"/>
+        <field name="name">Lavoration Weeply Planner</field>
+        <field eval="'ir.actions.report.xml,'+str(aeroo_mrp_lavoration_weekly_planner)" name="value"/>
+        <field eval="True" name="isobject"/>
+        <field eval="True" name="replace"/>
+    </ir_set>
+
+</data>
+</openerp>
+
