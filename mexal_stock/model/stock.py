@@ -43,12 +43,12 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 
-class MexalStockMove(orm.Model):
+class MxStockMove(orm.Model):
     ''' Class for manage stock.move as Accounting
     '''
     
-    _name = 'mexal.stock.move'
-    _description = 'Mexal stock move'
+    _name = 'mx.stock.move'
+    _description = 'Mx stock move'
     _order = 'date'
     _order = 'date_expected desc, id'
     _log_create = False
@@ -178,14 +178,14 @@ class MexalStockMove(orm.Model):
         #'picking_id': fields.many2one('stock.picking', 'Reference', 
         #    select=True, states={'done': [('readonly', True)]}),
         'note': fields.text('Notes'),
-        #'state': fields.selection([
+        'state': fields.selection([
         #    ('draft', 'New'),
         #    ('cancel', 'Cancelled'),
         #    ('waiting', 'Waiting Another Move'),
-        #    ('confirmed', 'Waiting Availability'),
+            ('confirmed', 'Waiting Availability'),
         #    ('assigned', 'Available'),
         #    ('done', 'Done'),
-        #    ], 'Status', readonly=True, select=True,
+            ], 'Status', readonly=True, select=True,
         #     help= "* New: When the stock move is created and not yet "
         #           "confirmed.\n"\
         #           "* Waiting Another Move: This state can be seen when a "
@@ -198,7 +198,8 @@ class MexalStockMove(orm.Model):
         #           "* Available: When products are reserved, it is set to"
         #           " \'Available\'.\n"\
         #           "* Done: When the shipment is processed, the state is"
-        #           " \'Done\'."),
+        #           " \'Done\'."
+            ),
         'price_unit': fields.float(
             'Unit Price', digits_compute= dp.get_precision('Product Price'), 
             help='Technical field used to record the product cost set by the '
@@ -352,7 +353,7 @@ class MexalStockMove(orm.Model):
         #'location_dest_id': _default_location_destination,
         #'partner_id': _default_destination_address,
         #'type': _default_move_type,
-        #'state': 'draft',
+        'state': 'confirmed',
         #'priority': '1',
         #'product_qty': 1.0,
         #'scrapped' :  False,
