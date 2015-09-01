@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@string='Contacts']" position="after">
-                    <page string="Custom product">
+                    <page string="Custom product" attrs="{'invisible': [('is_company','=',False)]}">
                         <field name="particularity_ids" colspan="4">
                             <tree editable="bottom" colspan="4">
                                 <!--<field name="pricelist_report" />-->
