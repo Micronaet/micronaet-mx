@@ -61,8 +61,8 @@ class PartnerProductParticularity(orm.Model):
         'alias_id': fields.many2one('product.product', 'Alias'),
 
         'date': fields.datetime('Date'),
-        'pack_qty': fields.float('Pack q.ty', digits=(16, 2)),            
-        'packaging_id': fields.many2one('product.packaging', 'Packaging'),
+        'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
+        'package_id': fields.many2one('product.packaging', 'Packaging'),
 
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),

@@ -22,21 +22,18 @@
     'version': '0.1',
     'category': 'Custom accounting',
     'description': '''        
-        Create a new mexal.stock for manage a fast stock movement manage, thus becase
-        somethime mexal users, don't want to do the OpenERP Workflow steps.
-        The obyect is created also for fast correct element without limitation (ex.
-        after approve a DDT etc.)
+        Create a new mx.stock.move for manage a fast stock movement manage, 
+        thus becase somethime mexal users, don't want to do the OpenERP 
+        Workflow steps.
+        The obyect is created also for fast correct element without limitation 
+        (ex. after approve a DDT etc.)
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'product',
-        'sale',
-        'purchase',
-        # 'accounting',        
-        # 'mrp',
+        'stock',
         ],
     'init_xml': [],
     'demo': [],
