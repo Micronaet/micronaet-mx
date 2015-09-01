@@ -63,7 +63,7 @@ class PartnerProductParticularity(orm.Model):
         'product_id': fields.many2one('product.product', 'Product'),
         'alias_id': fields.many2one('product.product', 'Alias'),
 
-        'date': fields.datetime('Date'),
+        'date': fields.date('Date'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'package_id': fields.many2one('product.packaging', 'Packaging'),
 
@@ -83,7 +83,7 @@ class ResPartner(orm.Model):
     _inherit = 'res.partner'
     
     _columns = {
-        'particularity_id': fields.many2one(
+        'particularity_ids': fields.one2many(
             'partner.product.particularity', 'partner_id', 'Particularity'),
         }
 

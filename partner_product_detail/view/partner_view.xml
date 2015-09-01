@@ -6,34 +6,32 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/notebook" position="inside">
-                    <page>
-                        <group colspan="4" col="4">
-                            <field name="particularity_id" colspan="4">
-                                <tree editable="bottom" colspan="4">
-                                    <field name="pricelist_report" />
+                <xpath expr="/form/sheet/notebook/page[@string='Contacts']" position="after">
+                    <page string="Custom product">
+                        <field name="particularity_ids" colspan="4">
+                            <tree editable="bottom" colspan="4">
+                                <!--<field name="pricelist_report" />-->
+                                <field name="date" />                                  
+                                <field name="product_id" />
+                                <field name="alias_id" />
+                                <field name="package_id" />
+                                <field name="load_qty" />
+                                <field name="note" />                                    
+                            </tree>
+                            <form version="7.0">
+                              <sheet>
+                                 <group colspan="4" col="4">
+                                    <!--<field name="pricelist_report" />-->
                                     <field name="date" />                                  
                                     <field name="product_id" />
                                     <field name="alias_id" />
                                     <field name="package_id" />
                                     <field name="load_qty" />
                                     <field name="note" />                                    
-                                </tree>
-                                <form version="7.0">
-                                  <sheet>
-                                     <group colspan="4" col="4">
-                                        <field name="pricelist_report" />
-                                        <field name="date" />                                  
-                                        <field name="product_id" />
-                                        <field name="alias_id" />
-                                        <field name="package_id" />
-                                        <field name="load_qty" />
-                                        <field name="note" />                                    
-                                     </group>
-                                  </sheet>      
-                                </form>
-                            </field>
-                        </group>    
+                                 </group>
+                              </sheet>      
+                            </form>
+                        </field>
                     </page>                    
                 </xpath>
             </field>
