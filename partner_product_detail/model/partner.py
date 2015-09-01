@@ -21,6 +21,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+
 import os
 import sys
 import logging
@@ -70,6 +71,17 @@ class PartnerProductParticularity(orm.Model):
     _defaults = {
         'date': lambda *a: datetime.now().strftime(
             DEFAULT_SERVER_DATE_FORMAT),
+        }
+
+class ResPartner(orm.Model):
+    ''' Class partner
+    '''
+    
+    _inherit = 'res.partner'
+    
+    _columns = {
+        'particularity_id': fields.many2one(
+            'partner.product.particularity', 'partner_id', 'Particularity'),
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
