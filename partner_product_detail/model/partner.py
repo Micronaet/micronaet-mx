@@ -65,6 +65,8 @@ class PartnerProductParticularity(orm.Model):
 
         'date': fields.date('Date'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
+        'price': fields.float('Price', digits=(16, 2)),            
+        # TODO Currency
         'package_id': fields.many2one('product.packaging', 'Packaging'),
 
         'partner_id': fields.many2one('res.partner', 'Partner'),
