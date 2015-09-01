@@ -6,7 +6,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/notebook" position="inner">
+                <xpath expr="/form/sheet/notebook" position="inside">
                     <page>
                         <group colspan="4" col="4">
                             <field name="particularity_id" colspan="4">

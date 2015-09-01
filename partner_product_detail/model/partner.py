@@ -52,6 +52,9 @@ class PartnerProductParticularity(orm.Model):
     _description = 'Partner product'
     _rec_name = 'product_id'
     _order = 'product_id'
+    
+    # TODO Try to collapse with res.partner.pricelist.product 
+    # pricelist_model_partner_product module
 
     _columns = {
         'pricelist_report': fields.boolean('Pricelist report', 
