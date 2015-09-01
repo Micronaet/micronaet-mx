@@ -101,17 +101,12 @@ class MxStockMove(orm.Model):
         'date': fields.datetime(
             'Date',  select=True, 
             help='Move date: scheduled date until move is done, then date of '
-                'actual move processing', 
-                states={'done': [('readonly', True)]}),
+                'actual move processing'),
         'date_expected': fields.datetime(
-            'Scheduled Date', states={'done': [('readonly', True)]}, 
-             select=True, 
+            'Scheduled Date', select=True, 
             help="Scheduled date for the processing of this move"),
         'product_id': fields.many2one(
-            'product.product', 'Product',  select=True, 
-            domain=[
-                ('type','<>','service')], 
-                states={'done': [('readonly', True)]}),
+            'product.product', 'Product',  select=True),
 
         'product_qty': fields.float(
             'Quantity', 
@@ -124,16 +119,12 @@ class MxStockMove(orm.Model):
                 'backorder. Changing this quantity on assigned moves affects '
                 'the product reservation, and should be done with care.',
         ),
-        'product_uom': fields.many2one(
-            'product.uom', 'Unit of Measure', 
-            states={'done': [('readonly', True)]}),
+        'product_uom': fields.many2one('product.uom', 'Unit of Measure'),
             
         # TODO remove:
         'product_uos_qty': fields.float('Quantity (UOS)', 
-            digits_compute=dp.get_precision('Product Unit of Measure'), 
-            states={'done': [('readonly', True)]}),
-        'product_uos': fields.many2one('product.uom', 'Product UOS', 
-            states={'done': [('readonly', True)]}),
+            digits_compute=dp.get_precision('Product Unit of Measure')),
+        'product_uos': fields.many2one('product.uom', 'Product UOS'),
         
         'product_packaging': fields.many2one(
             'product.packaging', 'Packaging', 
@@ -142,27 +133,22 @@ class MxStockMove(orm.Model):
 
         'location_id': fields.many2one(
             'stock.location', 'Source Location',  select=True,
-            states={'done': [('readonly', True)]}, 
             help='Sets a location if you produce at a fixed location. This can'
                 ' be a partner location if you subcontract the manufacturing'
                 ' operations.'),
         'location_dest_id': fields.many2one(
             'stock.location', 'Destination Location', 
-            states={'done': [('readonly', True)]}, select=True, 
             help='Location where the system will stock the finished products'),
         'partner_id': fields.many2one(
             'res.partner', 'Destination Address ', 
-            states={'done': [('readonly', True)]}, 
             help='Optional address where goods are to be delivered, '
                 'specifically used for allotment'),
         'prodlot_id': fields.many2one(
             'stock.production.lot', 'Serial Number', 
-            states={'done': [('readonly', True)]}, 
             help="Serial number is used to put a serial number on the prod.", 
             select=True),
         'tracking_id': fields.many2one(
             'stock.tracking', 'Pack', select=True, 
-            states={'done': [('readonly', True)]}, 
             help='Logistical shipping unit: pallet, box, pack ...'),
 
         #'auto_validate': fields.boolean('Auto Validate'),
@@ -176,7 +162,7 @@ class MxStockMove(orm.Model):
         #    'stock_move_history_ids', 'child_id', 'parent_id', 
         #    'Move History (parent moves)'),
         'picking_id': fields.many2one('stock.picking', 'Reference', 
-            select=True, states={'done': [('readonly', True)]}),
+            select=True),
         'note': fields.text('Notes'),
         'state': fields.selection([
         #    ('draft', 'New'),
@@ -231,13 +217,12 @@ class MxStockMove(orm.Model):
 
     def _check_location(self, cr, uid, ids, context=None):
         for record in self.browse(cr, uid, ids, context=context):
-            if (record.state=='done') and (record.location_id.usage == 'view'):
+            if record.location_id.usage == 'view':
                 raise osv.except_osv(
                     _('Error'), 
                     _('You cannot move product %s from a location of type view %s.') % (
                         record.product_id.name, record.location_id.name))
-            if (record.state == 'done') and (
-                    record.location_dest_id.usage == 'view'):
+            if record.location_dest_id.usage == 'view':
                 raise osv.except_osv(
                     _('Error'), 
                     _('You cannot move product %s to a location of type view %s.') % (
@@ -379,7 +364,6 @@ class MxStockMove(orm.Model):
                 'product_uos', 'location_id', 'location_dest_id', 'product_id',
                 ])
             for move in self.browse(cr, uid, ids, context=context):
-                #if move.state == 'done':
                 if frozen_fields.intersection(vals):
                     raise osv.except_osv(
                         _('Operation Forbidden!'),
@@ -741,7 +725,7 @@ class MxStockMove(orm.Model):
                         'location_dest_id': loc.id,
                         'date': time.strftime('%Y-%m-%d'),
                         'picking_id': pickid,
-                        'state': 'waiting',
+                        #'state': 'waiting',
                         'company_id': company_id or res_obj._company_default_get(
                             cr, uid, 'stock.company', context=context),
                         'move_history_ids': [],
@@ -1129,7 +1113,7 @@ class MxStockMove(orm.Model):
             context = {}
         ctx = context.copy()
         for move in self.browse(cr, uid, ids, context=context):
-            if move.state != 'draft' and not ctx.get('call_unlink', False):
+            if not ctx.get('call_unlink', False):
                 raise osv.except_osv(
                     _('User Error!'), 
                     _('You can only delete draft moves.'))
@@ -1356,7 +1340,8 @@ class MxStockMove(orm.Model):
             if move.state in ('done', 'cancel'):
                 continue
             partial_data = partial_datas.get('move%s'%(move.id), False)
-            assert partial_data, _('Missing partial picking data for move #%s.') % (move.id)
+            assert partial_data, _(
+                'Missing partial picking data for move #%s.') % move.id
             product_qty = partial_data.get('product_qty',0.0)
             move_product_qty[move.id] = product_qty
             product_uom = partial_data.get('product_uom',False)
@@ -1376,7 +1361,8 @@ class MxStockMove(orm.Model):
                 product = product_obj.browse(cr, uid, move.product_id.id)
                 move_currency_id = move.company_id.currency_id.id
                 context['currency_id'] = move_currency_id
-                qty = uom_obj._compute_qty(cr, uid, product_uom, product_qty, product.uom_id.id)
+                qty = uom_obj._compute_qty(
+                    cr, uid, product_uom, product_qty, product.uom_id.id)
                 if qty > 0:
                     new_price = currency_obj.compute(cr, uid, product_currency,
                             move_currency_id, product_price, round=False)
@@ -1452,7 +1438,8 @@ class MxStockMove(orm.Model):
                     picking_obj.action_move(
                         cr, uid, [move.picking_id.id])
                     wf_service.trg_validate(
-                        uid, 'stock.picking', move.picking_id.id, 'button_done', cr)
+                        uid, 'stock.picking', move.picking_id.id, 
+                        'button_done', cr)
 
         return [move.id for move in complete]
     
