@@ -29,7 +29,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'mx_agent',
+        'mx_agent', # for extra fields in partner
         ],
     'init_xml': [],
     'demo': [],

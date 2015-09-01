@@ -43,5 +43,34 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class ResPartnerAgentCommission(orm.Model):
+    ''' Add extra object linked to agent (partner) for setup correct rate of 
+        commission depend on product group
+    '''
+    
+    _name = 'res.partner.agent.commission'
+    _description = 'Agent commission'
+    
+    _order = 'categ_id'
+    _rec_name = 'categ_id'
+    
+    _columns = {
+        'categ_id': fields.many2one('product.category', 'Category', 
+            ondelete='set null', required=True),
+        'partner_id': fields.many2one('res.partner', 'Partner', 
+            ondelete='cascade'),
+        'rate': fields.float('Rate', digits=(8, 3), required=True), 
+        'note': fields.text('Note'),
+        }
 
+class ResPartner(orm.Model):
+    ''' Add commission data in partner (for agent)
+    '''
+    
+    _inherit = 'res.partner'
+    
+    _columns = {
+        'commission_ids': fields.one2many(
+            'res.partner.agent.commission', 'partner_id', 'Commission'),
+        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
