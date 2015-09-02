@@ -43,4 +43,12 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class mx_ddt(osv.osv):
+    _name = "stock.picking.out"
+    _inherit = "stock.picking"
+    
+    _columns = {
+        'mx_move_lines': fields.one2many('mx.stock.move', 'product_id', 'Mx Moves'),
+        
+                }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
