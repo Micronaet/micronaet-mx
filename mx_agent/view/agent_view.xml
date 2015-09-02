@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        
+        <record id="view_agent_form" model="ir.ui.view">
+            <field name="name">res.partner.agent.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <field name="is_company">
+                    <field name="is_agent" />
+                </field>
+                <xpath expr="/form/sheet/notebook/page//field[@name='ref']" position="after">
+                    <field name="sql_agent_code" />
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>

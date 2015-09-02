@@ -186,16 +186,26 @@ class MxStockMove(orm.Model):
         #           "* Done: When the shipment is processed, the state is"
         #           " \'Done\'."
             ),
-        'price_unit': fields.float(
+        
+        # Price section:    
+        'price_unit': fields.float( # base
             'Unit Price', digits_compute= dp.get_precision('Product Price'), 
             help='Technical field used to record the product cost set by the '
                 'user during a picking confirmation (when average price'
                 'costing method is used)'),
+        'price_unit_currency': fields.float( # in different currency
+            'Currency unit price', 
+            digits_compute= dp.get_precision('Product Price'), 
+            help='Currency price'),
+        'exchange_currency': fields.float( # in different currency
+            'Exchange', digits_compute= dp.get_precision('Product Price'), 
+            help='Save the exchange value if use exchange'),
         'price_currency_id': fields.many2one(
             'res.currency', 'Currency for average price', 
             help='Technical field used to record the currency chosen by the '
                 'user during a picking confirmation (when average price '
                 'costing method is used)'),
+                
         'company_id': fields.many2one('res.company', 'Company',  select=True),
         #'backorder_id': fields.related('picking_id','backorder_id', 
         #    type='many2one', relation="stock.picking", 
@@ -924,10 +934,11 @@ class MxStockMove(orm.Model):
         return journal_id, acc_src, acc_dest, acc_valuation
 
     def _get_reference_accounting_values_for_valuation(self, cr, uid, move, context=None):
-        """
-        Return the reference amount and reference currency representing the inventory valuation for this move.
-        These reference values should possibly be converted before being posted in Journals to adapt to the primary
-        and secondary currencies of the relevant accounts.
+        """ Return the reference amount and reference currency representing the 
+            inventory valuation for this move.
+            These reference values should possibly be converted before being 
+            posted in Journals to adapt to the primary and secondary currencies 
+            of the relevant accounts.
         """
         product_uom_obj = self.pool.get('product.uom')
 
@@ -945,13 +956,15 @@ class MxStockMove(orm.Model):
             reference_amount = qty * move.price_unit
             reference_currency_id = move.price_currency_id.id or reference_currency_id
 
-        # Otherwise we default to the company's valuation price type, considering that the values of the
-        # valuation field are expressed in the default currency of the move's company.
+        # Otherwise we default to the company's valuation price type, 
+        # considering that the values of the valuation field are expressed in 
+        # the default currency of the move's company.
         else:
             if context is None:
                 context = {}
             currency_ctx = dict(context, currency_id = move.company_id.currency_id.id)
-            amount_unit = move.product_id.price_get('standard_price', context=currency_ctx)[move.product_id.id]
+            amount_unit = move.product_id.price_get(
+                'standard_price', context=currency_ctx)[move.product_id.id]
             reference_amount = amount_unit * qty
 
         return reference_amount, reference_currency_id
