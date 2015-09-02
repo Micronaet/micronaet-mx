@@ -15,7 +15,11 @@
                 <xpath expr="//field[@name='move_lines']" position="after">
                     <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'view_move_form', 'tree_view_ref':'view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
                 </xpath>
+                <xpath expr="//field[@name='move_type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
+
     </data>
 </openerp>
