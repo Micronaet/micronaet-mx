@@ -191,7 +191,7 @@ class MxStockMove(orm.Model):
         'price_unit': fields.float( # base
             'Unit Price', digits_compute= dp.get_precision('Product Price'), 
             help='Technical field used to record the product cost set by the '
-                'user during a picking confirmation (when average price'
+                'user during a picking confirmation (when average price '
                 'costing method is used)'),
         'price_unit_currency': fields.float( # in different currency
             'Currency unit price', 
