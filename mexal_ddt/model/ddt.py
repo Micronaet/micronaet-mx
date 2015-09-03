@@ -43,128 +43,62 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class mx_ddt(osv.osv):
-    _name = "stock.picking.out"
+class StockPicking(orm.Model):
     _inherit = "stock.picking"
     
     _columns = {
-        'mx_move_lines': fields.one2many('mx.stock.move', 'product_id', 'Mx Moves'),
-        'mx_port_id': fields.many2one('mx.ddt.port', 'Port'),
-        'mx_aspect_id': fields.many2one('mx.ddt.aspect', 'Aspect'),
-        'mx_payment_id': fields.many2one('mx.ddt.payment', 'Payment'),
-        'mx_causal_id': fields.many2one('mx.ddt.causal', 'Causal'),
-        'mx_transport_id': fields.many2one('mx.ddt.transport', 'Transport'),
-        'mx_vector_id': fields.many2one('mx.ddt.vector', 'Vector'),
-                }
+        'mx_move_lines': fields.one2many('mx.stock.move', 'product_id', 
+           'Details'),
+        }
 
-class mx_partner(osv.osv):
-    _name = "mx.partner"
-    _description = "MX Partner"
+#class AccountInvoiceTax(orm.Model):
+#    _inherit = "account.invoice.tax"
+#
+#    _columns = {
+#         # extra fields
+#         }
 
-    _columns = {
-        'name': fields.char('Partner', size=100, required=True),
-                }
-
-class mx_tax(osv.osv):
-    _name = "mx.tax"
-    _description = "MX Tax"
+class mx_ddt_port(orm.Model):
+    _inherit = ""
 
     _columns = {
-        'name': fields.char('Tax', size=100, required=True),
-                }
-
-class mx_bank(osv.osv):
-    _name = "mx.bank"
-    _description = "MX Bank"
-
-    _columns = {
-        'name': fields.char('Bank', size=100, required=True),
-                }
-
-class mx_ledger(osv.osv):
-    _name = "mx.ledger"
-    _description = "MX Ledger"
-
-    _columns = {
-        'name': fields.char('Ledger', size=100, required=True),
-                }
-
-class mx_currency(osv.osv):
-    _name = "mx.currency"
-    _description = "MX Currency"
-
-    _columns = {
-        'name': fields.char('Currency', size=100, required=True),
-                }
-
-class mx_accounting_period(osv.osv):
-    _name = "mx.accounting_period"
-    _description = "MX accounting period"
-
-    _columns = {
-        'name': fields.char('Accounting period', size=100, required=True),
-                }
+         # extra fields
+         }
                 
-class mx_uom(osv.osv):
-    _name = "mx.uom"
-    _description = "MX UOM"
+class mx_ddt_aspect(orm.Model):
+    _inherit = ""
 
     _columns = {
-        'name': fields.char('UOM', size=100, required=True),
-                }
+         # extra fields
+         }
 
-    #=================#
-    # ANAGRAFICHE DDT #
-    #=================#
-
-class mx_ddt_port(osv.osv):
-    _name = "mx.ddt.port"
-    _description = "DDT list port"
+class mx_ddt_payment(orm.Model):
+    _inherit = ""
 
     _columns = {
-        'name': fields.char('Port', size=80, required=True),
-                }
-                
-class mx_ddt_aspect(osv.osv):
-    _name = "mx.ddt.aspect"
-    _description = "DDT aspect"
+         # extra fields
+         }
+
+class mx_ddt_causal(orm.Model):
+    _inherit = "mx.ddt.causal"
 
     _columns = {
-        'name': fields.char('Aspect', size=80, required=True),
-                }
+         # extra fields
+         }
 
-class mx_ddt_payment(osv.osv):
-    _name = "mx.ddt.payment"
-    _description = "DDT payment"
-
-    _columns = {
-        'name': fields.char('Payment', size=80, required=True),
-                }
-
-class mx_ddt_causal(osv.osv):
-    _name = "mx.ddt.causal"
-    _description = "DDT causal"
+class mx_ddt_transport(orm.Model):
+    _inherit = "mx.ddt.transport"
 
     _columns = {
-        'name': fields.char('Causal', size=80, required=True),
-                }
+         # extra fields
+         }
 
-class mx_ddt_transport(osv.osv):
-    _name = "mx.ddt.transport"
-    _description = "DDT transport"
-
-    _columns = {
-        'name': fields.char('Transport', size=80, required=True),
-                }
-
-class mx_ddt_vector(osv.osv):
-    _name = "mx.ddt.vector"
-    _description = "DDT vector"
+# TODO moved in a module???
+class mx_ddt_vector(orm.Model):
+    _inherit = "mx.ddt.vector"
 
     _columns = {
-        'name': fields.char('Vector', size=80, required=True),
-                }
-
-
+         # extra fields
+         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
