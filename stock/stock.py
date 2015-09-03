@@ -1612,13 +1612,20 @@ class stock_move(osv.osv):
     _columns = {
         'name': fields.char('Description', required=True, select=True),
         'priority': fields.selection([('0', 'Not urgent'), ('1', 'Urgent')], 'Priority'),
-        'hide': fields.boolean('Hide in totals'),        
+        'hide': fields.boolean('Hide in totals'), # TODO remove is used state!!   
         'create_date': fields.datetime('Creation Date', readonly=True, select=True),
-        'date': fields.datetime('Date', required=True, select=True, help="Move date: scheduled date until move is done, then date of actual move processing", states={'done': [('readonly', True)]}),
-        'date_expected': fields.datetime('Scheduled Date', states={'done': [('readonly', True)]},required=True, select=True, help="Scheduled date for the processing of this move"),
-        'product_id': fields.many2one('product.product', 'Product', required=True, select=True, domain=[('type','<>','service')],states={'done': [('readonly', True)]}),
+        'date': fields.datetime('Date', required=True, select=True, 
+            help="Move date: scheduled date until move is done, then date of actual move processing", 
+            states={'done': [('readonly', True)]}),
+        'date_expected': fields.datetime('Scheduled Date', 
+            states={'done': [('readonly', True)]},required=True, select=True, 
+            help="Scheduled date for the processing of this move"),
+        'product_id': fields.many2one('product.product', 'Product', 
+            required=True, select=True, domain=[('type', '<>', 'service')],
+            states={'done': [('readonly', True)]}),
 
-        'product_qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure'),
+        'product_qty': fields.float('Quantity', 
+            digits_compute=dp.get_precision('Product Unit of Measure'),
             required=True,states={'done': [('readonly', True)]},
             help="This is the quantity of products from an inventory "
                 "point of view. For moves in the state 'done', this is the "
@@ -1628,17 +1635,31 @@ class stock_move(osv.osv):
                 "backorder. Changing this quantity on assigned moves affects "
                 "the product reservation, and should be done with care."
         ),
-        'product_uom': fields.many2one('product.uom', 'Unit of Measure', required=True,states={'done': [('readonly', True)]}),
-        'product_uos_qty': fields.float('Quantity (UOS)', digits_compute=dp.get_precision('Product Unit of Measure'), states={'done': [('readonly', True)]}),
-        'product_uos': fields.many2one('product.uom', 'Product UOS', states={'done': [('readonly', True)]}),
-        'product_packaging': fields.many2one('product.packaging', 'Packaging', help="It specifies attributes of packaging like type, quantity of packaging,etc."),
+        'product_uom': fields.many2one('product.uom', 'Unit of Measure', 
+            required=True,states={'done': [('readonly', True)]}),
+        'product_uos_qty': fields.float('Quantity (UOS)', 
+            digits_compute=dp.get_precision('Product Unit of Measure'), states={'done': [('readonly', True)]}),
+        'product_uos': fields.many2one('product.uom', 'Product UOS', 
+            states={'done': [('readonly', True)]}),
+        'product_packaging': fields.many2one('product.packaging', 'Packaging', 
+            help="It specifies attributes of packaging like type, quantity of packaging,etc."),
 
-        'location_id': fields.many2one('stock.location', 'Source Location', required=True, select=True,states={'done': [('readonly', True)]}, help="Sets a location if you produce at a fixed location. This can be a partner location if you subcontract the manufacturing operations."),
-        'location_dest_id': fields.many2one('stock.location', 'Destination Location', required=True,states={'done': [('readonly', True)]}, select=True, help="Location where the system will stock the finished products."),
-        'partner_id': fields.many2one('res.partner', 'Destination Address ', states={'done': [('readonly', True)]}, help="Optional address where goods are to be delivered, specifically used for allotment"),
+        'location_id': fields.many2one('stock.location', 'Source Location', 
+            required=True, select=True,states={'done': [('readonly', True)]}, 
+            help="Sets a location if you produce at a fixed location. This can be a partner location if you subcontract the manufacturing operations."),
+        'location_dest_id': fields.many2one('stock.location', 'Destination Location', 
+            required=True,states={'done': [('readonly', True)]}, select=True, 
+            help="Location where the system will stock the finished products."),
+        'partner_id': fields.many2one('res.partner', 'Destination Address ', 
+            states={'done': [('readonly', True)]}, 
+            help="Optional address where goods are to be delivered, specifically used for allotment"),
 
-        'prodlot_id': fields.many2one('stock.production.lot', 'Serial Number', states={'done': [('readonly', True)]}, help="Serial number is used to put a serial number on the production", select=True),
-        'tracking_id': fields.many2one('stock.tracking', 'Pack', select=True, states={'done': [('readonly', True)]}, help="Logistical shipping unit: pallet, box, pack ..."),
+        'prodlot_id': fields.many2one('stock.production.lot', 'Serial Number', 
+            states={'done': [('readonly', True)]}, 
+            help="Serial number is used to put a serial number on the production", select=True),
+        'tracking_id': fields.many2one('stock.tracking', 'Pack', select=True, 
+            states={'done': [('readonly', True)]}, 
+            help="Logistical shipping unit: pallet, box, pack ..."),
 
         'auto_validate': fields.boolean('Auto Validate'),
 
@@ -1646,35 +1667,56 @@ class stock_move(osv.osv):
         #    help='Optional: previous stock move (used es. with ddt and more '
         #        'than one lot line'),
         
-        # NEEDED?:
-        'move_dest_id': fields.many2one('stock.move', 'Destination Move', help="Optional: next stock move when chaining them", select=True),
-        'move_history_ids': fields.many2many('stock.move', 'stock_move_history_ids', 'parent_id', 'child_id', 'Move History (child moves)'),
-        'move_history_ids2': fields.many2many('stock.move', 'stock_move_history_ids', 'child_id', 'parent_id', 'Move History (parent moves)'),
-        # ^^^^^^^^
+        # NEEDED? VVVVVVVV:
+        'move_dest_id': fields.many2one('stock.move', 'Destination Move', 
+            help="Optional: next stock move when chaining them", select=True),
+        'move_history_ids': fields.many2many('stock.move', 
+            'stock_move_history_ids', 'parent_id', 'child_id', 
+            'Move History (child moves)'),
+        'move_history_ids2': fields.many2many('stock.move', 
+            'stock_move_history_ids', 'child_id', 'parent_id',
+            'Move History (parent moves)'),
+        # ^^^^^^^^^^^^^^^^
 
-        'picking_id': fields.many2one('stock.picking', 'Reference', select=True,states={'done': [('readonly', True)]}),
+        'picking_id': fields.many2one('stock.picking', 'Reference', 
+            select=True, states={'done': [('readonly', True)]}),
         'note': fields.text('Notes'),
-        'state': fields.selection([('draft', 'New'),
-                                   ('cancel', 'Cancelled'),
-                                   ('waiting', 'Waiting Another Move'),
-                                   ('confirmed', 'Waiting Availability'),
-                                   ('assigned', 'Available'),
-                                   ('done', 'Done'),
-                                   ], 'Status', readonly=False, select=True,
-                 help= "* New: When the stock move is created and not yet confirmed.\n"\
-                       "* Waiting Another Move: This state can be seen when a move is waiting for another one, for example in a chained flow.\n"\
-                       "* Waiting Availability: This state is reached when the procurement resolution is not straight forward. It may need the scheduler to run, a component to me manufactured...\n"\
-                       "* Available: When products are reserved, it is set to \'Available\'.\n"\
-                       "* Done: When the shipment is processed, the state is \'Done\'."),
-        'price_unit': fields.float('Unit Price', digits_compute= dp.get_precision('Product Price'), help="Technical field used to record the product cost set by the user during a picking confirmation (when average price costing method is used)"),
-        'price_currency_id': fields.many2one('res.currency', 'Currency for average price', help="Technical field used to record the currency chosen by the user during a picking confirmation (when average price costing method is used)"),
-        'company_id': fields.many2one('res.company', 'Company', required=True, select=True),
-        'backorder_id': fields.related('picking_id','backorder_id',type='many2one', relation="stock.picking", string="Back Order of", select=True),
-        'origin': fields.related('picking_id','origin',type='char', size=64, relation="stock.picking", string="Source", store=True),
+        'state': fields.selection([
+            ('draft', 'New'),
+            ('cancel', 'Cancelled'),
+            ('waiting', 'Waiting Another Move'),
+            ('confirmed', 'Waiting Availability'),
+            ('assigned', 'Available'),
+            ('done', 'Done'),
+            ], 'Status', readonly=False, select=True,
+            help="* New: When the stock move is created and not yet confirmed.\n"\
+                "* Waiting Another Move: This state can be seen when a move is waiting for another one, for example in a chained flow.\n"\
+                "* Waiting Availability: This state is reached when the procurement resolution is not straight forward. It may need the scheduler to run, a component to me manufactured...\n"\
+                "* Available: When products are reserved, it is set to \'Available\'.\n"\
+                "* Done: When the shipment is processed, the state is \'Done\'."),
+        'price_unit': fields.float('Unit Price', 
+            digits_compute= dp.get_precision('Product Price'), 
+            help="Technical field used to record the product cost set by the user during a picking confirmation (when average price costing method is used)"),
+        'price_currency_id': fields.many2one('res.currency', 
+            'Currency for average price', 
+            help="Technical field used to record the currency chosen by the user during a picking confirmation (when average price costing method is used)"),
+        'company_id': fields.many2one('res.company', 'Company', required=True, 
+            select=True),
+        'backorder_id': fields.related('picking_id','backorder_id',
+            type='many2one', relation="stock.picking", string="Back Order of", 
+            select=True),
+        'origin': fields.related('picking_id','origin',type='char', size=64, 
+            relation="stock.picking", string="Source", store=True),
 
         # used for colors in tree views:
-        'scrapped': fields.related('location_dest_id','scrap_location',type='boolean',relation='stock.location',string='Scrapped', readonly=True),
-        'type': fields.related('picking_id', 'type', type='selection', selection=[('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')], string='Shipping Type'),
+        'scrapped': fields.related('location_dest_id', 'scrap_location',
+            type='boolean',relation='stock.location', string='Scrapped', 
+            readonly=True),
+        'type': fields.related('picking_id', 'type', type='selection', 
+            selection=[
+                ('out', 'Sending Goods'), 
+                ('in', 'Getting Goods'), 
+                ('internal', 'Internal')], string='Shipping Type'),
     }
 
     def _check_location(self, cr, uid, ids, context=None):

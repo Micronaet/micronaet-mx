@@ -70,14 +70,14 @@ _logger = logging.getLogger(__name__)
 #         # extra fields
 #         }
 
-#class mx_ddt_port(orm.Model):
+#class mx_ddt_carriage_condition(orm.Model):
 #    _inherit = ""
 
 #    _columns = {
  #        # extra fields
   #       }
                 
-#class mx_ddt_aspect(orm.Model):
+#class mx_ddt_description_goods(orm.Model):
  #   _inherit = ""
 
   #  _columns = {
@@ -91,7 +91,7 @@ _logger = logging.getLogger(__name__)
          # extra fields
    #      }
 
-#class mx_ddt_causal(orm.Model):
+#class mx_ddt_reason_transport(orm.Model):
  #   _inherit = ""
 
   #  _columns = {
