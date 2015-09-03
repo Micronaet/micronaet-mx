@@ -57,7 +57,7 @@ class StockPicking(orm.Model):
         """
         wf_service = netsvc.LocalService("workflow")
         for pick in self.browse(cr, uid, ids):
-            if not pick.move_lines:
+            if not pick.mx_move_lines:
                 raise osv.except_osv(_('Error!'),_('You cannot process picking without stock moves.'))
             wf_service.trg_validate(uid, 'stock.picking', pick.id,
                 'button_confirm', cr)

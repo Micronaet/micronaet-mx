@@ -169,7 +169,7 @@ class ProductProduct(orm.Model):
             where_condition = list(where).append(prodlot_clause)
         if 'in' in what:
             # all moves from a location out of the set to a location in the set
-                
+            # TODO insert hide fields for calculate stock elements
             cr.execute('''
                 SELECT sum(product_qty), product_id, product_uom 
                 FROM mx_stock_move 
