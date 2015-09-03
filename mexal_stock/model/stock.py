@@ -358,11 +358,13 @@ class MxStockMove(orm.Model):
         #'priority': '1',
         #'product_qty': 1.0,
         #'scrapped' :  False,
-        'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'date': lambda *a: datetime.now().strftime(
+            DEFAULT_SERVER_DATETIME_FORMAT),
         'company_id': lambda self,cr,uid,c: self.pool.get(
             'res.company')._company_default_get(
                 cr, uid, 'stock.move', context=c),
-        'date_expected': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'date_expected': lambda *a: datetime.now().strftime(
+            DEFAULT_SERVER_DATETIME_FORMAT),
         }
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -602,7 +604,7 @@ class MxStockMove(orm.Model):
             @return: Move Date
         """
         if not date_expected:
-            date_expected = time.strftime('%Y-%m-%d %H:%M:%S')
+            date_expected = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
         return {'value':{'date': date_expected}}
 
     def _chain_compute(self, cr, uid, moves, context=None):
@@ -625,7 +627,8 @@ class MxStockMove(orm.Model):
                 if dest[1] == 'transparent':
                     newdate = (datetime.strptime(
                         m.date, '%Y-%m-%d %H:%M:%S') + relativedelta(
-                            days=dest[2] or 0)).strftime('%Y-%m-%d')
+                            days=dest[2] or 0)).strftime(
+                                DEFAULT_SERVER_DATE_FORMAT)
                     self.write(cr, uid, [m.id], {
                         'date': newdate,
                         'location_dest_id': dest[0].id})
@@ -734,15 +737,17 @@ class MxStockMove(orm.Model):
                     new_id = move_obj.copy(cr, uid, move.id, {
                         'location_id': move.location_dest_id.id,
                         'location_dest_id': loc.id,
-                        'date': time.strftime('%Y-%m-%d'),
+                        'date': datetime.now().strftime(
+                            DEFAULT_SERVER_DATE_FORMAT),
                         'picking_id': pickid,
                         #'state': 'waiting',
                         'company_id': company_id or res_obj._company_default_get(
                             cr, uid, 'stock.company', context=context),
                         'move_history_ids': [],
                         'date_expected': (datetime.strptime(
-                            move.date, '%Y-%m-%d %H:%M:%S') + relativedelta(
-                                days=delay or 0)).strftime('%Y-%m-%d'),
+                            move.date, 
+                            DEFAULT_SERVER_DATETIME_FORMAT) + relativedelta(
+                                days=delay or 0)).strftime(DEFAULT_SERVER_DATE_FORMAT),
                         'move_history_ids2': []}
                     )
                     move_obj.write(cr, uid, [move.id], {
@@ -1075,7 +1080,7 @@ class MxStockMove(orm.Model):
             'product_id': move.product_id and move.product_id.id or False,
             'quantity': move.product_qty,
             'ref': move.picking_id and move.picking_id.name or False,
-            'date': time.strftime('%Y-%m-%d'),
+            'date': datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
             'partner_id': partner_id,
             'debit': reference_amount,
             'account_id': dest_account_id,
@@ -1085,7 +1090,7 @@ class MxStockMove(orm.Model):
             'product_id': move.product_id and move.product_id.id or False,
             'quantity': move.product_qty,
             'ref': move.picking_id and move.picking_id.name or False,
-            'date': time.strftime('%Y-%m-%d'),
+            'date': datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
             'partner_id': partner_id,
             'credit': reference_amount,
             'account_id': src_account_id,

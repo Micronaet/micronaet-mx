@@ -6,20 +6,19 @@
             <field name="model">stock.picking.out</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//form/header" position="attributes">
+                <xpath expr="/sheet/form/header" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <xpath expr="//notebook/page/field[@name='move_lines']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//field[@name='move_lines']" position="after">
+                <fields name="move_lines" position="after">
                     <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'view_move_form', 'tree_view_ref':'view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
-                </xpath>
-                <xpath expr="//field[@name='move_type']" position="attributes">
+                </fields>
+                <fields name='move_lines' position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </fields>
+                <fields name='move_type' position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </fields>
             </field>
         </record>
-
     </data>
 </openerp>
