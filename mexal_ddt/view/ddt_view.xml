@@ -15,7 +15,7 @@
                 <!--<xpath expr="//field[@name='move_lines']" position="before">
                     <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'view_move_form', 'tree_view_ref':'view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
                 </xpath>-->
-                <xpath expr="//notebook/page[@string='Products']" position="attributes">
+                <!--<xpath expr="//notebook/page[@string='Products']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//notebook/page[@string='Products']" position="before">                    
@@ -23,7 +23,7 @@
                         <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'mexal_stock.view_move_form', 'tree_view_ref':'mexal_stock.view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
                         <field name="note" placeholder="Add an internal note..." class="oe_inline" modifiers="{'readonly': [['state', 'in', ['cancel', 'done']]]}"/>
                     </page>    
-			    </xpath>
+			    </xpath>-->
             </field>
         </record>
     </data>

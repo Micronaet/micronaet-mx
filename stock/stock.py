@@ -1612,6 +1612,7 @@ class stock_move(osv.osv):
     _columns = {
         'name': fields.char('Description', required=True, select=True),
         'priority': fields.selection([('0', 'Not urgent'), ('1', 'Urgent')], 'Priority'),
+        'hide': fields.boolean('Hide in totals'),        
         'create_date': fields.datetime('Creation Date', readonly=True, select=True),
         'date': fields.datetime('Date', required=True, select=True, help="Move date: scheduled date until move is done, then date of actual move processing", states={'done': [('readonly', True)]}),
         'date_expected': fields.datetime('Scheduled Date', states={'done': [('readonly', True)]},required=True, select=True, help="Scheduled date for the processing of this move"),
@@ -1641,9 +1642,16 @@ class stock_move(osv.osv):
 
         'auto_validate': fields.boolean('Auto Validate'),
 
+        'move_parent_id': fields.many2one('mx.stock.move', 'Origin move', 
+            help='Optional: previous stock move (used es. with ddt and more '
+                'than one lot line'),
+        
+        # NEEDED?:
         'move_dest_id': fields.many2one('stock.move', 'Destination Move', help="Optional: next stock move when chaining them", select=True),
         'move_history_ids': fields.many2many('stock.move', 'stock_move_history_ids', 'parent_id', 'child_id', 'Move History (child moves)'),
         'move_history_ids2': fields.many2many('stock.move', 'stock_move_history_ids', 'child_id', 'parent_id', 'Move History (parent moves)'),
+        # ^^^^^^^^
+
         'picking_id': fields.many2one('stock.picking', 'Reference', select=True,states={'done': [('readonly', True)]}),
         'note': fields.text('Notes'),
         'state': fields.selection([('draft', 'New'),

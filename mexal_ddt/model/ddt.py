@@ -53,7 +53,7 @@ class StockPicking(orm.Model):
 
     def draft_force_assign(self, cr, uid, ids, *args):
         """ Confirms picking directly from draft state.
-        @return: True
+            @return: True
         """
         wf_service = netsvc.LocalService("workflow")
         for pick in self.browse(cr, uid, ids):
