@@ -73,7 +73,7 @@ class ProductProduct(orm.Model):
         warehouse_obj = self.pool.get('stock.warehouse')
         shop_obj = self.pool.get('sale.shop')
         
-        states = context.get('states', []) # TODO not used!
+        #states = context.get('states', []) # TODO not used!
         what = context.get('what',())
         if not ids:
             ids = self.search(cr, uid, [])
@@ -98,8 +98,9 @@ class ProductProduct(orm.Model):
         if context.get('location', False):
             if type(context['location']) == int:
                 location_ids = [context['location']]
-            elif type(context['location']) in (strtype(''), type(u'')):
-                location_ids = location_obj.search(cr, uid, [('name','ilike',context['location'])], context=context)
+            elif type(context['location']) in (str, unicode):
+                location_ids = location_obj.search(cr, uid, [
+                    ('name', 'ilike', context['location'])], context=context)
             else:
                 location_ids = context['location']
         else:
@@ -111,8 +112,9 @@ class ProductProduct(orm.Model):
                 location_ids.append(w.lot_stock_id.id)
 
         # build the list of ids of children of the location given by id
-        if context.get('compute_child',True):
-            child_location_ids = location_obj.search(cr, uid, [('location_id', 'child_of', location_ids)])
+        if context.get('compute_child', True):
+            child_location_ids = location_obj.search(cr, uid, [
+                ('location_id', 'child_of', location_ids)])
             location_ids = child_location_ids or location_ids
         
         # this will be a dictionary of the product UoM by product id
@@ -121,19 +123,25 @@ class ProductProduct(orm.Model):
         for product in self.read(cr, uid, ids, ['uom_id'], context=context):
             product2uom[product['id']] = product['uom_id'][0]
             uom_ids.append(product['uom_id'][0])
+            
         # this will be a dictionary of the UoM resources we need for conversion purposes, by UoM id
         uoms_o = {}
-        for uom in self.pool.get('product.uom').browse(cr, uid, uom_ids, context=context):
+        for uom in self.pool.get('product.uom').browse(
+                cr, uid, uom_ids, context=context):
             uoms_o[uom.id] = uom
 
         results = []
         results2 = []
 
-        from_date = context.get('from_date',False)
-        to_date = context.get('to_date',False)
+        from_date = context.get('from_date', False)
+        to_date = context.get('to_date', False)
         date_str = False
         date_values = False
-        where = [tuple(location_ids),tuple(location_ids),tuple(ids),tuple(states)]
+        where = [
+            tuple(location_ids), tuple(location_ids), tuple(ids), 
+            #tuple(states)
+            ]
+            
         if from_date and to_date:
             date_str = "date>=%s and date<=%s"
             where.append(tuple([from_date]))
@@ -154,29 +162,31 @@ class ProductProduct(orm.Model):
             where += [prodlot_id]
 
         # TODO: perhaps merge in one query.
+        if date_str:
+            where_condition = list(where).append(
+                'and %s %s' % (date_str, prodlot_clause)
+        else:
+            where_condition = list(where).append(prodlot_clause)
         if 'in' in what:
             # all moves from a location out of the set to a location in the set
-            cr.execute(
-                'select sum(product_qty), product_id, product_uom '\
-                'from stock_move '\
-                'where location_id NOT IN %s '\
-                'and location_dest_id IN %s '\
-                'and product_id IN %s '\
-                'and state IN %s ' + (date_str and 'and '+date_str+' ' or '') +' '\
-                + prodlot_clause + 
-                'group by product_id,product_uom',tuple(where))
+                
+            cr.execute('''
+                SELECT sum(product_qty), product_id, product_uom 
+                FROM mx_stock_move 
+                WHERE location_id NOT IN %s 
+                   AND location_dest_id IN %s 
+                   AND product_id IN %s %s 
+                'GROUP BY product_id, product_uom''', where_condition)
             results = cr.fetchall()
         if 'out' in what:
             # all moves from a location in the set to a location out of the set
-            cr.execute(
-                'select sum(product_qty), product_id, product_uom '\
-                'from stock_move '\
-                'where location_id IN %s '\
-                'and location_dest_id NOT IN %s '\
-                'and product_id  IN %s '\
-                'and state in %s ' + (date_str and 'and '+date_str+' ' or '') + ' '\
-                + prodlot_clause + 
-                'group by product_id,product_uom',tuple(where))
+            cr.execute('''
+                SELECT sum(product_qty), product_id, product_uom 
+                FROM mx_stock_move 
+                WHERE location_id IN %s 
+                   AND location_dest_id NOT IN %s 
+                   AND product_id IN %s %s 
+                'GROUP BY product_id, product_uom''', where_condition)
             results2 = cr.fetchall()
             
         # Get the missing UoM resources
@@ -194,17 +204,19 @@ class ProductProduct(orm.Model):
         context.update({'raise-exception': False})
         # Count the incoming quantities
         for amount, prod_id, prod_uom in results:
-            amount = uom_obj._compute_qty_obj(cr, uid, uoms_o[prod_uom], amount,
-                     uoms_o[context.get('uom', False) or product2uom[prod_id]], context=context)
+            amount = uom_obj._compute_qty_obj(
+                cr, uid, uoms_o[prod_uom], amount, uoms_o[context.get(
+                     'uom', False) or product2uom[prod_id]], context=context)
             res[prod_id] += amount
+
         # Count the outgoing quantities
         for amount, prod_id, prod_uom in results2:
-            amount = uom_obj._compute_qty_obj(cr, uid, uoms_o[prod_uom], amount,
-                    uoms_o[context.get('uom', False) or product2uom[prod_id]], context=context)
+            amount = uom_obj._compute_qty_obj(
+                cr, uid, uoms_o[prod_uom], amount,
+                uoms_o[context.get('uom', False) or product2uom[prod_id]], 
+                context=context)
             res[prod_id] -= amount
         return res
-
-
 
     _columns = {
         # TODO load with minimun_qty from production_line module:
@@ -223,13 +235,11 @@ class ProductProduct(orm.Model):
             help='Date start of the inventory relevation'),
             
         # Movements mx.stock.move (override originals):
-        'incoming_qty': fields.function(_product_incoming_qty, type='float', string='Incoming'),
-        'outgoing_qty': fields.function(_product_outgoing_qty, type='float', string='Outgoing'),
-        'order_qty': fields.function(_product_outgoing_qty, type='float', string='Ordered'),
+        #'incoming_qty': fields.function(_product_incoming_qty, type='float', string='Incoming'),
+        #'outgoing_qty': fields.function(_product_outgoing_qty, type='float', string='Outgoing'),
+        #'order_qty': fields.function(_product_outgoing_qty, type='float', string='Ordered'),
 
-        'qty_available': fields.function(_product_qty_available, type='float', string='Quantity On Hand'),
-        'virtual_available': fields.function(_product_virtual_available, type='float', string='Quantity Available'),
-                        
-            
+        #'qty_available': fields.function(_product_qty_available, type='float', string='Quantity On Hand'),
+        #'virtual_available': fields.function(_product_virtual_available, type='float', string='Quantity Available'),
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

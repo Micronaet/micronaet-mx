@@ -93,18 +93,18 @@
                     <field name="create_date" invisible="1" groups="base.group_no_one" />-->
                     <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)"/>
                     <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
-                    <!--<field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
-                    <field name="product_uos" groups="product.group_uos"/>-->
+                    <field name="product_uom" string="Unit of Measure" groups="product.group_uom" invisible='1'/>
+                    <field name="product_uos" groups="product.group_uos" invisible='1'/>
                     <!--<field name="prodlot_id" groups="stock.group_production_lot"/>-->
                     <!--<field name="tracking_id" groups="stock.group_tracking_lot"/>-->
-                    <!--<field name="location_id" groups="stock.group_locations"/>
-                    <field name="location_dest_id" groups="stock.group_locations"/>-->
+                    <field name="location_id" groups="stock.group_locations" invisible='1'/>
+                    <field name="location_dest_id" groups="stock.group_locations" invisible='1'/>
                     <field name="date" groups="base.group_no_one" invisible='1'/>
                     <!--<field name="date_expected"/>-->
                     <field name="price_unit" />
                     <field name="product_packaging" />
                     <field name="state" invisible="1"/>
-                    <button name="action_lot" string="Lots" type="object" icon="gtk-go-forward" />
+                    <button name="action_lot" string="Lots" type="object" icon="gtk-justify-fill" />
                     <!--<button name="action_done" states="confirmed,assigned" string="Process" type="object" icon="gtk-go-forward" help="Done"/>-->
                 </tree>
             </field>

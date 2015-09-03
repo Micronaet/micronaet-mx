@@ -51,6 +51,18 @@ class StockPicking(orm.Model):
             'Details'),
         }
 
+    def draft_force_assign(self, cr, uid, ids, *args):
+        """ Confirms picking directly from draft state.
+        @return: True
+        """
+        wf_service = netsvc.LocalService("workflow")
+        for pick in self.browse(cr, uid, ids):
+            if not pick.move_lines:
+                raise osv.except_osv(_('Error!'),_('You cannot process picking without stock moves.'))
+            wf_service.trg_validate(uid, 'stock.picking', pick.id,
+                'button_confirm', cr)
+        return True
+
 #class AccountInvoiceTax(orm.Model):
 #    _inherit = "account.invoice.tax"
 #
