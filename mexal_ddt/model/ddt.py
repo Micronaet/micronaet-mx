@@ -48,7 +48,7 @@ class StockPicking(orm.Model):
     
     _columns = {
         'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
-           'Details'),
+            'Details'),
         }
 
 #class AccountInvoiceTax(orm.Model):

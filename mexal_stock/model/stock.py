@@ -96,6 +96,7 @@ class MxStockMove(orm.Model):
     _columns = {
         'name': fields.char('Description',  select=True),
         #'priority': fields.selection([('0', 'Not urgent'), ('1', 'Urgent')], 'Priority'),
+        'hide': fields.boolean('Hide in totals'),
         'create_date': fields.datetime(
             'Creation Date', readonly=True, select=True),
         'date': fields.datetime(
@@ -153,6 +154,9 @@ class MxStockMove(orm.Model):
 
         #'auto_validate': fields.boolean('Auto Validate'),
 
+        'move_parent_id': fields.many2one('mx.stock.move', 'Origin move', 
+            help='Optional: previous stock move (used es. with ddt and more '
+                'than one lot line'),
         #'move_dest_id': fields.many2one('stock.move', 'Destination Move', 
         #    help="Optional: next stock move when chaining them", select=True),
         #'move_history_ids': fields.many2many('stock.move', 
@@ -215,9 +219,9 @@ class MxStockMove(orm.Model):
         #    relation="stock.picking", string="Source", store=True),
         'origin': fields.char('Origin', size=20),
 
-        #'scrapped': fields.related('location_dest_id', 'scrap_location', 
-        #    type='boolean',relation='stock.location',string='Scrapped', 
-        #    readonly=True),
+        'scrapped': fields.related('location_dest_id', 'scrap_location', 
+            type='boolean',relation='stock.location',string='Scrapped', 
+            readonly=True),
         'type': fields.related('picking_id', 'type', type='selection', 
             selection=[
                 ('out', 'Sending Goods'), 
@@ -356,7 +360,7 @@ class MxStockMove(orm.Model):
         'state': 'done',
         #'priority': '1',
         #'product_qty': 1.0,
-        #'scrapped' :  False,
+        'scrapped' :  False,
         'date': lambda *a: datetime.now().strftime(
             DEFAULT_SERVER_DATETIME_FORMAT),
         'company_id': lambda self,cr,uid,c: self.pool.get(
