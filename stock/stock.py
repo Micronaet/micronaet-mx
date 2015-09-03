@@ -1660,7 +1660,7 @@ class stock_move(osv.osv):
                                    ('confirmed', 'Waiting Availability'),
                                    ('assigned', 'Available'),
                                    ('done', 'Done'),
-                                   ], 'Status', readonly=True, select=True,
+                                   ], 'Status', readonly=False, select=True,
                  help= "* New: When the stock move is created and not yet confirmed.\n"\
                        "* Waiting Another Move: This state can be seen when a move is waiting for another one, for example in a chained flow.\n"\
                        "* Waiting Availability: This state is reached when the procurement resolution is not straight forward. It may need the scheduler to run, a component to me manufactured...\n"\
@@ -1788,7 +1788,7 @@ class stock_move(osv.osv):
         'location_dest_id': _default_location_destination,
         'partner_id': _default_destination_address,
         'type': _default_move_type,
-        'state': 'draft',
+        'state': 'done', # always done in creation!!
         'priority': '1',
         'product_qty': 1.0,
         'scrapped' :  False,
