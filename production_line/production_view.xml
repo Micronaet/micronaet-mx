@@ -193,17 +193,17 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="/form/header" position="attributes">
+            <!--<xpath expr="/form/header" position="attributes">
                <attribute name="attrs">{'invisible':[('accounting_order','=',True)]}</attribute>
-            </xpath>
+            </xpath>-->
 
             <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
                <field name="accounting_state" />
             </xpath>
 
-            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree" position="attributes">
+            <!--<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree" position="attributes">
                <attribute name="colors">red:accounting_state=='deleted'</attribute>
-            </xpath>
+            </xpath>-->
             
             <field name="date_order" position="after">
                 <group name="delivery" attrs="{'invisible':[('accounting_order','=',False)]}" colspan="4" col="2">
@@ -222,12 +222,12 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_quotation_tree" />
         <field name="arch" type="xml">
-            <xpath expr="/tree" position="attributes">
+            <!--<xpath expr="/tree" position="attributes">
                 <attribute name="colors">grey:state=='cancel';blue:state in ('waiting_date','manual');red:state in ('invoice_except','shipping_except');grey:accounting_order</attribute>
-            </xpath>
+            </xpath>-->
             <field name="state" position="before">
-                <field name="accounting_order" />
-                <field name="accounting_state" />
+                <!--<field name="accounting_order" />-->
+                <field name="accounting_state" /> <!--TODO replace with q. available-->
             </field>            
         </field>
     </record>        
