@@ -1642,9 +1642,9 @@ class stock_move(osv.osv):
 
         'auto_validate': fields.boolean('Auto Validate'),
 
-        'move_parent_id': fields.many2one('mx.stock.move', 'Origin move', 
-            help='Optional: previous stock move (used es. with ddt and more '
-                'than one lot line'),
+        #'move_parent_id': fields.many2one('stock.move', 'Origin move', 
+        #    help='Optional: previous stock move (used es. with ddt and more '
+        #        'than one lot line'),
         
         # NEEDED?:
         'move_dest_id': fields.many2one('stock.move', 'Destination Move', help="Optional: next stock move when chaining them", select=True),

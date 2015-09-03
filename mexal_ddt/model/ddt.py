@@ -43,25 +43,25 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class StockPicking(orm.Model):
-    _inherit = 'stock.picking.out'
-    
-    _columns = {
-        'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
-            'Details'),
-        }
+#class StockPicking(orm.Model):
+#    _inherit = 'stock.picking.out'
+#    
+#    _columns = {
+#        'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
+#            'Details'),
+#        }
 
-    def draft_force_assign(self, cr, uid, ids, *args):
-        """ Confirms picking directly from draft state.
-            @return: True
-        """
-        wf_service = netsvc.LocalService("workflow")
-        for pick in self.browse(cr, uid, ids):
-            if not pick.mx_move_lines:
-                raise osv.except_osv(_('Error!'),_('You cannot process picking without stock moves.'))
-            wf_service.trg_validate(uid, 'stock.picking', pick.id,
-                'button_confirm', cr)
-        return True
+    #def draft_force_assign(self, cr, uid, ids, *args):
+    #    """ Confirms picking directly from draft state.
+    #        @return: True
+    #    """
+    #    wf_service = netsvc.LocalService("workflow")
+    #    for pick in self.browse(cr, uid, ids):
+    #        if not pick.mx_move_lines:
+    #            raise osv.except_osv(_('Error!'),_('You cannot process picking without stock moves.'))
+    #        wf_service.trg_validate(uid, 'stock.picking', pick.id,
+    #            'button_confirm', cr)
+    #    return True
 
 #class AccountInvoiceTax(orm.Model):
 #    _inherit = "account.invoice.tax"

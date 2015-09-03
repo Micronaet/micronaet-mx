@@ -62,10 +62,10 @@ class ProductProduct(orm.Model):
     #return res
 
     # Try override function:
-    def get_product_available(self, cr, uid, ids, context=None):
-        """ Finds whether product is available or not in particular warehouse.
+    """def get_product_available(self, cr, uid, ids, context=None):
+        ''' Finds whether product is available or not in particular warehouse.
             @return: Dictionary of values
-        """
+        '''
         if context is None:
             context = {}
         
@@ -216,7 +216,7 @@ class ProductProduct(orm.Model):
                 uoms_o[context.get('uom', False) or product2uom[prod_id]], 
                 context=context)
             res[prod_id] -= amount
-        return res
+        return res"""
 
     _columns = {
         # TODO load with minimun_qty from production_line module:
@@ -227,12 +227,12 @@ class ProductProduct(orm.Model):
         # Loaded fields counters: 
         # -----------------------
         # Inventory:
-        'total_inventory_qty': fields.float(
-            'Inventory', digits=(16, 3),
-            help='Start quantity (start of the year'),
-        'inventory_date': fields.date(
-            'Inventory date', 
-            help='Date start of the inventory relevation'),
+        #'total_inventory_qty': fields.float(
+        #    'Inventory', digits=(16, 3),
+        #    help='Start quantity (start of the year'),
+        #'inventory_date': fields.date(
+        #    'Inventory date', 
+        #    help='Date start of the inventory relevation'),
             
         # Movements mx.stock.move (override originals):
         #'incoming_qty': fields.function(_product_incoming_qty, type='float', string='Incoming'),
