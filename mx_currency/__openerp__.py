@@ -18,24 +18,24 @@
 ###############################################################################
 
 {
-    'name': 'MX DDT',
+    'name': 'MX - Currency',
     'version': '0.1',
     'category': 'Accounting',
-    'description': '''        
-        DDT module with mx stock move
+    'description': '''    
+        Currency managed for accounting program    
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'stock',        
+        'currency_rate_update', # for update automatically
         ],
     'init_xml': [],
     'demo': [],
     'data': [
         #'security/ir.model.access.csv',    
-        'view/ddt_view.xml',
+        #'_views.xml', # after wizard      
         ],
     'active': False,
     'installable': True,

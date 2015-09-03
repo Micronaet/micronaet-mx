@@ -1,6 +1,11 @@
+# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Copyright (C) 2001-2014 Micronaet SRL (<http://www.micronaet.it>).
+#
+#    Original module for stock.move from:
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -17,27 +22,26 @@
 #
 ###############################################################################
 
-{
-    'name': 'MX DDT',
-    'version': '0.1',
-    'category': 'Accounting',
-    'description': '''        
-        DDT module with mx stock move
-        ''',
-    'author': 'Micronaet S.r.l. - Nicola Riolini',
-    'website': 'http://www.micronaet.it',
-    'license': 'AGPL-3',
-    'depends': [
-        'base',
-        'stock',        
-        ],
-    'init_xml': [],
-    'demo': [],
-    'data': [
-        #'security/ir.model.access.csv',    
-        'view/ddt_view.xml',
-        ],
-    'active': False,
-    'installable': True,
-    'auto_install': False,
-    }
+import os
+import sys
+import logging
+import openerp
+import openerp.netsvc as netsvc
+import openerp.addons.decimal_precision as dp
+from openerp.osv import fields, osv, expression, orm
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+from openerp import SUPERUSER_ID
+from openerp import tools
+from openerp.tools.translate import _
+from openerp.tools.float_utils import float_round as round
+from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
+    DEFAULT_SERVER_DATETIME_FORMAT, 
+    DATETIME_FORMATS_MAP, 
+    float_compare)
+
+
+_logger = logging.getLogger(__name__)
+
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

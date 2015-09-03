@@ -85,6 +85,7 @@
             <field eval="8" name="priority"/>
             <field name="arch" type="xml">
                 <tree colors="red:date > current_date" string="Moves" editable="bottom"> <!--detail only in tree (for now)-->
+                    <field name="hide"/>
                     <field name="name"/>
                     <field name="picking_id" string="Reference"/>
                     <field name="origin"/>
