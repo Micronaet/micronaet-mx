@@ -56,14 +56,6 @@ class mx_ddt(osv.osv):
         'mx_transport_id': fields.many2one('mx.ddt.transport', 'Transport'),
         'mx_vector_id': fields.many2one('mx.ddt.vector', 'Vector'),
                 }
-                
-class mx_agent(osv.osv):
-    _name = "mx.agent"
-    _description = "MX Agent"
-
-    _columns = {
-        'name': fields.char('Agent', size=100, required=True),
-                }
 
 class mx_partner(osv.osv):
     _name = "mx.partner"
