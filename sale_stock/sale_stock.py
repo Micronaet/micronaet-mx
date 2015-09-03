@@ -417,6 +417,9 @@ class sale_order(osv.osv):
         picking_obj = self.pool.get('stock.picking')
         procurement_obj = self.pool.get('procurement.order')
         proc_ids = []
+        date_pick = {} # dict with the pick-out created for same date line
+        
+        # TODO load pick out date dict for control (and lines)
 
         # TODO Split depend on date:
         for line in order_lines:
@@ -432,6 +435,7 @@ class sale_order(osv.osv):
                         picking_id = picking_obj.create(
                             cr, uid, self._prepare_order_picking(
                                 cr, uid, order, context=context))
+                                
                     move_id = move_obj.create(
                         cr, uid, self._prepare_order_line_move(
                             cr, uid, order, line, picking_id, date_planned, 
@@ -464,7 +468,8 @@ class sale_order(osv.osv):
 
             if (order.order_policy == 'manual'):
                 for line in order.order_line:
-                    if (not line.invoiced) and (line.state not in ('cancel', 'draft')):
+                    if (not line.invoiced) and (
+                            line.state not in ('cancel', 'draft')):
                         val['state'] = 'manual'
                         break
         order.write(val)
@@ -472,7 +477,8 @@ class sale_order(osv.osv):
 
     def action_ship_create(self, cr, uid, ids, context=None):
         for order in self.browse(cr, uid, ids, context=context):
-            self._create_pickings_and_procurements(cr, uid, order, order.order_line, None, context=context)
+            self._create_pickings_and_procurements(
+                cr, uid, order, order.order_line, None, context=context)
         return True
 
     def action_ship_end(self, cr, uid, ids, context=None):
@@ -482,7 +488,8 @@ class sale_order(osv.osv):
                 val['state'] = 'progress'
                 if (order.order_policy == 'manual'):
                     for line in order.order_line:
-                        if (not line.invoiced) and (line.state not in ('cancel', 'draft')):
+                        if (not line.invoiced) and (
+                                line.state not in ('cancel', 'draft')):
                             val['state'] = 'manual'
                             break
             for line in order.order_line:
@@ -490,7 +497,8 @@ class sale_order(osv.osv):
                 if line.state == 'exception':
                     towrite.append(line.id)
                 if towrite:
-                    self.pool.get('sale.order.line').write(cr, uid, towrite, {'state': 'done'}, context=context)
+                    self.pool.get('sale.order.line').write(cr, uid, towrite, {
+                        'state': 'done'}, context=context)
             res = self.write(cr, uid, [order.id], val)
         return True
 

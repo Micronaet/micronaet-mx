@@ -43,4 +43,14 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+#class SaleOrder(orm.Model):
+#    ''' Extra field for order
+#    '''
+#    
+#    _inherit = 'sale.order'
+#    
+#    _columns = {
+#        'pick_ids': fields.one2many('stock.pickin.out', 'sale_id', 
+#            'Picking'),
+#        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

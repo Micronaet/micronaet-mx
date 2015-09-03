@@ -206,13 +206,12 @@
             </xpath>-->
             
             <field name="date_order" position="after">
-                <group name="delivery" attrs="{'invisible':[('accounting_order','=',False)]}" colspan="4" col="2">
+                <group name="delivery" colspan="4" col="2">
                    <field name="date_deadline" />
-                   <!--<field name="date_previous_deadline" attrs="{'invisible':[('accounting_state','not in',('modify',))]}"/>-->
-                   <field name="date_delivery" attrs="{'required':[('accounting_state','=','planned')]}"/>
-                   <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" attrs="{'invisible':[('accounting_state','in',('planned','deleted','close',))]}"/>
+                   <field name="date_delivery" />
+                   <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" />
                 </group>       
-                <field name="accounting_state" readonly="1" attrs="{'invisible':[('accounting_order','=',False)]}"/>
+                <!--<field name="accounting_state" readonly="1" />-->
                 <field name="accounting_order" invisible="1" />
             </field>            
         </field>

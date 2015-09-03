@@ -29,13 +29,13 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'stock',
         'sale',
         'sale_stock',
         ],
     'init_xml': [],
     'demo': [],
     'data': [
-        #'security/ir.model.access.csv',    
         'view/sale_view.xml',
         ],
     'active': False,
