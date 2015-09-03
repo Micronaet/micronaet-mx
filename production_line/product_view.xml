@@ -63,8 +63,8 @@
                 <field name="not_in_status" />           
                 <field name="accounting_qty" />
                 <field name="linked_accounting_qty"/>
-                <field name="minimum_qty" />
-                <field name="maximum_qty" />
+                <!--<field name="minimum_qty" />-->
+                <!--<field name="maximum_qty" />-->
             </field>
         </field>
     </record>  

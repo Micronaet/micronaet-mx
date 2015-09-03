@@ -29,6 +29,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'product',
         ],
     'init_xml': [],
     'demo': [],

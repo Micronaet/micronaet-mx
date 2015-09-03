@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <record model="ir.ui.view" id="product_normal_form_view_extra">
+            <field name="name">Product accounting</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="stock.view_normal_procurement_locations_form" />
+            <field name="arch" type="xml">
+                <field name="incoming_qty" position="before">
+                    <field name="order_min_qty" />
+                    <field name="order_max_qty" />
+                </field>
+            </field>
+        </record>  
         
     </data>
 </openerp>

@@ -84,7 +84,6 @@ class product_ul_extra(osv.osv):
 class product_product_extra(osv.osv):
     ''' Extra fields for product.product object
     '''
-    _name = "product.product"
     _inherit = "product.product"
 
     # -------------

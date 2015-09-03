@@ -83,7 +83,13 @@ class MxStockMove(orm.Model):
                     )):
                 return False
         return True
-
+    
+    def action_lot(self, cr, uid, ids, context=None):
+        """Insert lots for every product
+        """
+        
+        return True
+    
     def _check_product_lot(self, cr, uid, ids, context=None):
         """ Checks whether move is done or not and production lot is assigned to that move.
             @return: True or False
