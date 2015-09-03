@@ -6,18 +6,24 @@
             <field name="model">stock.picking.out</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <xpath expr="/sheet/form/header" position="attributes">
+                <xpath expr="/form/header" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <fields name="move_lines" position="after">
+                <!--<xpath expr="//field[@name='move_lines']" position="before">
                     <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'view_move_form', 'tree_view_ref':'view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
-                </fields>
-                <fields name='move_lines' position="attributes">
+                </xpath>-->
+                <xpath expr="//notebook/page[@string='Products']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </fields>
-                <fields name='move_type' position="attributes">
+                </xpath>
+                <xpath expr="//notebook/page[@string='Products']" position="before">                    
+                    <page string="Details">
+                        <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'view_move_form', 'tree_view_ref':'view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
+                        <field name="note" placeholder="Add an internal note..." class="oe_inline" modifiers="{'readonly': [['state', 'in', ['cancel', 'done']]]}"/>
+                    </page>    
+			    </xpath>
+                <field name='move_type' position="attributes">
                     <attribute name="invisible">1</attribute>
-                </fields>
+                </field>
             </field>
         </record>
     </data>

@@ -29,7 +29,6 @@ import openerp.netsvc as netsvc
 import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression, orm
 from datetime import datetime, timedelta
-import time
 from dateutil.relativedelta import relativedelta
 from openerp import SUPERUSER_ID
 from openerp import tools

@@ -44,10 +44,10 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 class StockPicking(orm.Model):
-    _inherit = "stock.picking"
+    _inherit = 'stock.picking.out'
     
     _columns = {
-        'mx_move_lines': fields.one2many('mx.stock.move', 'product_id', 
+        'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
            'Details'),
         }
 
@@ -58,47 +58,47 @@ class StockPicking(orm.Model):
 #         # extra fields
 #         }
 
-class mx_ddt_port(orm.Model):
-    _inherit = ""
+#class mx_ddt_port(orm.Model):
+#    _inherit = ""
 
-    _columns = {
-         # extra fields
-         }
+#    _columns = {
+ #        # extra fields
+  #       }
                 
-class mx_ddt_aspect(orm.Model):
-    _inherit = ""
+#class mx_ddt_aspect(orm.Model):
+ #   _inherit = ""
 
-    _columns = {
+  #  _columns = {
          # extra fields
-         }
+#         }
 
-class mx_ddt_payment(orm.Model):
-    _inherit = ""
+#class mx_ddt_payment(orm.Model):
+ #   _inherit = ""
 
-    _columns = {
+  #  _columns = {
          # extra fields
-         }
+   #      }
 
-class mx_ddt_causal(orm.Model):
-    _inherit = "mx.ddt.causal"
+#class mx_ddt_causal(orm.Model):
+ #   _inherit = ""
 
-    _columns = {
+  #  _columns = {
          # extra fields
-         }
+   #      }
 
-class mx_ddt_transport(orm.Model):
-    _inherit = "mx.ddt.transport"
+#class mx_ddt_transport(orm.Model):
+ #   _inherit = "mx.ddt.transport"
 
-    _columns = {
+  #  _columns = {
          # extra fields
-         }
+   #      }
 
 # TODO moved in a module???
-class mx_ddt_vector(orm.Model):
-    _inherit = "mx.ddt.vector"
+#class mx_ddt_vector(orm.Model):
+ #   _inherit = "mx.ddt.vector"
 
-    _columns = {
+  #  _columns = {
          # extra fields
-         }
+   #      }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
