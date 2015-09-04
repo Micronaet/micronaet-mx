@@ -53,4 +53,36 @@ _logger = logging.getLogger(__name__)
 #        'pick_ids': fields.one2many('stock.pickin.out', 'sale_id', 
 #            'Picking'),
 #        }
+class SaleOrderLine(orm.Model):
+    ''' Extra field for order line
+    '''
+    
+    _inherit = 'sale.order.line'
+    
+    # ----------------
+    # Function fields:
+    # ----------------
+    def _function_get_delivered(self, cr, uid, ids, fields, args, 
+            context=None):
+        ''' Fields function for calculate delivered elements in picking orders
+        '''
+        res = {}
+        move_pool = self.pool.get('stock.move')
+        
+        for line in self.browse(cr, uid, ids, context=context):            
+            res[line] = 0.0
+            move_ids = move_pool.search(cr, uid, [
+                ('sale_line_id', '=', line)], context=context)
+            for line in move_pool.search(cr, uid, move_ids, context=context):
+                if line.picking_id.ddt_number: # was marked as DDT
+                    # TODO check UOM!!! for 
+                    res[line] += line.product_qty
+        return res
+        
+    _columns = {
+        'delivered_qty': fields.function(
+            _function_get_delivered, method=True, type='float', 
+            string='Delivered', store=False),
+                        
+        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
