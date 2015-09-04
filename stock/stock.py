@@ -746,7 +746,7 @@ class stock_picking(osv.osv):
 
     def action_confirm(self, cr, uid, ids, context=None):
         """ Confirms picking.
-        @return: True
+            @return: True
         """
         pickings = self.browse(cr, uid, ids, context=context)
         self.write(cr, uid, ids, {'state': 'confirmed'})
@@ -793,6 +793,7 @@ class stock_picking(osv.osv):
         """ Confirms picking directly from draft state.
         @return: True
         """
+        # NOTE: removet workflow for change directly status (TODO correct?)
         wf_service = netsvc.LocalService("workflow")
         for pick in self.browse(cr, uid, ids):
             if not pick.move_lines:
