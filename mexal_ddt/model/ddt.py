@@ -57,7 +57,6 @@ class StockPicking(orm.Model):
     def force_assign_ddt(self, cr, uid, ids, context=None):
         ''' Force assign of DDT after change state
         '''
-        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         # TODO assert only one!!        

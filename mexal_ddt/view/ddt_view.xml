@@ -10,12 +10,8 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <field name="name" position="after">                    
-                    <button name="force_assign_ddt" string="Assign DDT" type="object" class="oe_highlight" groups="base.group_user" /> <!--jump workflow-->
+                    <button name="force_assign_ddt" string="Assign DDT" type="object" class="oe_highlight" groups="base.group_user" attrs="{'invisible': [('ddt_number','!=',False)]}" /> <!--jump workflow-->
 			    </field>
-                <!--<field name="name" position="after">                    
-                    <button name="draft_force_assign" string="Assign DDT" type="object" class="oe_highlight" groups="base.group_user" />
-			    </field>-->
-			    
 			    
                 <!--<xpath expr="//field[@name='move_lines']" position="before">
                     <field name="mx_move_lines" nolabel='1' context="{'address_in_id': partner_id, 'form_view_ref':'view_move_form', 'tree_view_ref':'view_move_tree', 'picking_type': 'internal'}" options='{"reload_on_button": true}'/>
