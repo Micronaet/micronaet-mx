@@ -70,13 +70,13 @@ class SaleOrderLine(orm.Model):
         move_pool = self.pool.get('stock.move')
         
         for line in self.browse(cr, uid, ids, context=context):            
-            res[line] = 0.0
+            res[line.id] = 0.0
             move_ids = move_pool.search(cr, uid, [
-                ('sale_line_id', '=', line)], context=context)
-            for line in move_pool.search(cr, uid, move_ids, context=context):
-                if line.picking_id.ddt_number: # was marked as DDT
+                ('sale_line_id', '=', line.id)], context=context)                
+            for move in move_pool.browse(cr, uid, move_ids, context=context):
+                if move.picking_id.ddt_number: # was marked as DDT
                     # TODO check UOM!!! for 
-                    res[line] += line.product_qty
+                    res[line.id] += move.product_qty
         return res
         
     _columns = {

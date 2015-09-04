@@ -16,6 +16,10 @@
                         </tree>
                     </field>
                 </field>
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/tree/field[@name='discount']" position="after">
+                    <field name="delivered_qty" />
+                </xpath>
+                
             </field>
         </record>
     </data>
