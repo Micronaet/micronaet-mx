@@ -57,78 +57,34 @@ class StockPicking(orm.Model):
     def force_assign_ddt(self, cr, uid, ids, context=None):
         ''' Force assign of DDT after change state
         '''
-        # TODO no extra run:
+        import pdb; pdb.set_trace()
+        if context is None:
+            context = {}
+        # TODO assert only one!!        
         for pick in self.browse(cr, uid, ids, context=context):
-           if not pick.mx_move_lines:
-               raise osv.except_osv(
-                   _('Error!'),
-                   _('You cannot process picking without stock moves.'))
+            if not pick.move_lines:
+                raise osv.except_osv(
+                    _('Error!'),
+                    _('You cannot process picking without stock moves.'))
+           
+            # Changhe state without workflow:
+            # Line:
+            line_ids = [item.id for item in pick.move_lines]
+            self.pool.get('stock.move').write(cr, uid, line_ids, {
+                'state': 'done'}, context=context)
 
-           #wf_service.trg_validate(uid, 'stock.picking', pick.id,
-           #    'button_confirm', cr)
-      
-        return True
+            #wf_service.trg_validate(uid, 'stock.picking', pick.id,
+            #    'button_confirm', cr)
+               
+        # Pick:    
+        self.write(cr, uid, ids, {
+            'state': 'done'}, context=context)
+
+        # Assign DDT:        
+        ctx = context.copy()
+        ctx['active_ids'] = ids # needed list
         
-    #def draft_force_assign(self, cr, uid, ids, *args):
-    #    """ Confirms picking directly from draft state.
-    #        @return: True
-    #    """
-    #    wf_service = netsvc.LocalService("workflow")
-    #    for pick in self.browse(cr, uid, ids):
-    #        if not pick.mx_move_lines:
-    #            raise osv.except_osv(_('Error!'),_('You cannot process picking without stock moves.'))
-    #        wf_service.trg_validate(uid, 'stock.picking', pick.id,
-    #            'button_confirm', cr)
-    #    return True
-
-#class AccountInvoiceTax(orm.Model):
-#    _inherit = "account.invoice.tax"
-#
-#    _columns = {
-#         # extra fields
-#         }
-
-#class mx_ddt_carriage_condition(orm.Model):
-#    _inherit = ""
-
-#    _columns = {
- #        # extra fields
-  #       }
-                
-#class mx_ddt_description_goods(orm.Model):
- #   _inherit = ""
-
-  #  _columns = {
-         # extra fields
-#         }
-
-#class mx_ddt_payment(orm.Model):
- #   _inherit = ""
-
-  #  _columns = {
-         # extra fields
-   #      }
-
-#class mx_ddt_reason_transport(orm.Model):
- #   _inherit = ""
-
-  #  _columns = {
-         # extra fields
-   #      }
-
-#class mx_ddt_transport(orm.Model):
- #   _inherit = "mx.ddt.transport"
-
-  #  _columns = {
-         # extra fields
-   #      }
-
-# TODO moved in a module???
-#class mx_ddt_vector(orm.Model):
- #   _inherit = "mx.ddt.vector"
-
-  #  _columns = {
-         # extra fields
-   #      }
+        return self.pool.get('wizard.assign.ddt').assign_ddt(
+            cr, uid, ids, context=ctx)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

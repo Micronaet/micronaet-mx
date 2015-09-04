@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
-                    <field name="picking_ids" readonly="1">                       
+                    <field name="picking_ids" readonly="1" attrs="{'invisible': [('state','not in',('confirmed','done'))]}">
                         <tree string="Pick out" > <!--colors="black:ddt_number!=False"-->
                             <field name="date" />
                             <field name="name" />
@@ -18,8 +18,7 @@
                 </field>
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/tree/field[@name='discount']" position="after">
                     <field name="delivered_qty" />
-                </xpath>
-                
+                </xpath>                
             </field>
         </record>
     </data>

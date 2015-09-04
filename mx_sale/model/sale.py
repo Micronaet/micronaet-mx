@@ -81,7 +81,7 @@ class SaleOrderLine(orm.Model):
         
     _columns = {
         'delivered_qty': fields.function(
-            _function_get_delivered, method=True, type='float', 
+            _function_get_delivered, method=True, type='float', readonly=True,
             string='Delivered', store=False),
                         
         }
