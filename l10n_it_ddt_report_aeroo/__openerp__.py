@@ -38,6 +38,7 @@
     'depends' : [
         'base',
         'l10n_it_sale',
+        'l10n_it_fiscalcode',
         'report_aeroo',
         'report_aeroo_ooo',
         ],
