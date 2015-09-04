@@ -61,8 +61,8 @@
         <field name="arch" type="xml">
             <field name="incoming_qty" position="before">
                 <field name="not_in_status" />           
-                <field name="accounting_qty" />
-                <field name="linked_accounting_qty"/>
+                <!--<field name="accounting_qty" />
+                <field name="linked_accounting_qty"/>-->
                 <!--<field name="minimum_qty" />-->
                 <!--<field name="maximum_qty" />-->
             </field>
@@ -75,13 +75,13 @@
         <field name="inherit_id" ref="product.product_product_tree_view" />
         <field name="arch" type="xml">
             <field name="qty_available" position="after">
-                <field name="accounting_qty" />
+                <!--<field name="accounting_qty" />-->
                 <field name="not_in_status" />
                 <field name="supply_method" />           
             </field>
-            <field name="qty_available" position="attributes">
+            <!--<field name="qty_available" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </field>
+            </field>-->
         </field>
     </record>    
    </data>
