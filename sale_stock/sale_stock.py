@@ -523,17 +523,23 @@ class sale_order_line(osv.osv):
 
     _inherit = 'sale.order.line'
     _columns = { 
-        'delay': fields.float('Delivery Lead Time', required=True, help="Number of days between the order confirmation and the shipping of the products to the customer", readonly=True, states={'draft': [('readonly', False)]}),
+        'delay': fields.float('Delivery Lead Time', required=True, 
+            help="Number of days between the order confirmation and the shipping of the products to the customer", 
+            readonly=True, states={'draft': [('readonly', False)]}),
         'procurement_id': fields.many2one('procurement.order', 'Procurement'),
-        'property_ids': fields.many2many('mrp.property', 'sale_order_line_property_rel', 'order_id', 'property_id', 'Properties', readonly=True, states={'draft': [('readonly', False)]}),
+        'property_ids': fields.many2many('mrp.property', 
+            'sale_order_line_property_rel', 'order_id', 'property_id', 
+            'Properties', readonly=True, states={'draft': [('readonly', False)]}),
         'product_packaging': fields.many2one('product.packaging', 'Packaging'),
-        'move_ids': fields.one2many('stock.move', 'sale_line_id', 'Inventory Moves', readonly=True),
-        'number_packages': fields.function(_number_packages, type='integer', string='Number Packages'),
-    }
+        'move_ids': fields.one2many('stock.move', 'sale_line_id', 
+            'Inventory Moves', readonly=True),
+        'number_packages': fields.function(_number_packages, type='integer', 
+            string='Number Packages'),
+        }
     _defaults = {
         'delay': 0.0,
         'product_packaging': False,
-    }
+        }
 
     def _get_line_qty(self, cr, uid, line, context=None):
         if line.procurement_id and not (line.order_id.invoice_quantity=='order'):
@@ -556,8 +562,8 @@ class sale_order_line(osv.osv):
             for move_line in line.move_ids:
                 if move_line.state != 'cancel':
                     raise osv.except_osv(
-                            _('Cannot cancel sales order line!'),
-                            _('You must first cancel stock moves attached to this sales order line.'))   
+                        _('Cannot cancel sales order line!'),
+                        _('You must first cancel stock moves attached to this sales order line.'))   
         return res
 
     def copy_data(self, cr, uid, id, default=None, context=None):
@@ -578,8 +584,8 @@ class sale_order_line(osv.osv):
         warning_msgs = ''
         if flag:
             res = self.product_id_change(cr, uid, ids, pricelist=pricelist,
-                    product=product, qty=qty, uom=uom, partner_id=partner_id,
-                    packaging=packaging, flag=False, context=context)
+                product=product, qty=qty, uom=uom, partner_id=partner_id,
+                packaging=packaging, flag=False, context=context)
             warning_msgs = res.get('warning') and res['warning']['message']
 
         products = product_obj.browse(cr, uid, product, context=context)
@@ -599,11 +605,12 @@ class sale_order_line(osv.osv):
                 qty_pack = pack.qty
                 type_ul = pack.ul
                 if not warning_msgs:
-                    warn_msg = _("You selected a quantity of %d Units.\n"
-                                "But it's not compatible with the selected packaging.\n"
-                                "Here is a proposition of quantities according to the packaging:\n"
-                                "EAN: %s Quantity: %s Type of ul: %s") % \
-                                    (qty, ean, qty_pack, type_ul.name)
+                    warn_msg = _(
+                        "You selected a quantity of %d Units.\n"
+                        "But it's not compatible with the selected packaging.\n"
+                        "Here is a proposition of quantities according to the packaging:\n"
+                        "EAN: %s Quantity: %s Type of ul: %s") % \
+                            (qty, ean, qty_pack, type_ul.name)
                     warning_msgs += _("Picking Information ! : ") + warn_msg + "\n\n"
                 warning = {
                        'title': _('Configuration Error!'),
