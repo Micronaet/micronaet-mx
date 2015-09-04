@@ -444,7 +444,7 @@ class sale_order(osv.osv):
                     # a service has no stock move
                     move_id = False
 
-                # TODO Servono??
+                # TODO Servono?? **********************************************************************************************************
                 proc_id = procurement_obj.create(
                     cr, uid, self._prepare_order_line_procurement(
                         cr, uid, order, line, move_id, date_planned, 
@@ -457,6 +457,7 @@ class sale_order(osv.osv):
         if picking_id:
             wf_service.trg_validate(
                 uid, 'stock.picking', picking_id, 'button_confirm', cr)
+
         for proc_id in proc_ids:
             wf_service.trg_validate(
                 uid, 'procurement.order', proc_id, 'button_confirm', cr)
