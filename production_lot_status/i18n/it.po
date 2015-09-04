@@ -1,0 +1,99 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* production_lot_status
+# <> <>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-02 10:00+0000\n"
+"PO-Revision-Date: 2014-07-02 12:05+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: production_lot_status
+#: field:stock.production.lot,accounting_ref:0
+msgid "Accounting ref"
+msgstr "Riferimento in contabilità"
+
+#. module: production_lot_status
+#: view:stock.production.lot:0
+msgid "Production lot"
+msgstr "Lotto"
+
+#. module: production_lot_status
+#: field:stock.production.lot,package_id:0
+msgid "Package"
+msgstr "Imballaggio"
+
+#. module: production_lot_status
+#: field:product.product,accounting_lot_ids:0
+msgid "Lots status"
+msgstr "Stato lotti"
+
+#. module: production_lot_status
+#: view:stock.production.lot:0
+msgid "red:anomaly==True"
+msgstr "red:anomaly==True"
+
+#. module: production_lot_status
+#: model:ir.model,name:production_lot_status.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: production_lot_status
+#: help:product.product,package_ref:0
+msgid "Reference for import package, used to find product"
+msgstr ""
+"Riferimento per importare l'imballo, utilizzato per ricercare il prodotto"
+
+#. module: production_lot_status
+#: model:ir.model,name:production_lot_status.model_stock_production_lot
+msgid "Serial Number"
+msgstr "Numero di serie"
+
+#. module: production_lot_status
+#: field:product.product,package_ref:0
+msgid "Package ref"
+msgstr "Riferimento imballo"
+
+#. module: production_lot_status
+#: code:addons/production_lot_status/lot.py:92
+#, python-format
+msgid "Package: %s"
+msgstr "Imballo: %s"
+
+#. module: production_lot_status
+#: help:stock.production.lot,package_id:0
+msgid "Package used for package (for this lot)"
+msgstr "Prodotto utilizzato per imballo (per questo lotto)"
+
+#. module: production_lot_status
+#: view:product.product:0 view:stock.production.lot:0
+msgid "Lot status"
+msgstr "Stato lotto"
+
+#. module: production_lot_status
+#: view:stock.production.lot:0
+msgid "Total"
+msgstr "Totale"
+
+#. module: production_lot_status
+#: field:stock.production.lot,anomaly:0
+msgid "Anomaly"
+msgstr "Anomalia"
+
+#. module: production_lot_status
+#: field:stock.production.lot,stock_available_accounting:0
+msgid "Stock availability"
+msgstr "Disponibilità magazzino"
+
+#. module: production_lot_status
+#: help:stock.production.lot,accounting_ref:0
+msgid "ID lot in account program"
+msgstr "ID lotto nel programma contabile"

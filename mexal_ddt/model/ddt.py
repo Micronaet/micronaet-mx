@@ -79,7 +79,7 @@ class StockPicking(orm.Model):
         self.write(cr, uid, ids, {
             'state': 'done'}, context=context)
 
-        # Assign DDT:        
+        # Assign DDT (call directly ex. Wizard button):
         ctx = context.copy()
         ctx['active_ids'] = ids # needed list
         

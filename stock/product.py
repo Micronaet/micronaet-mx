@@ -349,13 +349,16 @@ class product_product(osv.osv):
         for f in field_names:
             c = context.copy()
             if f == 'qty_available':
-                c.update({ 'states': ('done',), 'what': ('in', 'out') })
+                c.update({ 'states': ('done', ), 'what': ('in', 'out') })
             if f == 'virtual_available':
                 c.update({ 'states': ('confirmed','waiting','assigned','done'), 'what': ('in', 'out') })
             if f == 'incoming_qty':
-                c.update({ 'states': ('confirmed','waiting','assigned'), 'what': ('in',) })
+                # TODO correct
+                c.update({ 'states': ('confirmed', 'waiting', 'assigned'), 'what': ('in', ) })
+                #c.update({ 'states': ('confirmed', 'waiting', 'assigned'), 'what': ('in', ) })
             if f == 'outgoing_qty':
-                c.update({ 'states': ('confirmed','waiting','assigned'), 'what': ('out',) })
+                c.update({ 'states': ('done',), 'what': ('out', ) })
+                #c.update({ 'states': ('confirmed', 'waiting', 'assigned'), 'what': ('out', ) })
             stock = self.get_product_available(cr, uid, ids, context=c)
             for id in ids:
                 res[id][f] = stock.get(id, 0.0)
