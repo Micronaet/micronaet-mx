@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+       <!-- mrp.production.confirm.wizard -->
+       <record id="move_lot_stock_view" model="ir.ui.view">
+            <field name="name">Move lot quantity</field>
+            <field name="model">stock.production.lot.move.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Stock move" version="7.0">
+                   <header>                       
+                       <button string="Cancel" special="cancel" />
+                       <button name = "action_move_lot" string="Move" type="object" icon="gtk-jump-to" class="oe_highlight" />
+                   </header>            
+                   <group colspan="4" col="4">
+                        <separator string="From:" colspan="4"/>
+                        <field name="from_product_id" colspan="4" readonly="1"/>
+                        <field name="from_lot_id" readonly="1" /> <!--domain="[('product_id','=',from_product_id)]" on_change="onchange_from_lot(from_lot_id, move_qty)"/>-->
+                        <!--<field name="all_qty" />-->
+                        <field name="move_qty" on_change="onchange_from_lot(from_lot_id, move_qty)" /> <!--attrs="{'invisible':[('all_qty','=',True)],'required':[('all_qty','=',False)],}"/>-->
+                        
+                        <separator string="To:" colspan="4"/>
+                        <!--<field name="to_product_id" colspan="4" attrs="{'invisible':[('move_type','=','package')],'required':[('move_type','!=','package')],}"/>-->
+                        <field name="to_new_lot" />
+                        <field name="to_lot_id" domain="[('product_id','=',from_product_id),('id','!=',from_lot_id)]" attrs="{'invisible':[('to_new_lot','=',True)],'required':[('to_new_lot','=',False)],}"/>
+                        <field name="to_package_id" attrs="{'invisible':[('to_new_lot','=',False)],'required':[('to_new_lot','=',True)],}"/>
+                        
+                   </group>                   
+                </form>
+            </field>
+      </record>
+      <record model="ir.actions.act_window" id="action_move_lot_stock_wizard">
+          <field name="name">Confirm production</field> 
+          <field name="res_model">stock.production.lot.move.wizard</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="target">new</field>
+          <field name="view_id" ref="move_lot_stock_view"/>
+      </record>
+    </data>
+</openerp>
