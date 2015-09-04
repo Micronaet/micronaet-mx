@@ -43,14 +43,32 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-#class StockPicking(orm.Model):
-#    _inherit = 'stock.picking.out'
-#    
-#    _columns = {
-#        'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
-#            'Details'),
-#        }
+class StockPicking(orm.Model):
+    _inherit = 'stock.picking.out'
+    
+    _columns = {
+        'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
+            'Details'),
+        }
+        
+    # -------------    
+    # Button event:    
+    # -------------    
+    def force_assign_ddt(self, cr, uid, ids, context=None):
+        ''' Force assign of DDT after change state
+        '''
+        # TODO no extra run:
+        for pick in self.browse(cr, uid, ids, context=context):
+           if not pick.mx_move_lines:
+               raise osv.except_osv(
+                   _('Error!'),
+                   _('You cannot process picking without stock moves.'))
 
+           #wf_service.trg_validate(uid, 'stock.picking', pick.id,
+           #    'button_confirm', cr)
+      
+        return True
+        
     #def draft_force_assign(self, cr, uid, ids, *args):
     #    """ Confirms picking directly from draft state.
     #        @return: True
