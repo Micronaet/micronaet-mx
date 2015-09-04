@@ -46,7 +46,7 @@
         ],
     'init_xml': [],
     'demo_xml': [],
-    'update_xml': [
+    'data': [
         'security/visibility_group.xml',
         'security/ir.model.access.csv',                     
         'wizard/confirm_production_wizard.xml',
@@ -61,7 +61,7 @@
         'partner_view.xml',
         'analysis.xml',
 
-        'scheduler.xml',
+        #'scheduler.xml',
         'wizard/view_production_wizard.xml',
         'wizard/wizard_product_status_view.xml',
         'workflow/mrp_production_workflow.xml',

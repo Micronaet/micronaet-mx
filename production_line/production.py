@@ -598,7 +598,7 @@ class sale_order_line_extra(osv.osv):
     _columns = {
         # TODO remove:
         'date_deadline': fields.date('Deadline'),
-        
+
         'partner_id': fields.related('order_id','partner_id', type='many2one', relation='res.partner', string='Partner', store=True),
         'duelist_exposition': fields.related('partner_id','duelist_exposition', type='boolean', string='Exposed', store=False),
 
@@ -615,11 +615,11 @@ class sale_order_line_extra(osv.osv):
         'accounting_order': fields.related('order_id', 'accounting_order', type="boolean", String="Accounting order", store=True, help="Temporary line from accounting, when order is close it is deleted from OpenERP"),
         # TODO fields.function da fare per testare quelli coperti da produzione, magazzino ordinato
         'product_ul_id':fields.many2one('product.ul', 'Required package', required=False, ondelete='set null',),
-    }
+        }
+    
     _defaults = {
         'to_produce': lambda *a: True,
-        'use_accounting_qty': lambda *a: False,
-    }
+        }
 
 class mrp_production_material(osv.osv):
     ''' Create object mrp.production.material seems the bom explosed on product
@@ -638,7 +638,7 @@ class mrp_production_material(osv.osv):
         'mrp_production_id':fields.many2one('mrp.production', 'Production order', ondelete="cascade", required=False),        # Link if used mrp.production object
         'workcenter_production_id':fields.many2one('mrp.production.workcenter.line', 'Lavoration', ondelete="cascade", required=False), # Link if used mrp.production.workcenter.line object
         'accounting_qty': fields.related('product_id','accounting_qty', type='float',  digits=(16, 3), string='Accounting Q.ty', store=False),
-    }
+        }
 
 class mrp_production_workcenter_load(osv.osv):
     ''' Load (more than one for workcenter)
@@ -746,7 +746,8 @@ class mrp_workcenter_history(osv.osv):
         }
 
     _defaults={
-        'date': lambda *x: datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+        'date': lambda *x: datetime.now().strftime(
+            DEFAULT_SERVER_DATETIME_FORMAT),
         }
 
 # Not work!!
