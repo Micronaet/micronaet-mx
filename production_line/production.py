@@ -596,8 +596,9 @@ class sale_order_line_extra(osv.osv):
         return True
 
     _columns = {
+        # TODO remove:
         'date_deadline': fields.date('Deadline'),
-        #'date_deadline': fields.related('order_id','date_deadline', type='date', string='Deadline', store=True),
+        
         'partner_id': fields.related('order_id','partner_id', type='many2one', relation='res.partner', string='Partner', store=True),
         'duelist_exposition': fields.related('partner_id','duelist_exposition', type='boolean', string='Exposed', store=False),
 

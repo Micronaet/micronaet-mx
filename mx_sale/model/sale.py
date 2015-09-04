@@ -43,16 +43,6 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-#class SaleOrder(orm.Model):
-#    ''' Extra field for order
-#    '''
-#    
-#    _inherit = 'sale.order'
-#    
-#    _columns = {
-#        'pick_ids': fields.one2many('stock.pickin.out', 'sale_id', 
-#            'Picking'),
-#        }
 class SaleOrderLine(orm.Model):
     ''' Extra field for order line
     '''
@@ -83,6 +73,8 @@ class SaleOrderLine(orm.Model):
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,
             string='Delivered', store=False),
-                        
+            
+        # same as production (remove there)
+        'date_deadline': fields.date('Deadline'),
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
