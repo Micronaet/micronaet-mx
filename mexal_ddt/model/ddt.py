@@ -46,11 +46,6 @@ _logger = logging.getLogger(__name__)
 class StockPicking(orm.Model):
     _inherit = 'stock.picking.out'
     
-    _columns = {
-        'mx_move_lines': fields.one2many('mx.stock.move', 'picking_id', 
-            'Details'),
-        }
-        
     # -------------    
     # Button event:    
     # -------------    
@@ -59,7 +54,9 @@ class StockPicking(orm.Model):
         '''
         if context is None:
             context = {}
+            
         # TODO assert only one!!        
+        
         for pick in self.browse(cr, uid, ids, context=context):
             if not pick.move_lines:
                 raise osv.except_osv(
@@ -67,15 +64,12 @@ class StockPicking(orm.Model):
                     _('You cannot process picking without stock moves.'))
            
             # Changhe state without workflow:
-            # Line:
+            # > Line:
             line_ids = [item.id for item in pick.move_lines]
             self.pool.get('stock.move').write(cr, uid, line_ids, {
                 'state': 'done'}, context=context)
 
-            #wf_service.trg_validate(uid, 'stock.picking', pick.id,
-            #    'button_confirm', cr)
-               
-        # Pick:    
+        # > Pickout:    
         self.write(cr, uid, ids, {
             'state': 'done'}, context=context)
 
@@ -83,7 +77,9 @@ class StockPicking(orm.Model):
         ctx = context.copy()
         ctx['active_ids'] = ids # needed list
         
+        # TODO set current date for delivery ?? 
         return self.pool.get('wizard.assign.ddt').assign_ddt(
             cr, uid, ids, context=ctx)
+            
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

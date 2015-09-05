@@ -9,10 +9,10 @@
                 <field name="partner_id" position="after">
                     <field name="picking_ids" readonly="1" attrs="{'invisible': [('state','not in',('confirmed','done'))]}">
                         <tree string="Pick out" > <!--colors="black:ddt_number!=False"-->
-                            <field name="date" />
+                            <field name="min_date" /> <!--planned date-->
                             <field name="name" />
+                            <field name="ddt_number" />
                             <field name="state" invisible="1"/>
-                            <!--<field name="ddt_number" />-->
                         </tree>
                     </field>
                 </field>
