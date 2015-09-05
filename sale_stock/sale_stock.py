@@ -139,7 +139,10 @@ class sale_order(osv.osv):
                 ('prepaid', 'Before Delivery'),
             ], 'Create Invoice', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
             help="""On demand: A draft invoice can be created from the sales order when needed. \nOn delivery order: A draft invoice can be created from the delivery order when the products have been delivered. \nBefore delivery: A draft invoice is created from the sales order and must be paid before the products can be delivered."""),
-        'picking_ids': fields.one2many('stock.picking.out', 'sale_id', 'Related Picking', readonly=True, help="This is a list of delivery orders that has been generated for this sales order."),
+        'picking_ids': fields.one2many(
+            'stock.picking.out', 'sale_id', 'Related Picking', 
+            #readonly=True, 
+            help="This is a list of delivery orders that has been generated for this sales order."),
         'shipped': fields.boolean('Delivered', readonly=True, help="It indicates that the sales order has been delivered. This field is updated only after the scheduler(s) have been launched."),
         'picked_rate': fields.function(_picked_rate, string='Picked', type='float'),
         'invoice_quantity': fields.selection([('order', 'Ordered Quantities'), ('procurement', 'Shipped Quantities')], 'Invoice on', 
@@ -147,10 +150,10 @@ class sale_order(osv.osv):
                                               You have to choose  if you want your invoice based on ordered ", required=True, readonly=True, states={'draft': [('readonly', False)]}),
     }
     _defaults = {
-             'picking_policy': 'direct',
-             'order_policy': 'manual',
-             'invoice_quantity': 'order',
-         }
+        'picking_policy': 'direct',
+        'order_policy': 'manual',
+        'invoice_quantity': 'order',
+        }
 
     # Form filling
     def unlink(self, cr, uid, ids, context=None):
