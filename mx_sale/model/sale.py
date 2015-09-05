@@ -92,9 +92,14 @@ class SaleOrderLine(orm.Model):
         'date_deadline': fields.date('Deadline'),
         'date_delivery':fields.related(
             'order_id', 'date_delivery', type='date', string='Date delivery'),
+            
+        # TODO Note: there's yet product.package that is a sort of UL    
         'product_ul_id':fields.many2one(
             'product.ul', 'Required package', ondelete='set null'),
-        # Moved here ^^^^^^^^^^^^^^^^
+        # Moved here ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        'alias_id':fields.many2one(
+            'product.product', 'Alias product', ondelete='set null'),
 
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,

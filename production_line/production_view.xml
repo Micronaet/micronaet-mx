@@ -207,7 +207,6 @@
             
             <field name="date_order" position="after">
                 <group name="delivery" colspan="4" col="2">
-                   <field name="date_deadline" />
                    <field name="date_delivery" />
                    <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" />
                 </group>       
