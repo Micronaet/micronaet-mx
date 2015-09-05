@@ -43,6 +43,24 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class SaleOrder(orm.Model):
+    ''' Extra field for order
+    '''
+    
+    _inherit = 'sale.order'
+    
+    _columns = {
+        # moved here from production:
+        'date_deadline': fields.date('Deadline', 
+            help='If all order has same deadline set only in header'),
+        'date_previous_deadline': fields.date(
+            'Previous deadline', 
+            help="If during sync deadline is modified this field contain old "
+                "value before update"),
+        'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
+        # moved ^^^^^^^^^^^^^^^^^^^^^
+        }
+
 class SaleOrderLine(orm.Model):
     ''' Extra field for order line
     '''
@@ -70,15 +88,18 @@ class SaleOrderLine(orm.Model):
         return res
         
     _columns = {
-        # moved here from production:
+        # Moved here from production:
         'date_deadline': fields.date('Deadline'),
-        'date_previous_deadline': fields.date('Previous deadline', help="If during sync deadline is modified this field contain old value before update"),
-        'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
-        # moved ^^^^^^^^^^^^^^^^^^^^^
+        'date_delivery':fields.related(
+            'order_id', 'date_delivery', type='date', string='Date delivery'),
+        'product_ul_id':fields.many2one(
+            'product.ul', 'Required package', ondelete='set null'),
+        # Moved here ^^^^^^^^^^^^^^^^
 
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,
-            string='Delivered', store=False),
+            string='Delivered', store=False, 
+            help='Quantity delivered with DDT out'),
             
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

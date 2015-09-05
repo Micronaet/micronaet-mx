@@ -595,25 +595,24 @@ class sale_order_line_extra(osv.osv):
         return True
 
     _columns = {
-        # TODO remove:
+        # TODO remove (moved in mx_sale:
         'date_deadline': fields.date('Deadline'),
+        'date_delivery':fields.related('order_id', 'date_delivery', type='date', string='Date delivery'),
+        #'product_ul_id':fields.many2one('product.ul', 'Required package', required=False, ondelete='set null'),
+        # TODO remove ^^^^^^^^^^^^^^^^^^
 
         'partner_id': fields.related('order_id','partner_id', type='many2one', relation='res.partner', string='Partner', store=True),
         'duelist_exposition': fields.related('partner_id','duelist_exposition', type='boolean', string='Exposed', store=False),
 
-        #'mandatory_delivery':fields.related('order_id', 'mandatory_delivery',  type='boolean', string='Mandatory delivery'),
-        'date_delivery':fields.related('order_id', 'date_delivery', type='date', string='Date delivery'),
+        'to_produce': fields.boolean('To produce', required=False, help="During order importation test if the order line active has product that need to be produced"),
+        'use_accounting_qty': fields.boolean('Use accounting qty', help="Set the line to be carried on with store quantity present in accounting store"),
 
-        'to_produce':fields.boolean('To produce', required=False, help="During order importation test if the order line active has product that need to be produced"),
-        'use_accounting_qty':fields.boolean('Use accounting qty', help="Set the line to be carried on with store quantity present in accounting store"),
-
-        'production_line':fields.boolean('Is for production', required=False),
-        'mrp_production_id':fields.many2one('mrp.production', 'Production order', required=False, ondelete='set null',),
+        'production_line': fields.boolean('Is for production', required=False),
+        'mrp_production_id': fields.many2one('mrp.production', 'Production order', required=False, ondelete='set null',),
         'accounting_qty': fields.related('product_id','accounting_qty', type='float',  digits=(16, 3), string='Accounting Q.ty', store=False),
         'state_info': fields.related('mrp_production_id', 'state_info', type="char", string="Production info", store=False),
         'accounting_order': fields.related('order_id', 'accounting_order', type="boolean", String="Accounting order", store=True, help="Temporary line from accounting, when order is close it is deleted from OpenERP"),
         # TODO fields.function da fare per testare quelli coperti da produzione, magazzino ordinato
-        'product_ul_id':fields.many2one('product.ul', 'Required package', required=False, ondelete='set null',),
         }
     
     _defaults = {
