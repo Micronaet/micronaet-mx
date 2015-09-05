@@ -392,8 +392,13 @@ class sale_order(osv.osv):
 
     def _get_date_planned(self, cr, uid, order, line, start_date, context=None):
         start_date = self.date_to_datetime(cr, uid, start_date, context)
-        date_planned = datetime.strptime(start_date, DEFAULT_SERVER_DATETIME_FORMAT) + relativedelta(days=line.delay or 0.0)
-        date_planned = (date_planned - timedelta(days=order.company_id.security_lead)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        date_planned = datetime.strptime(
+            start_date, DEFAULT_SERVER_DATETIME_FORMAT) + relativedelta(
+                days=line.delay or 0.0)
+        date_planned = (
+            date_planned - timedelta(
+                days=order.company_id.security_lead)).strftime(
+                    DEFAULT_SERVER_DATETIME_FORMAT)
         return date_planned
 
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, 
@@ -424,16 +429,17 @@ class sale_order(osv.osv):
         
         # TODO load pick out date dict for control (and lines)
 
-        # TODO Split depend on date:
+        # TODO Split depend on date: **************************************************************************
         for line in order_lines:
             if line.state == 'done':
                 continue
 
-            date_planned = self._get_date_planned(
-                cr, uid, order, line, order.date_order, context=context)
+            #date_planned = self._get_date_planned(
+            #    cr, uid, order, line, order.date_order, context=context)
 
             if line.product_id:
-                if line.product_id.type in ('product', 'consu'):
+                date_planned = line.date_deadline # every line has its deadline
+                if line.product_id.type in ('product', 'consu'): # not service
                     if not picking_id:
                         picking_id = picking_obj.create(
                             cr, uid, self._prepare_order_picking(
