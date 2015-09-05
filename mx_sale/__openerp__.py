@@ -32,6 +32,7 @@
         'stock',
         'sale',
         'sale_stock',
+        'sale_address',
         ],
     'init_xml': [],
     'demo': [],
