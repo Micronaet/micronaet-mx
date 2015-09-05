@@ -535,11 +535,12 @@ class sale_order_add_extra(osv.osv):
         return
 
     _columns = {
+        # TODO remove: (need to keep the data!!!!
         'date_deadline': fields.date('Deadline'),
         'date_previous_deadline': fields.date('Previous deadline', help="If during sync deadline is modified this field contain old value before update"),
-
         #'mandatory_delivery': fields.boolean('Delivery mandatory', help='If true moving of order is not possible'),
         'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
+        # TODO ^^^^^^^
 
         'accounting_order': fields.boolean('Accounting order', help='It true the order is generated from accounting program, so it is temporarly present in OpenERP only for production and delivery operations'),
         'accounting_state': fields.selection([
@@ -552,8 +553,6 @@ class sale_order_add_extra(osv.osv):
         ],'Accounting state', select=True, readonly=True), }
 
     _defaults = {
-        'date_previous_deadline': lambda *x: False,
-        'date_delivery': lambda *x: False,
         'accounting_order': lambda *x: False,
         'accounting_state': lambda *x: 'new',
         }

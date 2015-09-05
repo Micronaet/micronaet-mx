@@ -43,6 +43,8 @@
         'base_mssql_accounting',
         'partner_addresses',
         'base_log_scheduler',        
+        
+        'mx_sale', # for deadline in order
         ],
     'init_xml': [],
     'demo_xml': [],
@@ -61,7 +63,6 @@
         'partner_view.xml',
         'analysis.xml',
 
-        #'scheduler.xml',
         'wizard/view_production_wizard.xml',
         'wizard/wizard_product_status_view.xml',
         'workflow/mrp_production_workflow.xml',

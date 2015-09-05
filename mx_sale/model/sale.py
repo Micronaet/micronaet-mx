@@ -70,11 +70,15 @@ class SaleOrderLine(orm.Model):
         return res
         
     _columns = {
+        # moved here from production:
+        'date_deadline': fields.date('Deadline'),
+        'date_previous_deadline': fields.date('Previous deadline', help="If during sync deadline is modified this field contain old value before update"),
+        'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
+        # moved ^^^^^^^^^^^^^^^^^^^^^
+
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,
             string='Delivered', store=False),
             
-        # same as production (remove there)
-        'date_deadline': fields.date('Deadline'),
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
