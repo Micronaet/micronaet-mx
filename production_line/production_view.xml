@@ -965,6 +965,8 @@
                     <field name="state" invisible="1" />
                     <field name="to_produce" invisible="1" />
                     <field name="accounting_state" />                    
+                    <field name="order_state" />
+                    <field name="supply_method" />
             </tree>
         </field>
     </record>
@@ -1106,36 +1108,37 @@
         <field name="domain">[('accounting_order','=',True),('production_line','=',True)]</field>
         <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form'}</field>
     </record>
-    <!-- Tolto: ('use_accounting_qty','=',False)-->
-    <record model="ir.actions.act_window" id="action_view_sale_order_line_d10">   <!--ALL PRODUCTION LINE FROM ACCOUNTING NOT DELETED Month 0-->
+    <!--ALL PRODUCTION LINE FROM ACCOUNTING NOT DELETED Month 0-->
+    <record model="ir.actions.act_window" id="action_view_sale_order_line_d10">   
         <field name="name">OC line analysis</field>
         <field name="res_model">sale.order.line</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form,graph,calendar</field>
         <field name="search_view_id" ref="view_sale_order_line_search"/>
         <field name="view_id" ref="view_sale_order_line_tree"/>
-        <field name="domain">[('accounting_state','!=','deleted'),('accounting_order','=',True),('production_line','=',True)]</field>
-        <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production1':True,}</field>
+        <field name="domain">[('order_state','not in',('draft','sent','cancel')),('supply_method','=','produce'),('mrp_production_id','=',False)]</field> <!--TODO use accounting-->
+        <!--<field name="domain">[('accounting_state','!=','deleted'),('accounting_order','=',True),('production_line','=',True)]</field>-->
+        <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production1':True}</field>
     </record>
-    <record model="ir.actions.act_window" id="action_view_sale_order_line_d20">   <!--ALL PRODUCTION LINE FROM ACCOUNTING NOT DELETED Month 1-->
+    <record model="ir.actions.act_window" id="action_view_sale_order_line_d20">
         <field name="name">OC line analysis</field>
         <field name="res_model">sale.order.line</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form,graph,calendar</field>
         <field name="search_view_id" ref="view_sale_order_line_search"/>
         <field name="view_id" ref="view_sale_order_line_tree"/>
-        <field name="domain">[('accounting_state','!=','deleted'),('accounting_order','=',True),('production_line','=',True)]</field>
-        <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production2':True,}</field>
+        <field name="domain">[('order_state','not in',('draft','sent','cancel')),('supply_method','=','produce'),('mrp_production_id','=',False)]</field> <!--TODO use accounting-->
+        <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production2':True}</field>
     </record>
-    <record model="ir.actions.act_window" id="action_view_sale_order_line_d30">   <!--ALL PRODUCTION LINE FROM ACCOUNTING NOT DELETED Month 2-->
+    <record model="ir.actions.act_window" id="action_view_sale_order_line_d30">
         <field name="name">OC line analysis</field>
         <field name="res_model">sale.order.line</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form,graph,calendar</field>
         <field name="search_view_id" ref="view_sale_order_line_search"/>
         <field name="view_id" ref="view_sale_order_line_tree"/>
-        <field name="domain">[('accounting_state','!=','deleted'),('accounting_order','=',True),('production_line','=',True)]</field>
-        <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production3':True,}</field>
+        <field name="domain">[('order_state','not in',('draft','sent','cancel')),('supply_method','=','produce'),('mrp_production_id','=',False)]</field> 
+        <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production3':True}</field>
     </record>
 
     <record model="ir.ui.view" id="view_mrp_production_filter_extra">
