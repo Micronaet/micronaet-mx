@@ -38,7 +38,6 @@ _logger = logging.getLogger(__name__)
 class stock_production_lot_accounting(orm.Model):
     ''' Add extra field for manage status of lot from accounting
     '''
-    _name = 'stock.production.lot'
     _inherit = 'stock.production.lot'
     
     _columns = {
@@ -54,7 +53,6 @@ class stock_production_lot_accounting(orm.Model):
 class product_product_lot_accounting(orm.Model):
     ''' Add extra field for manage status of product / lot from accounting
     '''
-    _name = 'product.product'
     _inherit = 'product.product'
     
     _columns = {

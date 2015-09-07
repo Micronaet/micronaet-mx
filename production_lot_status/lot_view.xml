@@ -15,7 +15,7 @@
 		                <field name="product_id" required="1" />
 		                <field name="ref" />
 		                <field name="package_id"  />
-		                <field name="stock_available_accounting" readonly="1"/>
+		                <field name="stock_available" readonly="1"/>
 	                </group>
                 </sheet>
             </form>        
@@ -30,8 +30,8 @@
 	            <field name="name" />
 	            <field name="ref" />
 	            <field name="product_id" invisible="context.get('embedded',False)"/>
-                <field name="package_id" />
-	            <field name="stock_available_accounting" sum="Total" />
+                <field name="package_id" />stock_available
+	            <field name="stock_available" sum="Total" />
 	            <field name="date" />                
 	            <field name="anomaly" invisible="1" />
             </tree>
@@ -42,11 +42,7 @@
         <field name="model">stock.production.lot</field>
         <field name="inherit_id" ref="stock.view_production_lot_tree" />
         <field name="arch" type="xml">
-            <field name="stock_available" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
             <field name="stock_available" position="after">
-   	            <field name="stock_available_accounting" sum="Total"/>
    	            <field name="anomaly" invisible="1" />
             </field>
             <xpath expr="/tree" position="attributes"> 
