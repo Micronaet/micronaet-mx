@@ -35,7 +35,6 @@
     'init_xml': [], 
     'data': [
         'lot_view.xml',
-        'scheduler.xml',
     ],
     'demo_xml': [],
     'active': False, 
