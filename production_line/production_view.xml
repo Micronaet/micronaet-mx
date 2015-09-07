@@ -943,7 +943,7 @@
         <field name="model">sale.order.line</field>
         <field name="priority" eval="20"/>
         <field name="arch" type="xml">
-            <tree string="OC line" colors="red:accounting_state=='deleted';black:mandatory_delivery;blue:mrp_production_id;green:to_produce==False">
+            <tree string="OC line" colors="red:accounting_state=='deleted';black:mandatory_delivery;blue:mrp_production_id"> <!--TODO ;green:to_produce==False--> 
                     <field name="production_line" invisible="1" />
                     <field name="name" />
                     <field name="product_id" />
@@ -961,12 +961,12 @@
                     <field name="product_ul_id" string="Package"/>
                     <button name="close_with_accounting_store" type="object" string="Use mag." icon="gtk-go-forward" attrs="{'invisible':['|',('use_accounting_qty','=',True),('mrp_production_id','!=',False),]}"/>
                     <field name="use_accounting_qty" invisible="1"/>
-                    <field name="accounting_qty" />
+                    <!--<field name="accounting_qty" />-->
+                    <field name="qty_available" />                    
+                    <field name="virtual_available" />                    
                     <field name="state" invisible="1" />
                     <field name="to_produce" invisible="1" />
-                    <field name="accounting_state" />                    
-                    <field name="order_state" />
-                    <field name="supply_method" />
+                    <field name="accounting_state"/>
             </tree>
         </field>
     </record>

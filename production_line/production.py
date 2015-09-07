@@ -634,8 +634,13 @@ class sale_order_line_extra(osv.osv):
         'state_info': fields.related('mrp_production_id', 'state_info', 
             type="char", string="Production info", store=False),
         'accounting_order': fields.related('order_id', 'accounting_order', 
-            type="boolean", String="Accounting order", store=True, 
+            type="boolean", string="Accounting order", store=True, 
             help="Temporary line from accounting, when order is close it is deleted from OpenERP"),
+
+        'qty_available': fields.related('product_id', 'qty_available', 
+            type='float', string='Qty available', store=False),
+        'virtual_available': fields.related('product_id', 'virtual_available', 
+            type='float', string='Virtual available', store=False),
 
         'order_state': fields.related('order_id', 'state', type='selection', 
             selection=get_order_state, string='order state', store=False),
