@@ -30,7 +30,7 @@
 	            <field name="name" />
 	            <field name="ref" />
 	            <field name="product_id" invisible="context.get('embedded',False)"/>
-                <field name="package_id" />stock_available
+                <field name="package_id" />
 	            <field name="stock_available" sum="Total" />
 	            <field name="date" />                
 	            <field name="anomaly" invisible="1" />
