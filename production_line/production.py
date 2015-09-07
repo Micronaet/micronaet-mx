@@ -618,7 +618,8 @@ class sale_order_line_extra(osv.osv):
 
         'to_produce': fields.boolean('To produce', required=False, 
             help="During order importation test if the order line active has product that need to be produced"),
-        'use_accounting_qty': fields.boolean('Use accounting qty', 
+        
+        'use_accounting_qty': fields.boolean('Use accounting qty', #TODO remove:    
             help="Set the line to be carried on with store quantity present in accounting store"),
         'supply_method': fields.related('product_id', 'supply_method', 
             type='selection', selection=get_supply_method,
@@ -628,7 +629,7 @@ class sale_order_line_extra(osv.osv):
         'production_line': fields.boolean('Is for production', required=False),
         'mrp_production_id': fields.many2one('mrp.production', 
             'Production order', required=False, ondelete='set null'),
-        'accounting_qty': fields.related('product_id','accounting_qty', 
+        'accounting_qty': fields.related('product_id','accounting_qty',
             type='float',  digits=(16, 3), string='Accounting Q.ty', 
             store=False),
         'state_info': fields.related('mrp_production_id', 'state_info', 
@@ -636,6 +637,12 @@ class sale_order_line_extra(osv.osv):
         'accounting_order': fields.related('order_id', 'accounting_order', 
             type="boolean", String="Accounting order", store=True, 
             help="Temporary line from accounting, when order is close it is deleted from OpenERP"),
+
+        # Stock info:
+        'qty_available': fields.related('product_id', 'qty_available', 
+            type='float', String='Qty available', store=False),
+        'virtual_available': fields.related('product_id', 'virtual_available', 
+            type='float', String='Virtual available', store=False),
 
         'order_state': fields.related('order_id', 'state', type='selection', 
             selection=get_order_state, string='order state', store=False),

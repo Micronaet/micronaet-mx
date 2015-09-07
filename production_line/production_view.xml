@@ -197,9 +197,9 @@
                <attribute name="attrs">{'invisible':[('accounting_order','=',True)]}</attribute>
             </xpath>-->
 
-            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+            <!--<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
                <field name="accounting_state" />
-            </xpath>
+            </xpath>-->
 
             <!--<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree" position="attributes">
                <attribute name="colors">red:accounting_state=='deleted'</attribute>
@@ -230,7 +230,7 @@
         </field>
     </record>        
     
-    <record model="ir.ui.view" id="view_sale_order_line_tree_state">
+    <!--<record model="ir.ui.view" id="view_sale_order_line_tree_state">
         <field name="name">State</field>
         <field name="model">sale.order.line</field>
         <field name="inherit_id" ref="sale.view_order_line_tree" />
@@ -239,7 +239,7 @@
                 <field name="accounting_state" />
             </field>            
         </field>
-    </record>   
+    </record>-->
 
     <!--sale.order.line--> <!--TODO sembra non funzionare -->
     <record model="ir.ui.view" id="view_order_form_production_details">
@@ -708,11 +708,6 @@
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_tree_view" />
         <field name="arch" type="xml">
-            <!--Tree colors -->
-            <xpath expr="/tree" position="attributes">
-                <attribute name="colors">colors="blue:accounting_state in ('draft',);green:accounting_state in ('production',);red:accounting_state in ('cancel',);black:accounting_state in ('close',);</attribute>
-            </xpath>
-            
             <field name="product_qty" position="after">
                 <field name="lavoration_planned" />
                 <field name="lavoration_all_planned" />
@@ -724,9 +719,6 @@
             <!-- Show correct status -->
             <field name="state" position="attributes">
                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="state" position="after">
-               <field name="accounting_state" />
             </field>
         </field>
     </record>    
@@ -954,19 +946,17 @@
                     <field name="mrp_production_id" />
                     <field name="state_info" />                                    
                     <field name="date_deadline" />                    
-                    <field name="date_delivery" />
+                    <field name="date_delivery" string="Delivery"/>
                     <field name="mandatory_delivery" invisible="1" />
                     <field name="product_uom" />
                     <field name="product_uom_qty" sum="Total" />
                     <field name="product_ul_id" string="Package"/>
                     <button name="close_with_accounting_store" type="object" string="Use mag." icon="gtk-go-forward" attrs="{'invisible':['|',('use_accounting_qty','=',True),('mrp_production_id','!=',False),]}"/>
                     <field name="use_accounting_qty" invisible="1"/>
-                    <field name="accounting_qty" />
+                    <field name="qty_available" />
+                    <field name="virtual_available" />
                     <field name="state" invisible="1" />
                     <field name="to_produce" invisible="1" />
-                    <field name="accounting_state" />                    
-                    <field name="order_state" />
-                    <field name="supply_method" />
             </tree>
         </field>
     </record>
@@ -1071,7 +1061,7 @@
         <field name="view_mode">tree,form,calendar</field>
         <field name="search_view_id" ref="view_sale_order_line_search_sale"/>
         <field name="view_id" ref="view_sale_order_line_tree_sale"/>
-        <field name="domain">[('accounting_state','!=','deleted'),('accounting_order','=',True)]</field>
+        <field name="domain">[('accounting_order','=',True)]</field>
         <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form'}</field>
     </record>
     <!-- ################################################################### -->
@@ -1141,7 +1131,7 @@
         <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production3':True}</field>
     </record>
 
-    <record model="ir.ui.view" id="view_mrp_production_filter_extra">
+    <!--<record model="ir.ui.view" id="view_mrp_production_filter_extra">
         <field name="name">Search Production order</field>
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
@@ -1150,7 +1140,7 @@
                 <filter icon="terp-go-home" name="only_open" string="Only open" domain="[('accounting_state','in',('draft','production'))]" />
            </field>    
         </field>
-    </record>   
+    </record>-->
 
     <record model="ir.actions.act_window" id="action_view_mrp_production">
         <field name="name">Production order open</field>
@@ -1171,7 +1161,7 @@
         <field name="res_model">mrp.production</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form,calendar</field>
-        <field name="domain">[('lavoration_all_planned','=',False),('accounting_state','not in',('close','cancel'))]</field>
+        <field name="domain">[('lavoration_all_planned','=',False)]</field>
     </record>
 
     <record model="ir.actions.act_window" id="action_view_lavoration_open">
