@@ -70,6 +70,31 @@ class ResPartner(orm.Model):
     '''    
     _inherit = 'res.partner'
 
+    # -------------------
+    # On change function:
+    # -------------------
+
+    def onchange_commission(self, cr, uid, commission, commission_net, manual,
+            context=None):
+        ''' Calculate commission value depend on % value and 
+        '''
+        res = {}
+        # TODO
+        
+        return res
+
+    # Override:
+    """def product_id_change(self, cr, uid, ids, pricelist_id, product_id,
+            product_uom_qty, product_uom, product_uos_qty, product_uos, name,
+            partner_id, no1, no2, date_order, no3, fiscal_position, no4, 
+            context=None):
+        ''' 
+        ''' 
+        
+        res = super(ClassName, self).write(
+            cr, user, ids, vals, context=context)
+        return res"""
+
     _columns = {
         #'is_agent': fields.boolean('Is agent'),
         'has_commission': fields.boolean('Has commission'),
@@ -78,6 +103,10 @@ class ResPartner(orm.Model):
         'commission_ids': fields.one2many('res.partner.commission', 
             'partner_id', 'Commission'),
         }
+    
+    _defaults = {
+        'has_commission': lambda *x: True,
+        }    
 
 class SaleOrderLine(orm.Model):
     ''' Add agent commission
@@ -87,21 +116,32 @@ class SaleOrderLine(orm.Model):
     # -------------------
     # On change function:
     # -------------------
-    def onchange_commission(self, cr, uid, commission, commission_net, manual,
+    """def onchange_commission(self, cr, uid, ids, commission, commission_net, 
+            manual, product_uom_qty, price_unit, discount,
             context=None):
         ''' Calculate commission value depend on % value and 
         '''
-        res = {}
-        # TODO
+        res = {'value': {}}
+        if manual: # nothing
+            return res
         
-        return res
-        
+        if not commission: # total value nothing
+            res['value']['commission_value'] = 0.0
+            return res
+        print discount
+        if commission_net: # change base
+            base = commission_net
+        else:
+            base = product_uom_qty * price_unit * (100.0 - discount) / 100.0
+        res['value']['commission_value'] = base * commission / 100.0
+        return res"""
+
     _columns = {
-        'manual': fields.boolean('Manual value', 
+        'manual': fields.boolean('Comm. manual', 
             help='Calculate commission value not from % but as manual'),
         'commission': fields.float('% commission', digits=(8, 2)),
-        'commission_net': fields.float('Commission net', digits=(
-            16, 2)), 
+        'commission_net': fields.float('Commission base', digits=(
+            16, 2), help='If present base price for compute commissions'), 
         'commission_value': fields.float('Commission value', digits=(
             16, 2)), 
         #'has_commission': fields.(

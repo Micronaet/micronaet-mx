@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<openerp>
+<data noupdate="1">
+    <record id="aeroo_agent_commission_report" model="ir.actions.report.xml">
+        <field name="name">Commission report</field>
+        <field name="type">ir.actions.report.xml</field>
+        <field name="model">sale.order</field>
+        <field name="report_name">commission_report</field>
+        <field name="report_type">aeroo</field>
+        <field name="in_format">oo-odt</field>
+        <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>        
+        <field name="parser_loc">sale_agent_commission/report/commission_parser.py</field>
+        <field name="report_rml">aeroo_agent_commission_report/report/commission.odt</field>
+        <field name="parser_state">loc</field>
+        <field name="tml_source">file</field>
+    </record>
+
+    <ir_set>
+        <field eval="'action'" name="key"/>
+        <field eval="'client_print_multi'" name="key2"/>
+        <field eval="['sale.order']" name="models"/>
+        <field name="name">Agent commission</field>
+        <field eval="'ir.actions.report.xml,'+str(aeroo_agent_commission_report)" name="value"/>
+        <field eval="True" name="isobject"/>
+        <field eval="True" name="replace"/>
+    </ir_set>
+</data>
+</openerp>
+
