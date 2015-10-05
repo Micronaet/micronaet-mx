@@ -59,9 +59,11 @@ class ResPartnerAgentCommissionWizard(osv.osv_memory):
             domain=[('is_agent', '=', True)]),
         'from_date': fields.date('Date from'),
         'to_date': fields.date('Date to'),
+        'detailed': fields.boolean('Detailed'),
         }
 
     _defaults = {
         #'to_date': lambda *x: 
+        'detailed': lambda *x: True, 
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
