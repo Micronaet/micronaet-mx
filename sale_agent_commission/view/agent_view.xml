@@ -7,8 +7,10 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page" position="after">
-                    <page string="">
-                         <field name="commission_ids">
+                    <page string="Agent commission:" attrs="{'invisible': [('is_agent', '=', False)]}">
+                         <field name="has_commission" />
+                         <field name="commission" attrs="{'invisible': [('has_commission', '=', False)]}"/>
+                         <field name="commission_ids" attrs="{'invisible': [('has_commission', '=', False)]}">
                              <tree string="Commission case:" editable="bottom">
                                  <field name="sequence" />
                                  <field name="product_id" />
