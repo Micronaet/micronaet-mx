@@ -10,7 +10,7 @@
         <field name="in_format">oo-odt</field>
         <field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')"></field>        
         <field name="parser_loc">sale_agent_commission/report/commission_parser.py</field>
-        <field name="report_rml">aeroo_agent_commission_report/report/commission.odt</field>
+        <field name="report_rml">sale_agent_commission/report/commission.odt</field>
         <field name="parser_state">loc</field>
         <field name="tml_source">file</field>
     </record>

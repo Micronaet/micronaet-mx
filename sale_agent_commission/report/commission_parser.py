@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2008-2011 Alistek Ltd (http://www.alistek.com) All Rights Reserved.
-#                    General contacts <info@alistek.com>
+# Copyright (c) 2008-2011 Alistek Ltd (http://www.alistek.com) 
+# All Rights Reserved. General contacts <info@alistek.com>
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -34,7 +34,6 @@ from openerp.report import report_sxw
 from openerp.report.report_sxw import rml_parse
 
 
-
 class Parser(report_sxw.rml_parse):
     counters = {} # total counters
 
@@ -44,6 +43,7 @@ class Parser(report_sxw.rml_parse):
             'get_objects': self.get_objects,
             'set_counter': self.set_counter,
             'get_counter': self.get_counter,
+            'add_counter': self.add_counter,
         })
 
     def get_counter(self, name):
@@ -63,15 +63,27 @@ class Parser(report_sxw.rml_parse):
         else:    
             return '' # Write nothing (not False)
 
+    def add_counter(self, name, value, with_return=False):
+        ''' Add counter value and return
+        '''
+        if name in self.counters:
+           self.counters[name] += value
+        else:
+           self.counters[name] = value
+               
+        if with_return:
+            return value
+        else:    
+            return ''
+
     def get_objects(self, data=None):
         ''' Create object for print report
         '''
         
         if data is None:
             data = {}
-        
+
         res = {}
-        
         order_pool = self.pool.get('sale.order')
         domain = []
         order_ids = order_pool.search(self.cr, self.uid, domain)
@@ -79,11 +91,7 @@ class Parser(report_sxw.rml_parse):
             if order.user_id not in res:
                 res[order.user_id] = []
                 
-            # appen all rows:
-            for detail in order.order_lines:
-                res[order.user_id].append((
-                    '%s del %s' % (order.name, order.date),
-                    detail,
-                    ))
-
+            for detail in order.order_line:
+                # append all rows:
+                res[order.user_id].append(detail)
         return res         
