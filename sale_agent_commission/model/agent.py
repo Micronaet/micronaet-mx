@@ -71,8 +71,10 @@ class ResPartner(orm.Model):
     _inherit = 'res.partner'
 
     _columns = {
-        'is_agent': fields.boolean('Is agent'),
+        #'is_agent': fields.boolean('Is agent'),
         'has_agent': fields.boolean('Has commission'),
+        'commission': fields.float('% Commission', digits=(8, 2), 
+            help='Default value if not in product cases'), 
         'commission_ids': fields.one2many('res.partner.commission', 
             'partner_id', 'Commission'),
         }

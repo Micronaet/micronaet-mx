@@ -18,7 +18,7 @@
 ###############################################################################
 
 {
-    'name': 'MX Sale agent commissions',
+    'name': 'Sale agent commissions',
     'version': '0.1',
     'category': 'Sale',
     'description': '''        
@@ -30,7 +30,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'mx_sale',
+        'mx_agent',
         ],
     'init_xml': [],
     'demo': [],
