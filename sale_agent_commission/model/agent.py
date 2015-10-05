@@ -102,7 +102,6 @@ class SaleOrderLine(orm.Model):
             16, config(int['price_accuracy']))), 
         'commission_value': fields.float('Commission value', digits=(
             16, config(int['price_accuracy']))), 
-            
         #'has_commission': fields.(
         #    'partner', 'has_commission'_id', 
         #    type='many2one', relation='openerp.model', 
