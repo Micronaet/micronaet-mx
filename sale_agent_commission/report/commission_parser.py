@@ -85,7 +85,19 @@ class Parser(report_sxw.rml_parse):
 
         res = {}
         order_pool = self.pool.get('sale.order')
-        domain = []
+
+        # Create domain filter:
+        # Only order:
+        domain = [('state', 'not in', ('draft', 'sent', 'cancel'))]
+        if data.get('from_date', False):
+            domain.append(('date_order', '>=', data.get('from_date', False)))
+
+        if data.get('to_date', False):
+            domain.append(('date_order', '<', data.get('to_date', False)))
+
+        if data.get('user_id', False):
+            domain.append(('user_id', '=', data.get('user_id', False)))
+
         order_ids = order_pool.search(self.cr, self.uid, domain)
         for order in order_pool.browse(self.cr, self.uid, order_ids):
             if order.user_id not in res:
