@@ -1158,6 +1158,7 @@
             </field>
         </record>
 
+        <!--                 NOTE TREE VIEW FOR MOVE IN PICKING:            -->
         <record id="view_move_picking_tree" model="ir.ui.view">
             <field name="name">stock.move.tree</field>
             <field name="model">stock.move</field>
@@ -1172,11 +1173,11 @@
                     <field name="picking_id" invisible="1" />
                     <field name="create_date" invisible="1" />
                     <field name="date_expected" invisible="1" />
-                    <button name="%(stock.move_scrap)d"
+                    <!--<button name="%(stock.move_scrap)d"
                        string="Scrap Products" type="action"
                        icon="terp-gtk-jump-to-ltr" context="{'scrap': True}"
                        states="draft,waiting,confirmed,assigned"
-                       groups="base.group_user"/>
+                       groups="base.group_user"/>-->
                     <field name="scrapped" invisible="1"/>
                     <field name="prodlot_id" groups="stock.group_production_lot"/>
                     <button
@@ -1191,10 +1192,10 @@
                         icon="terp-accessories-archiver"
                         groups="stock.group_tracking_lot"
                         states="draft,assigned,confirmed"/>
-                     <button name="%(split_into)d" string="Put in a new pack" type="action"
+                     <!--<button name="%(split_into)d" string="Put in a new pack" type="action"
                         groups="product.group_stock_packaging"
                         icon="terp-accessories-archiver+"
-                        states="draft,assigned,confirmed"/>
+                        states="draft,assigned,confirmed"/>-->
                       <field name="location_dest_id" groups="stock.group_locations"/>
                       <field name="state"/>
                 </tree>
