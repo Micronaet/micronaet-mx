@@ -41,21 +41,22 @@ class ResPartnerAgentCommissionWizard(osv.osv_memory):
         '''
         if context is None: 
             context = {}
-            
+
         wiz_proxy = self.browse(cr, uid, ids, context=context)[0]
         data = {}
         data['user_id'] = wiz_proxy.user_id.id
         data['from_date'] = wiz_proxy.from_date
         data['to_date'] = wiz_proxy.to_date
-        
+
         return {
             'type': 'ir.actions.report.xml', 
-            'report_name': 'order_covered',        
+            'report_name': 'commission_report',        
             'datas': data,
             }
 
     _columns = {
-        'user_id': fields.date('res.users', 'Agent'),
+        'user_id': fields.many2one('res.users', 'Agent', 
+            domain=[('is_agent', '=', True)]),
         'from_date': fields.date('Date from'),
         'to_date': fields.date('Date to'),
         }
