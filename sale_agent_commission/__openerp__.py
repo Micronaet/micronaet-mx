@@ -31,6 +31,7 @@
     'depends': [
         'base',
         'mx_agent',
+        'sale',
         ],
     'init_xml': [],
     'demo': [],

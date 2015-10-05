@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page" position="after">
-                    <page string="Agent commission:" attrs="{'invisible': [('is_agent', '=', False)]}">
+                    <page string="Agent commission:"><!--attrs="{'invisible': [('is_agent', '=', False)]}"-->
                          <field name="has_commission" />
                          <field name="commission" attrs="{'invisible': [('has_commission', '=', False)]}"/>
                          <field name="commission_ids" attrs="{'invisible': [('has_commission', '=', False)]}">
@@ -21,17 +21,17 @@
                              <form string="Commission case:">
                                  <sheet>
                                      <group colspan="4" col="4">
-                                     <field name="sequence" />
-                                     <field name="product_id" />
-                                     <field name="category_id" />
-                                     <field name="commission" />
-                                     
-                                     <separator string="Note" colspan="4" />
-                                     <field name="note" colspan="4" nolabel="1"/>
+                                         <field name="sequence" />
+                                         <field name="product_id" />
+                                         <field name="category_id" />
+                                         <field name="commission" />
+                                         
+                                         <separator string="Note" colspan="4" />
+                                         <field name="note" colspan="4" nolabel="1"/>
+                                     </group>
                                  </sheet>    
                              </form>
                          </field>
-
                     </page>
                 </xpath>
             </field>

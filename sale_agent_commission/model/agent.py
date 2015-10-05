@@ -54,13 +54,13 @@ class ResPartnerCommission(orm.Model):
     _order = 'sequence'
     
     _columns = {
-        'sequence': fields.integer('Seq.')), 
+        'sequence': fields.integer('Seq.'), 
         'partner_id': fields.many2one('res.partner', 'Agent', 
             ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product',
             ondelete='cascade'),
-        'category_id': fields.many2one('product.category', 'Category'
-            ondelete='cascade'), # need?
+        'category_id': fields.many2one('product.category', 'Category',
+            ondelete='cascade'), # need?    
         'commission': fields.float('% Commission', digits=(8, 2)), 
         'note': fields.text('Note'),
         }
@@ -72,7 +72,7 @@ class ResPartner(orm.Model):
 
     _columns = {
         #'is_agent': fields.boolean('Is agent'),
-        'has_agent': fields.boolean('Has commission'),
+        'has_commission': fields.boolean('Has commission'),
         'commission': fields.float('% Commission', digits=(8, 2), 
             help='Default value if not in product cases'), 
         'commission_ids': fields.one2many('res.partner.commission', 
@@ -101,9 +101,9 @@ class SaleOrderLine(orm.Model):
             help='Calculate commission value not from % but as manual'),
         'commission': fields.float('% commission', digits=(8, 2)),
         'commission_net': fields.float('Commission net', digits=(
-            16, config(int['price_accuracy']))), 
+            16, 2)), 
         'commission_value': fields.float('Commission value', digits=(
-            16, config(int['price_accuracy']))), 
+            16, 2)), 
         #'has_commission': fields.(
         #    'partner', 'has_commission'_id', 
         #    type='many2one', relation='openerp.model', 
