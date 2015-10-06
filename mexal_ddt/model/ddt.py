@@ -48,7 +48,16 @@ class StockPicking(orm.Model):
     
     # -------------    
     # Button event:    
-    # -------------    
+    # ------------- 
+    def print_ddt(self, cr, uid, ids, context=None):
+        ''' Print report (for pop up form)
+        '''   
+        return { # action report
+            'type': 'ir.actions.report.xml',
+            'report_name': 'custom_ddt_report',
+            'datas': context,
+            }            
+        
     def force_assign_ddt(self, cr, uid, ids, context=None):
         ''' Force assign of DDT after change state
         '''

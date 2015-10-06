@@ -11,6 +11,7 @@
                 </xpath>
                 <field name="name" position="after">                    
                     <button name="force_assign_ddt" string="Assign DDT" type="object" class="oe_highlight" groups="base.group_user" attrs="{'invisible': [('ddt_number','!=',False)]}" /> <!--jump workflow-->
+                    <button name="print_ddt" string="Print DDT" type="object" class="oe_highlight" groups="base.group_user" attrs="{'invisible': [('ddt_number','=',False)]}" />
 			    </field>
             </field>
         </record>
