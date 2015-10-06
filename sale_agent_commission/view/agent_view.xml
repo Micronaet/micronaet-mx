@@ -48,6 +48,8 @@
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <div name="discount" position="after"> 
+                   <separator string="Commission" />
+                   <newline />
                    <field name="manual"  /> <!--on_change="onchange_commission(commission, commission_net, manual, product_uom_qty, price_unit, discount)"-->
                    <field name="commission_net" attrs="{'invisible':[('manual','=',True)]}"/><!--on_change="onchange_commission(commission, commission_net, manual, product_uom_qty, price_unit, discount)"-->
                    <field name="commission" attrs="{'invisible':[('manual','=',True)]}"/><!--on_change="onchange_commission(commission, commission_net, manual, product_uom_qty, price_unit, discount)"-->

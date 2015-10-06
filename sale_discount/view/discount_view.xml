@@ -19,10 +19,13 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
-                <div name="discount" position="before"> 
-                   <field name="discount_scale" />
+                <field name="price_unit" position="after"> 
+                   <newline />
+                   <separator string="Discount" />
+                   <newline />
+                   <field name="discount_scale" on_change="onchange_discount(discount_scale, discount, 'scale')" />
                    <field name="discount_type" />
-                </div>
+                </field>
             </field>
         </record>         
     </data>

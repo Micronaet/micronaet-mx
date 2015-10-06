@@ -98,7 +98,21 @@ class SaleOrderLine(orm.Model):
     '''    
     _inherit = 'sale.order.line'
 
+    def onchange_discount(self, cr, uid, ids, discount_scale, discount, 
+            mode='scale', context=None):
+        ''' Call onchange in partner
+        '''    
+        return self.pool.get('res.partner').onchange_discount(cr, uid, ids, 
+            discount_scale=discount_scale, discount=discount, mode=mode, 
+            context=context)
+
+
     _columns = {
         'discount_type': fields.selection(discount_type, 'Discount type'),
         'discount_scale': fields.char('Discount scale', size=15),
         }
+
+    _defaults = {
+        'discount_type': lambda *x: 'integrated',
+        }    
+        
