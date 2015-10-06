@@ -35,28 +35,40 @@ from openerp import SUPERUSER_ID
 from openerp import tools
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round as round
-from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
-    DEFAULT_SERVER_DATETIME_FORMAT, 
-    DATETIME_FORMATS_MAP, 
+from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
+    DEFAULT_SERVER_DATETIME_FORMAT,
+    DATETIME_FORMATS_MAP,
     float_compare)
 
 
 _logger = logging.getLogger(__name__)
 
+class ProductUl(orm.Model):
+    ''' Add package in product ul
+    '''    
+    _inherit = 'product.ul'
+ 
+    _columns = {        
+        'return_package': fields.boolean('Package return', 
+            help='Will be returned'),
+        }
 
 class SaleOrderLine(orm.Model):
-    ''' Add agent commission
+    ''' Add package info in sale line
     '''    
     _inherit = 'sale.order.line'
  
     _columns = {        
         'return_package': fields.boolean('Package return', 
             help='Will be returned'),
-        'package_qty': fields.int('Pack leave'),
-        'package_returned_qty': fields.int('Pack leave'),
+        'package_qty': fields.integer('Pack leave'),
+        'package_returned_qty': fields.integer('Pack returned'),
         'return_package_ok': fields.boolean('Ok returned', 
             help='If checked order line is marked as returned'
                 'alse if not all element are back'),
-        'package_note': fields.char('Pack return', size=64),
+        'package_note': fields.char('Return note', size=64),
         }
 
+    _defaults = {
+        'return_package': lambda *x: True, # TODO remove use onchange
+        }

@@ -90,6 +90,7 @@ class SaleOrderLine(orm.Model):
     _columns = {
         'gr_weight': fields.float('Gross weight'),
         #states={'draft': [('readonly', False)]}),
+        
          # Moved here from production:
         'date_deadline': fields.date('Deadline'),
         'date_delivery':fields.related(
