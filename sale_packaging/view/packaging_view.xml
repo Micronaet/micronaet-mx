@@ -1,6 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+    <!--sale.order-->
+    <record model="ir.ui.view" id="view_sale_order_line_package_search">
+        <field name="name">Search OC line</field>
+        <field name="model">sale.order.line</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <search string="OC line">
+                    <field name="partner_id" string="Partner" filter_domain="[('partner_id','=',self)]"/>
+                    <field name="product_id" string="Product" filter_domain="[('product_id','=',self)]"/>
+                    <field name="order_id" string="Order" filter_domain="[('order_id','=',self)]"/> 
+                    <field name="product_ul_id" string="Packager" filter_domain="[('product_ul_id','=',self)]"/> 
+
+                    <separator string="Package:"/>                    
+                    <filter icon="terp-go-home" name="return_package" string="To returned package" domain="[('return_package','=',False),('package_returned_ok','=',False)]"/>
+                    <filter icon="terp-go-home" name="package_returned_ok" string="Returned package" domain="[('package_returned_ok','=',True)]"/>
+                    
+                    <group expand="1" string="Group By...">
+                        <filter name="group_partner" string="Partner" icon="terp-partner" context="{'group_by':'partner_id'}"/>
+                        <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
+                        <filter name="group_deadline" string="Deadline" icon="terp-accessories-archiver" context="{'group_by':'date_deadline'}"/>
+                        <filter name="group_product_ul_i" string="Package" icon="terp-partner" context="{'group_by':'product_ul_id'}"/>
+                    </group>                    
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sale_order_line_packaging_tree">
+        <field name="name">Returned packaging</field>
+        <field name="model">sale.order.line</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree string="OC line" colors="blue:return_package_ok==True;green:return_package_ok==True and package_returned_qty==package_qty;red:return_package==True;black:return_package==False">
+                    <field name="name" />
+                    <field name="product_id" />
+                    <field name="partner_id" />
+                    <field name="order_id" />                   
+                    <field name="product_uom" />
+                    <field name="product_uom_qty" sum="Total" />
+                    
+                    <!--Package return:-->
+                    <field name="product_ul_id" string="Package"/>
+                    <field name="return_package" />
+                    <field name="package_qty" />
+                    <field name="package_returned_qty" />
+                    <field name="return_package_ok" />
+                    <field name="package_note" />
+            </tree>
+        </field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="action_view_sale_order_line_package">
+        <field name="name">Package in sale order</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_sale_order_line_package_search"/>
+        <field name="view_id" ref="view_sale_order_line_packaging_tree"/>
+        <field name="context">{'search_default_return_package':True}</field>
+    </record>
+
+    <menuitem name="Return packaging" parent="base.menu_sales" id="menu_sale_line_packaging" sequence="90" action="action_view_sale_order_line_package"/>
        
     </data>
 </openerp>

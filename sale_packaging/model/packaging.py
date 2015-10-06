@@ -57,5 +57,6 @@ class SaleOrderLine(orm.Model):
         'return_package_ok': fields.boolean('Ok returned', 
             help='If checked order line is marked as returned'
                 'alse if not all element are back'),
+        'package_note': fields.char('Pack return', size=64),
         }
 
