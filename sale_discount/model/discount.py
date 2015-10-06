@@ -60,20 +60,26 @@ class ResPartner(orm.Model):
         ''' Update discount depend on scale (or reset scale)
         '''
         res = {'value': {}}
-        if mode == 'scale':
-            scale = discount_scale.split('+')
-            discount_scale_cleaned = ''      
-            rate = 100.0
-            for i in scale:
-                i = float(i.strip().replace('%', '').replace(',', '.'))
-                rate -= rate * i / 100.0                
-                discount_scale_cleaned += "%s%5.2f%s " % (
-                    '+' if discount_scale_cleaned else '', i, '%')
-            res['value']['discount'] = 100.0 - rate
-            res['value']['discount_scale'] = discount_scale_cleaned
-            
-        else: # 'discount':
-            pass #res['value']['discount_scale'] = False
+        try:
+            if mode == 'scale':
+                scale = discount_scale.split('+')
+                discount_scale_cleaned = ''      
+                rate = 100.0
+                for i in scale:
+                    i = float(i.strip().replace('%', '').replace(',', '.'))
+                    rate -= rate * i / 100.0                
+                    discount_scale_cleaned += "%s%5.2f%s " % (
+                        '+' if discount_scale_cleaned else '', i, '%')
+                res['value']['discount'] = 100.0 - rate
+                res['value']['discount_scale'] = discount_scale_cleaned
+
+            else: # 'discount':
+                pass #res['value']['discount_scale'] = False
+        except:
+            res['warning'] = {
+                'title': _('Discount error'), 
+                'message': _('Scale value not correct!'),
+                }
         return res        
         
     _columns = {
