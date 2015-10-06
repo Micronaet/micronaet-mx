@@ -88,7 +88,9 @@ class SaleOrderLine(orm.Model):
         return res
         
     _columns = {
-        # Moved here from production:
+        'gr_weight': fields.float('Gross weight'),
+        #states={'draft': [('readonly', False)]}),
+         # Moved here from production:
         'date_deadline': fields.date('Deadline'),
         'date_delivery':fields.related(
             'order_id', 'date_delivery', type='date', string='Date delivery'),

@@ -17,6 +17,10 @@
                     </field>
                 </field>
                 <!--sale.order.line-->
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='th_weight']" position="after">
+                    <field name="gr_weight"/>
+                </xpath>                
+
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']" position="attributes">
                     <attribute name="attrs">{'readonly':[('state', 'in', ('cancel'))]}</attribute>
                 </xpath>                
