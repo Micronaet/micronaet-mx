@@ -36,5 +36,21 @@
                 </xpath>
             </field>
         </record>
+        
+       <record model="ir.ui.view" id="view_sale_order_line_default">
+            <field name="name">sale.order.line.default</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <!--sale.order.line-->
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_packaging']" position="before">
+                    <field name="product_ul"/>
+                </xpath>                
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_packaging']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+       </record>         
+
     </data>
 </openerp>

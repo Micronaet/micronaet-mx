@@ -45,7 +45,7 @@ _logger = logging.getLogger(__name__)
 
 
 class PartnerProductParticularity(orm.Model):
-    ''' Class for manage partucularity for partner - product
+    ''' Class for manage particularity for partner - product
     '''    
     _name = 'res.partner.pricelist.product'
     _description = 'Partner product'
@@ -60,7 +60,7 @@ class PartnerProductParticularity(orm.Model):
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
-        'package_id': fields.many2one('product.packaging', 'Packaging'),
+        'package_id': fields.many2one('product.ul', 'Packaging'),
 
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
@@ -81,4 +81,65 @@ class ResPartner(orm.Model):
             'res.partner.pricelist.product', 'partner_id', 
             'Pricelist products'),
         }
+
+class SaleOrderLine(orm.Model):
+    ''' Add event for onchange in sale.order.line
+    '''    
+    _inherit = 'sale.order.line'
+    
+    # -------------------------------------------------------------------------
+    #                                  Override:
+    # -------------------------------------------------------------------------
+    # onchange:    
+    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+            uom=False, qty_uos=0, uos=False, name='', partner_id=False,
+            lang=False, update_tax=True, date_order=False, packaging=False, 
+            fiscal_position=False, flag=False, context=None):
+        ''' Override function for set up extra fields
+        '''    
+        context = context or {}
+        
+        res = super(SaleOrderLine, self).product_id_change(
+            cr, uid, ids, pricelist=pricelist, product=product, qty=qty,
+            uom=uom, qty_uos=qty_uos, uos=uos, name=name, 
+            partner_id=partner_id, lang=lang, update_tax=update_tax, 
+            date_order=date_order, packaging=packaging, 
+            fiscal_position=fiscal_position, flag=flag, context=context)
+ 
+        if 'value' not in res:
+            res['value'] = {}
+        
+        # Reset if partner or product not present:
+        if not partner_id or not product:
+            res['value'].update({
+                'alias_id': False,                
+                'price_unit': False,
+                'ul_id': False,
+                # TODO
+                })
+            return res
+                
+        # Used pool:
+        partner_pool = self.pool.get('res.partner')
+        
+        # Udpate field instead:
+        partner_proxy = partner_pool.browse(
+            cr, uid, partner_id, context=context)
+        for product in partner_proxy.pricelist_product_ids:
+            if product.product_id.id == product:
+                res['value'].upate({
+                    'alias_id': product.alias_id.id,
+                    'price_unit': product.price,
+                    'ul_id': product.ul_id.id,
+                    })
+
+        return res
+    
+    _columns = {
+        'ul_id': fields.many2one('product.ul', 'Packaging', 
+            ondelete='set null'),
+        }
+
+
+        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

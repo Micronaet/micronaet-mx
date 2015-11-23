@@ -43,6 +43,17 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class ResPartner(orm.Model):
+    ''' Extra field for partner
+    '''    
+    _inherit = 'res.partner'
+    
+    _columns = {
+        'incoterm_id':fields.many2one(
+            'stock.incoterms', 'Default incoterm', ondelete='set null'),        
+        }
+    
+
 class SaleOrder(orm.Model):
     ''' Extra field for order
     '''    
@@ -52,7 +63,6 @@ class SaleOrder(orm.Model):
     #                                  Override:
     # -------------------------------------------------------------------------
     # onchange:
-    
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
         ''' Override standard procedure for add extra account field:        
         '''
@@ -81,7 +91,7 @@ class SaleOrder(orm.Model):
             context=context)
         
         res['value'].update({
-            #'incoterm': partner_proxy.incoterm,
+            'incoterm': partner_proxy.incoterm_id.id,
             'default_transport_id': partner_proxy.default_transport_id.id,
             'carriage_condition_id': partner_proxy.carriage_condition_id.id,
             'goods_description_id': partner_proxy.goods_description_id.id,
@@ -137,8 +147,7 @@ class SaleOrder(orm.Model):
 
 class SaleOrderLine(orm.Model):
     ''' Extra field for order line
-    '''
-    
+    '''    
     _inherit = 'sale.order.line'
     
     # ----------------

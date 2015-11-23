@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <record model="ir.ui.view" id="view_partner_form_incoterms">
+            <field name="name">Partner incoterm</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_it_sale.view_partner_form_inherit_shipping_conditions"/>
+            <field name="arch" type="xml">
+                 <field name="transportation_reason_id" position="after">
+                     <field name="incoterm_id" />
+                 </field>
+            </field>
+        </record>
+    
         <record model="ir.ui.view" id="view_sale_order_pickout_form">
             <field name="name">sale.order.pick.form</field>
             <field name="model">sale.order</field>
