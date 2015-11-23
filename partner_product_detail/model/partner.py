@@ -48,21 +48,17 @@ class PartnerProductParticularity(orm.Model):
     ''' Class for manage partucularity for partner - product
     '''    
     _name = 'res.partner.pricelist.product'
-    #_name = 'partner.product.particularity'
     _description = 'Partner product'
     _rec_name = 'product_id'
     _order = 'product_id'
-    
-    _columns = {
-        #'pricelist_report': fields.boolean('Pricelist report', 
-        #    help='For a pricelist report customized'),
 
+    _columns = {
         'product_id': fields.many2one('product.product', 'Product'),
         'alias_id': fields.many2one('product.product', 'Alias'),
 
         'date': fields.date('Date'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
-        'price': fields.float('Price', digits=(16, 2)),            
+        'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
         'package_id': fields.many2one('product.packaging', 'Packaging'),
 

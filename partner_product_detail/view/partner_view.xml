@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <record id="view_res_partner_form_pricelist" model="ir.ui.view">
+        <record id="view_res_partner_custom_pricelist_form" model="ir.ui.view">
             <field name="name">Price custom for partner</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@string='Contacts']" position="after">
                     <page string="Custom product" attrs="{'invisible': [('is_company','=',False)]}">
-                       <group colspan="4" name="custom_price_block">                       
-                        <field name="pricelist_product_ids" colspan="4">                        
+                        <field name="pricelist_product_ids" colspan="4" nolabel="1">
                             <tree editable="bottom" colspan="4">
                                 <field name="product_id" />
                                 <field name="alias_id" />
@@ -33,7 +32,6 @@
                               </sheet>      
                             </form>
                         </field>
-                      </group>
                     </page>                    
                 </xpath>
             </field>
