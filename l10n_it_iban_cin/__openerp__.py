@@ -47,6 +47,6 @@ Nicola Riolini <nicola.riolini@gmail.com>
         #'test/abicab.yml',
     ],
     'website': 'http://www.openerp-italia.org/',
-    'data': ['abicab_view.xml'],
+    'data': ['cin_view.xml'],
     'installable': True,
 }

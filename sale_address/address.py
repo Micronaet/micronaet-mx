@@ -59,10 +59,12 @@ class SaleOrder(orm.Model):
         res = super(SaleOrder, self).onchange_partner_id(
             cr, uid, ids, part, context=context)
         res['value']['address_id'] = False # reset address
+        res['value']['invoice_id'] = False # reset address
         return res
     
     _columns = {
         'address_id': fields.many2one('res.partner', 'Delivery address'),
+        'invoice_id': fields.many2one('res.partner', 'Invoice address'),
         }
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
