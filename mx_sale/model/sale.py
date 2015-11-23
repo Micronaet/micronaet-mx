@@ -53,6 +53,8 @@ class SaleOrder(orm.Model):
         # moved here from production:
         'date_deadline': fields.date('Deadline', 
             help='If all order has same deadline set only in header'),
+        'date_load': fields.date('Load date', 
+            help='Load date'),
         'date_previous_deadline': fields.date(
             'Previous deadline', 
             help="If during sync deadline is modified this field contain old "

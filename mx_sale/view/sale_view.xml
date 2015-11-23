@@ -6,6 +6,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
+                <field name="date_order" position="after">                
+                    <field name="date_load" />
+                </field>
                 <field name="partner_id" position="after">
                     <field name="picking_ids" attrs="{'invisible': [('state','not in',('confirmed','done'))]}">
                         <tree string="Pick out" > <!--colors="black:ddt_number!=False"-->

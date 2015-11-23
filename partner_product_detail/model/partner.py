@@ -46,19 +46,16 @@ _logger = logging.getLogger(__name__)
 
 class PartnerProductParticularity(orm.Model):
     ''' Class for manage partucularity for partner - product
-    '''
-    
-    _name = 'partner.product.particularity'
+    '''    
+    _name = 'res.partner.pricelist.product'
+    #_name = 'partner.product.particularity'
     _description = 'Partner product'
     _rec_name = 'product_id'
     _order = 'product_id'
     
-    # TODO Try to collapse with res.partner.pricelist.product 
-    # pricelist_model_partner_product module
-
     _columns = {
-        'pricelist_report': fields.boolean('Pricelist report', 
-            help='For a pricelist report customized'),
+        #'pricelist_report': fields.boolean('Pricelist report', 
+        #    help='For a pricelist report customized'),
 
         'product_id': fields.many2one('product.product', 'Product'),
         'alias_id': fields.many2one('product.product', 'Alias'),
@@ -80,13 +77,12 @@ class PartnerProductParticularity(orm.Model):
 
 class ResPartner(orm.Model):
     ''' Class partner
-    '''
-    
+    '''    
     _inherit = 'res.partner'
     
     _columns = {
-        'particularity_ids': fields.one2many(
-            'partner.product.particularity', 'partner_id', 'Particularity'),
+        'pricelist_product_ids': fields.one2many(
+            'res.partner.pricelist.product', 'partner_id', 
+            'Pricelist products'),
         }
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
