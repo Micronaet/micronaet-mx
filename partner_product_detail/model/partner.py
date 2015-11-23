@@ -60,7 +60,7 @@ class PartnerProductParticularity(orm.Model):
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
-        'package_id': fields.many2one('product.ul', 'Packaging'),
+        'ul_id': fields.many2one('product.ul', 'Packaging'),
 
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
@@ -115,22 +115,24 @@ class SaleOrderLine(orm.Model):
                 'alias_id': False,                
                 'price_unit': False,
                 'ul_id': False,
+                'load_qty': False,
                 # TODO
                 })
             return res
-                
+        
         # Used pool:
         partner_pool = self.pool.get('res.partner')
         
         # Udpate field instead:
         partner_proxy = partner_pool.browse(
             cr, uid, partner_id, context=context)
-        for product in partner_proxy.pricelist_product_ids:
-            if product.product_id.id == product:
-                res['value'].upate({
-                    'alias_id': product.alias_id.id,
-                    'price_unit': product.price,
-                    'ul_id': product.ul_id.id,
+        for item in partner_proxy.pricelist_product_ids:
+            if item.product_id.id == product:
+                res['value'].update({
+                    'alias_id': item.alias_id.id,
+                    'price_unit': item.price,
+                    'ul_id': item.ul_id.id,
+                    'load_qty': item.load_qty,
                     })
 
         return res
@@ -138,8 +140,7 @@ class SaleOrderLine(orm.Model):
     _columns = {
         'ul_id': fields.many2one('product.ul', 'Packaging', 
             ondelete='set null'),
+        'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         }
-
-
         
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
