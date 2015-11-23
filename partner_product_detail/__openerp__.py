@@ -23,6 +23,7 @@
     'category': 'Accounting',
     'description': '''        
         Customization for partner - product
+        Force in sale order this parameter first
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
@@ -30,6 +31,7 @@
     'depends': [
         'base',
         'product',
+        'sale',
         ],
     'init_xml': [],
     'demo': [],

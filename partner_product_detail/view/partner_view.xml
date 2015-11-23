@@ -43,12 +43,12 @@
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <!--sale.order.line-->
-                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_packaging']" position="before">
-                    <field name="product_ul"/>
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='tax_id']" position="before">
+                    <field name="ul_id"/>
                 </xpath>                
-                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_packaging']" position="attributes">
+                <!--TODO<xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_packaging']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath>-->
             </field>
        </record>         
 
