@@ -33,6 +33,7 @@
         'sale',
         'sale_stock',
         'sale_address',
+        'l10n_it_sale',
         ],
     'init_xml': [],
     'demo': [],

@@ -45,10 +45,55 @@ _logger = logging.getLogger(__name__)
 
 class SaleOrder(orm.Model):
     ''' Extra field for order
-    '''
-    
+    '''    
     _inherit = 'sale.order'
     
+    # -------------------------------------------------------------------------
+    #                                  Override:
+    # -------------------------------------------------------------------------
+    # onchange:
+    
+    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+        ''' Override standard procedure for add extra account field:        
+        '''
+        # Call original procedure:
+        res = super(SaleOrder, self).onchange_partner_id(
+            cr, uid, ids, partner_id, context=context)
+        if 'value' not in res:
+            res['value'] = {}
+        
+        # Append extra value:
+        if not partner_id: # reset:
+            res['value'].update({
+                'incoterm': False,                
+                'default_transport_id': False,
+                'carriage_condition_id': False,
+                'goods_description_id': False,
+                'transportation_reason_id': False,
+                'payment_term_id': False,
+                'bank_account_id': False,
+                })
+            return res
+
+        partner_pool = self.pool.get('res.partner')
+        partner_proxy = partner_pool.browse(cr, uid, partner_id, 
+            context=context)
+        
+        res['value'].update({
+            #'incoterm': partner_proxy.incoterm,
+            'default_transport_id': partner_proxy.default_transport_id.id,
+            'carriage_condition_id': partner_proxy.carriage_condition_id.id,
+            'goods_description_id': partner_proxy.goods_description_id.id,
+            'transportation_reason_id': 
+                partner_proxy.transportation_reason_id.id,
+            'payment_term_id': partner_proxy.property_payment_term.id,            
+            })
+        # Set default account for partner    
+        if partner_proxy.bank_ids:
+            res['bank_account_id'] = partner_proxy.bank_ids[0].id
+            
+        return res
+
     _columns = {
         # moved here from production:
         'date_deadline': fields.date('Deadline', 
@@ -61,6 +106,20 @@ class SaleOrder(orm.Model):
                 "value before update"),
         'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
         # moved ^^^^^^^^^^^^^^^^^^^^^
+        
+        # Account extra field saved in sale.order:
+        'default_transport_id': fields.many2one('res.partner', 'Vector', 
+            domain=[('is_vector', '=', True)]),
+        'carriage_condition_id': fields.many2one(
+            'stock.picking.carriage_condition', 'Carriage condition'),
+        'goods_description_id': fields.many2one(
+            'stock.picking.goods_description', 'Goods description'),
+        'transportation_reason_id': fields.many2one(
+            'stock.picking.transportation_reason', 'Transportation reason'),
+        'payment_term_id': fields.many2one(
+            'account.payment.term', 'Payment term'),            
+        'bank_account_id': fields.many2one(
+            'res.partner.bank', 'Bank account'),
         }
 
 class SaleOrderLine(orm.Model):
