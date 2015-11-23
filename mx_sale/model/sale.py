@@ -72,6 +72,7 @@ class SaleOrder(orm.Model):
                 'transportation_reason_id': False,
                 'payment_term_id': False,
                 'bank_account_id': False,
+                'uncovered_payment': False,
                 })
             return res
 
@@ -87,10 +88,13 @@ class SaleOrder(orm.Model):
             'transportation_reason_id': 
                 partner_proxy.transportation_reason_id.id,
             'payment_term_id': partner_proxy.property_payment_term.id,            
+            
+            # Alert:
+            'uncovered_payment': partner_proxy.duelist_uncovered,
             })
         # Set default account for partner    
         if partner_proxy.bank_ids:
-            res['bank_account_id'] = partner_proxy.bank_ids[0].id
+            res['value']['bank_account_id'] = partner_proxy.bank_ids[0].id
             
         return res
 
@@ -120,7 +124,16 @@ class SaleOrder(orm.Model):
             'account.payment.term', 'Payment term'),            
         'bank_account_id': fields.many2one(
             'res.partner.bank', 'Bank account'),
+        
+        # Alert:
+        'uncovered_payment': fields.boolean('Uncovered payment'),    
+        'uncovered_alert': fields.char('Alert', size=64, readonly=True), 
         }
+        
+    _defaults = {
+        'uncovered_alert': lambda *x: 'Alert: Uncovered payment!!!',
+        }   
+     
 
 class SaleOrderLine(orm.Model):
     ''' Extra field for order line

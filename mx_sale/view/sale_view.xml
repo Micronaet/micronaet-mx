@@ -6,6 +6,13 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
+                <xpath expr="/form/header/field[@name='state']" position="after">
+                    <div style="background-color: red;text-align: center;font-weight:bold;color:white;">
+                        <field name="uncovered_alert" nolabel="1" attrs="{'invisible': [('uncovered_payment', '=', False)]}" class="oe_color_red" />
+                    </div>
+                    <field name="uncovered_payment" invisible="1" />
+                </xpath>
+
                 <field name="date_order" position="after">                
                     <field name="date_load" />
                 </field>
