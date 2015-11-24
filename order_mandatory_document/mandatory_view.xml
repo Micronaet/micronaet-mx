@@ -13,7 +13,7 @@
                             <field name="sequence" />
                             <field name="mandatory" />
                             <separator string="Note" colspan="4" />
-                            <field name="note" colspan="4"/>
+                            <field name="note" colspan="4" nolabel="1"/>
                         </group>
                     </sheet>        
                 </form>
@@ -33,9 +33,10 @@
         </record>
 
         <!--INHERIT sale.order-->
-        <record model="ir.ui.view" id="view_sale_order_docs_form">
+        <record model="ir.ui.view" id="view_sale_order_docs_order_form">
             <field name="name">Order extra docs</field>
             <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">                
                 <xpath expr="/form/sheet/notebook/page" position="after">
                     <page string="Extra docs">
@@ -55,7 +56,7 @@
                                         <field name="sequence" />
                                         <field name="mandatory" />
                                         <field name="docs_id" />
-                                        <field name="note" />
+                                        <field name="note"/>
                                      </group>
                                   </sheet>      
                                 </form>  
@@ -67,7 +68,7 @@
        </record>         
 
         <!--INHERIT res.partner-->
-        <record id="view_res_partner_order_dosc_parter_form" model="ir.ui.view">
+        <record id="view_res_partner_order_docs_parter_form" model="ir.ui.view">
             <field name="name">Partner extra docs</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
@@ -97,7 +98,7 @@
                 </xpath>
             </field>
         </record>
-        <record model="ir.actions.act_window" id="action_sale_oder_docs_form">
+        <record model="ir.actions.act_window" id="action_sale_oder_docs">
             <field name="name">Sale order docs</field>
             <field name="res_model">sale.order.docs</field>
             <field name="view_type">form</field>
@@ -109,7 +110,7 @@
         <menuitem 
             parent="base.menu_base_config" 
             id="menu_sale_oder_docs_form" 
-            action="action_sale_oder_docs_form"
+            action="action_sale_oder_docs"
             sequence="50"            
             />
         

@@ -43,7 +43,7 @@ class SaleOrderDocs(osv.osv):
     '''
     _name = 'sale.order.docs'
     _description = 'Mandatory document'
-    _order = 'name'
+    _order = 'sequence,name'
     
     _columns = {
         'name': fields.char('Document name', size=100, required=True),
@@ -86,9 +86,59 @@ class SaleOrderDocsPartner(osv.osv):
 
 class SaleOder(osv.osv):    
     ''' Sale order documents
-    '''
+    '''    
     _inherit = 'sale.order'
     
+    # Button event:
+    #TODO clear all: def load_from_parent(self, cr, uid, ids, context=None):
+    
+    def load_from_partner(self, cr, uid, ids, context=None):
+        ''' Load list from anagraphic
+        '''
+        docs_pool = self.pool.get('sale.order.docs')        
+        order_pool = self.pool.get('sale.order.docs.order')        
+        partner_pool = self.pool.get('sale.order.docs.partner')
+        
+        current_record = self.browse(cr, uid, ids, context=context)[0]
+        if not current_record.partner_id:
+            return True # Do nothing TODO alert? delete all?            
+        partner_id = current_record.partner_id.id    
+
+        current_list = [item.id for item in current_record.order_docs_ids]        
+        partner_ids = partner_pool.search(cr, uid, [
+            ('partner_id', '=', partner_id)], context=context)
+
+        # TODO correct procedure
+        #for item in partner_pool.browse(cr, uid, partner_ids, context=context):
+        #    if item.id not in current_list:
+        #        order_pool.create(cr, uid, {
+        #            'order_id': ids[0],
+        #            'docs_id': item.id,
+        #            'mandatory': item.mandatory,
+        #            #'note': item.note,
+        #            }, context=context)
+        return True
+
+    def load_from_list(self, cr, uid, ids, context=None):
+        ''' Load list from anagraphic
+        '''
+        docs_pool = self.pool.get('sale.order.docs')        
+        order_pool = self.pool.get('sale.order.docs.order')
+
+        current_list = [
+            item.id for item in self.browse(
+                cr, uid, ids, context=context)[0].order_docs_ids]
+        docs_ids = docs_pool.search(cr, uid, [], context=context)
+        for item in docs_pool.browse(cr, uid, docs_ids, context=context):
+            if item.id not in current_list:
+                order_pool.create(cr, uid, {
+                    'order_id': ids[0],
+                    'docs_id': item.id,
+                    'mandatory': item.mandatory,
+                    #'note': item.note,
+                    }, context=context)
+        return True
+        
     _columns = {
         'order_docs_ids': fields.one2many('sale.order.docs.order', 'order_id',
             'Mandatory document'),
@@ -99,6 +149,28 @@ class ResPartner(osv.osv):
     ''' Document that will be attached to order
     '''
     _inherit = 'res.partner'
+
+    # Button event:
+    def load_from_list(self, cr, uid, ids, context=None):
+        ''' Load list from anagraphic
+        '''
+        docs_pool = self.pool.get('sale.order.docs')        
+        partner_pool = self.pool.get('sale.order.docs.partner')
+
+        current_list = [
+            item.id for item in self.browse(
+                cr, uid, ids, context=context)[0].order_docs_ids]
+        docs_ids = docs_pool.search(cr, uid, [], context=context)
+        for item in docs_pool.browse(cr, uid, docs_ids, context=context):
+            if item.id not in current_list:
+                partner_pool.create(cr, uid, {
+                    'partner_id': ids[0],
+                    'docs_id': item.id,
+                    'mandatory': item.mandatory,
+                    #'note': item.note,
+                    }, context=context)
+        return True
+    
     
     _columns = {
         'order_docs_ids': fields.one2many('sale.order.docs.partner', 'partner_id',
