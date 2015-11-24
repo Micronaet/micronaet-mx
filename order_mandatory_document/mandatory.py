@@ -26,7 +26,7 @@ import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression, orm
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID, api
+from openerp import SUPERUSER_ID
 from openerp import tools
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round as round
@@ -38,62 +38,70 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class SaleOrderMandatoryDocs(orm.Model):    
+class SaleOrderDocs(osv.osv):    
     ''' Document that will be attached to order
     '''
-    _name = 'sale.order.mandatory.docs'
+    _name = 'sale.order.docs'
     _description = 'Mandatory document'
+    _order = 'name'
     
     _columns = {
-        'sequence': fields.integer('Seq.')), 
         'name': fields.char('Document name', size=100, required=True),
+        'sequence': fields.integer('Seq.'), 
         'mandatory': fields.boolean('Mandatory', help='Always mandatory'),
         'note': fields.text('Note'),
         }
 
-class SaleOrderMandatoryOrder(orm.Model):    
+class SaleOrderDocsOrder(osv.osv):    
     ''' Document mandatory attached to order
     '''
-    _name = 'sale.order.mandatory.order'
+    _name = 'sale.order.docs.order'
     _description = 'Document for order'
     _rec_name = 'order_id'
+    _order = 'sequence,docs_id'
     
     _columns = {
+        'sequence': fields.integer('Seq.'), 
         'order_id': fields.many2one('sale.order', 'Order'),
-        'docs_id': fields.many2one('sale.order.mandatory.docs', 'Document'),
+        'docs_id': fields.many2one('sale.order.docs', 'Document'),
+        'mandatory': fields.boolean('Mandatory for order'),
         'note': fields.text('Note'),
         }
 
-class SaleOrderMandatoryPartner(orm.Model):    
+class SaleOrderDocsPartner(osv.osv):    
     ''' Document mandatory attached to order
     '''
-    _name = 'sale.order.mandatory.partner'
+    _name = 'sale.order.docs.partner'
     _description = 'Document for partner'
     _rec_name = 'partner_id'
+    _order = 'sequence,docs_id'
     
     _columns = {
+        'sequence': fields.integer('Seq.'), 
         'partner_id': fields.many2one('res.partner', 'Order'),
-        'docs_id': fields.many2one('sale.order.mandatory.docs', 'Document'),
+        'docs_id': fields.many2one('sale.order.docs', 'Document'),
+        'mandatory': fields.boolean('Mandatory for customer'),
         'note': fields.text('Note'),
         }
 
-class SaleOder(orm.Model):    
+class SaleOder(osv.osv):    
     ''' Sale order documents
     '''
     _inherit = 'sale.order'
     
     _columns = {
-        fields.one2many('sale.order.mandatory.order', 'order_id',
+        'order_docs_ids': fields.one2many('sale.order.docs.order', 'order_id',
             'Mandatory document'),
         }
 
-class ResPartner(orm.Model):    
+
+class ResPartner(osv.osv):    
     ''' Document that will be attached to order
     '''
     _inherit = 'res.partner'
     
     _columns = {
-        fields.one2many('sale.order.mandatory.partner', 'partner_id',
+        'order_docs_ids': fields.one2many('sale.order.docs.partner', 'partner_id',
             'Mandatory document'),
         }
 
