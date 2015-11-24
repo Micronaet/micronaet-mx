@@ -1,0 +1,6 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_sale_order_mandatory_docs_user,sale.order.mandatory.docs,model_sale_order_mandatory_docs,base.group_user,1,1,1,1
+access_sale_order_mandatory_order_user,sale.order.mandatory.order,model_sale_order_mandatory_order,base.group_user,1,1,1,1
+access_sale_order_mandatory_partner_user,sale.order.mandatory.partner,model_sale_order_mandatory_partner,base.group_user,1,1,1,1
+
+
