@@ -46,8 +46,7 @@ _logger = logging.getLogger(__name__)
 class ResPartnerAgentCommission(orm.Model):
     ''' Add extra object linked to agent (partner) for setup correct rate of 
         commission depend on product group
-    '''
-    
+    '''    
     _name = 'res.partner.agent.commission'
     _description = 'Agent commission'
     
@@ -65,8 +64,7 @@ class ResPartnerAgentCommission(orm.Model):
 
 class ResPartner(orm.Model):
     ''' Add commission data in partner (for agent)
-    '''
-    
+    '''    
     _inherit = 'res.partner'
     
     _columns = {

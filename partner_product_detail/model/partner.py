@@ -57,6 +57,7 @@ class PartnerProductParticularity(orm.Model):
         'alias_id': fields.many2one('product.product', 'Alias'),
 
         'date': fields.date('Date'),
+        'deadline': fields.date('Deadline'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
@@ -134,7 +135,6 @@ class SaleOrderLine(orm.Model):
                     'ul_id': item.ul_id.id,
                     'load_qty': item.load_qty,
                     })
-
         return res
     
     _columns = {
