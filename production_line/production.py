@@ -204,8 +204,8 @@ class sale_order_add_extra(osv.osv):
         empty_date = self.pool.get('micronaet.accounting').get_empty_date()
         log_info = ""
 
-        is_to_produce_q = {}     # Update boolean if store value < sum(oc line q.)
-        is_to_produce_line = {}  # ID for update boolean if store value < sum(oc line q.)
+        is_to_produce_q = {} # Update boolean if store value < sum(oc line q.)
+        is_to_produce_line = {} # ID for update boolean if store value < sum(oc line q.)
 
         # ---------------------------------------------------------------------
         #                                 Utility
