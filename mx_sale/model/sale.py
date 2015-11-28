@@ -116,9 +116,9 @@ class SaleOrder(orm.Model):
         
         # ORDER:
         'date_confirm': fields.date('Date confirm', 
-            help='Order confirm by the customer'),
-        'date_deadline': fields.date('Deadline', 
-            help='Delivery was load '),
+            help='Order confirm by the customer'), # TODO yet present in order?
+        'date_deadline': fields.date('Order deadline', 
+            help='Delivery term for customer'),
         # TODO used?    
         #'date_previous_deadline': fields.date(
         #    'Previous deadline', 
@@ -163,6 +163,9 @@ class SaleOrder(orm.Model):
         
     _defaults = {
         'uncovered_alert': lambda *x: 'Alert: Uncovered payment!!!',
+        'date_valid': lambda *x: (
+            datetime.now() + timedelta(days=15)).strftime(
+                DEFAULT_SERVER_DATE_FORMAT),
         }   
      
 

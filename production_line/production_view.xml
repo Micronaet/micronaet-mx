@@ -188,18 +188,17 @@
     </record>        
     
     <!--sale.order-->
-    <record model="ir.ui.view" id="view_sale_order_form_extra_fields">
+    <record model="ir.ui.view" id="view_sale_order_form_extra_booked_fields">
         <field name="name">Order deadline</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="mx_sale.view_sale_order_pickout_form" />
         <field name="arch" type="xml">
             <field name="date_booked" position="after">
-               <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" />
+                <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" />
                 <field name="accounting_order" invisible="1" />                
             </field>        
         </field>
-    </record>    
-
+    </record> 
     <record model="ir.ui.view" id="view_sale_order_form_extra_fields">
         <field name="name">Order deadline</field>
         <field name="model">sale.order</field>
