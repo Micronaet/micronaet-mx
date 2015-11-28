@@ -195,17 +195,10 @@ class SaleOrderLine(orm.Model):
         'gr_weight': fields.float('Gross weight'),
         #states={'draft': [('readonly', False)]}),
         
-         # Moved here from production:
         'date_deadline': fields.date('Deadline'),
-        'date_delivery': fields.related(
+        'date_delivery': fields.related( # TODO use booked!!!!
             'order_id', 'date_delivery', type='date', string='Date delivery'),
             
-        # TODO Note: there's yet product.package that is a sort of UL    
-        # TODO remove?
-        'product_ul_id':fields.many2one(
-            'product.ul', 'Required package', ondelete='set null'),
-        # Moved here ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
         'alias_id':fields.many2one(
             'product.product', 'Marked as product', ondelete='set null'),
 

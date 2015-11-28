@@ -618,7 +618,7 @@ class sale_order_line_extra(osv.osv):
             'duelist_exposition', type='boolean', string='Exposed', 
             store=False),
 
-        'to_produce': fields.boolean('To produce', required=False, 
+        'to_produce': fields.boolean('To produce', 
             help="During order importation test if the order line active has product that need to be produced"),
         'use_accounting_qty': fields.boolean('Use accounting qty', 
             help="Set the line to be carried on with store quantity present in accounting store"),
@@ -627,9 +627,9 @@ class sale_order_line_extra(osv.osv):
             string='Supply method', 
             store=False),
 
-        'production_line': fields.boolean('Is for production', required=False),
+        'production_line': fields.boolean('Is for production'),
         'mrp_production_id': fields.many2one('mrp.production', 
-            'Production order', required=False, ondelete='set null'),
+            'Production order', ondelete='set null'),
         'accounting_qty': fields.related('product_id','accounting_qty', 
             type='float',  digits=(16, 3), string='Accounting Q.ty', 
             store=False),
@@ -666,8 +666,8 @@ class mrp_production_material(osv.osv):
         'product_id':fields.many2one('product.product', 'Product', required=True),
         'quantity': fields.float('Quantity', digits=(16, 2)),
         'uom_id': fields.related('product_id','uom_id', type='many2one', relation='product.uom', string='UOM'),
-        'mrp_production_id':fields.many2one('mrp.production', 'Production order', ondelete="cascade", required=False),        # Link if used mrp.production object
-        'workcenter_production_id':fields.many2one('mrp.production.workcenter.line', 'Lavoration', ondelete="cascade", required=False), # Link if used mrp.production.workcenter.line object
+        'mrp_production_id':fields.many2one('mrp.production', 'Production order', ondelete="cascade"),        # Link if used mrp.production object
+        'workcenter_production_id':fields.many2one('mrp.production.workcenter.line', 'Lavoration', ondelete="cascade"), # Link if used mrp.production.workcenter.line object
         'accounting_qty': fields.related('product_id','accounting_qty', type='float',  digits=(16, 3), string='Accounting Q.ty', store=False),
         }
 
@@ -707,17 +707,17 @@ class mrp_production_workcenter_load(osv.osv):
         #'name': fields.char('Name',),
         'date': fields.datetime('Date', help="Operation date", required=True),
         'product_qty': fields.float('Quantity', digits=(16, 6), required=True),
-        'product_code': fields.char('Product code', size=64, required=False, 
+        'product_code': fields.char('Product code', size=64, 
             readonly=False, 
             help="Long code for product: product - lavoration - package - ecc. (used for traceability)"),
         'partial': fields.boolean('Partial'),
         'user_id': fields.many2one('res.users', 'User', required=True),
         'line_id': fields.many2one('mrp.production.workcenter.line', 'Workcenter line', required=True),
 
-        'package_id':fields.many2one('product.ul', 'Package', required=False),
+        'package_id':fields.many2one('product.ul', 'Package'),
         'ul_qty': fields.integer('Package q.', help="Package quantity to unload from accounting"),
 
-        'pallet_product_id':fields.many2one('product.product', 'Pallet', required=False),
+        'pallet_product_id':fields.many2one('product.product', 'Pallet'),
         'pallet_qty': fields.integer('Pallet q.', help="Pallet quantity to unload for accounting"),
 
         # Information linked with accounting program:
@@ -727,13 +727,13 @@ class mrp_production_workcenter_load(osv.osv):
             required=False,
             readonly=False,
             help="Code of CL assigned during importation in accounting program (for link the document)",),
-        'accounting_cost': fields.float('Cost from material', digits=(16, 6), required=False),
-        'accounting_cost_confirmed': fields.boolean('Cost confirmed', required=False),
+        'accounting_cost': fields.float('Cost from material', digits=(16, 6)),
+        'accounting_cost_confirmed': fields.boolean('Cost confirmed'),
 
-        'recycle': fields.boolean('Recycle', required=False, help="Recycle product"),
-        'recycle_product_id': fields.many2one('product.product', 'Product', required=False),
+        'recycle': fields.boolean('Recycle', help="Recycle product"),
+        'recycle_product_id': fields.many2one('product.product', 'Product'),
 
-        'wrong':fields.boolean('Wrong', required=False, help="Wrong product, coded with a standard code"),
+        'wrong':fields.boolean('Wrong', help="Wrong product, coded with a standard code"),
         'wrong_comment': fields.text('Wrong comment'),
 
         'sequence': fields.integer('Seq. n.'),
@@ -761,19 +761,19 @@ class mrp_workcenter_history(osv.osv):
         'date': fields.datetime('Date', help="Operation date", required=True),
         'product_id': fields.many2one('product.product', 'Product', required=True),
         'workcenter_id': fields.many2one('mrp.workcenter', 'Workcenter', required=True),
-        'single_cycle_duration': fields.float('Cycle duration', digits=(8, 3), required=False, help="Duration time for one cycle"),
-        'single_cycle_qty': fields.float('Cycle quantity', digits=(8, 3), required=False, help="Production quantity for one cycle"),
+        'single_cycle_duration': fields.float('Cycle duration', digits=(8, 3), help="Duration time for one cycle"),
+        'single_cycle_qty': fields.float('Cycle quantity', digits=(8, 3), help="Production quantity for one cycle"),
         # Parameter:
-        'parameter_note':fields.text('Parameter note', required=False, readonly=False),
+        'parameter_note':fields.text('Parameter note', readonly=False),
 
         #  E energo     S lubrificanti polvere
-        'parameter_hammer':fields.char('Hammers', size=15, required=False, readonly=False),
-        'parameter_grid':fields.char('Grid', size=15, required=False, readonly=False),
-        'parameter_speed':fields.char('Speed m/s', size=15, required=False, readonly=False),
-        'parameter_temperature':fields.char('Temperature', size=15, required=False, readonly=False), # also G grassi    O oli      F fosfatanti
+        'parameter_hammer':fields.char('Hammers', size=15, readonly=False),
+        'parameter_grid':fields.char('Grid', size=15, readonly=False),
+        'parameter_speed':fields.char('Speed m/s', size=15, readonly=False),
+        'parameter_temperature':fields.char('Temperature', size=15, readonly=False), # also G grassi    O oli      F fosfatanti
 
         #  X panflux    N sali
-        'parameter_time_misc': fields.float('Time misc.', digits=(8, 3), required=False, help="Time for misc."), # also G grassi    O oli      F fosfatanti
+        'parameter_time_misc': fields.float('Time misc.', digits=(8, 3), help="Time for misc."), # also G grassi    O oli      F fosfatanti
         }
 
     _defaults={
@@ -797,10 +797,10 @@ class mrp_workcenter(osv.osv):
     _inherit = 'mrp.workcenter'
 
     _columns = {
-        'history_lavoration_ids': fields.one2many('mrp.workcenter.history', 'workcenter_id', 'Lavoration history', required=False),
-        'hour_daily_work': fields.float('Daily work hours', digits=(8,2), required=False, help="Usual working hour per day for this line"),
-        'cost_product_id': fields.many2one('product.product', 'Product linked', required=False, help='Product linked to the line for cost computation'),
-        'parent_workcenter_id': fields.many2one('mrp.workcenter', 'Parent workcenter', required=False, help='Parent workcenter line, used for put history elements (not for lavoration cost that are linked to line)'),
+        'history_lavoration_ids': fields.one2many('mrp.workcenter.history', 'workcenter_id', 'Lavoration history'),
+        'hour_daily_work': fields.float('Daily work hours', digits=(8,2), help="Usual working hour per day for this line"),
+        'cost_product_id': fields.many2one('product.product', 'Product linked', help='Product linked to the line for cost computation'),
+        'parent_workcenter_id': fields.many2one('mrp.workcenter', 'Parent workcenter', help='Parent workcenter line, used for put history elements (not for lavoration cost that are linked to line)'),
         }
     _defaults = {
         'hour_daily_work': lambda *x: 16, # default working hour
@@ -1142,20 +1142,20 @@ class mrp_production_workcenter_line_extra(osv.osv):
     #    return res
 
     _columns = {
-        'bom_material_ids':fields.one2many('mrp.production.material', 'workcenter_production_id', 'BOM material lines', required=False),
+        'bom_material_ids':fields.one2many('mrp.production.material', 'workcenter_production_id', 'BOM material lines'),
         'product_qty': fields.float('Quantity', digits=(16, 6), required=True),
         'real_product_qty': fields.float('Real quantity', digits=(16, 6), required=True, help="This value will be create in accounting as a CL of product"), # TODO trasferire totale nella produzione
         'lavoration_note': fields.text('Lavoration note'),
         'anomalie_note': fields.text('Anomalies'),
-        #'lavoration_number': fields.char('Lavoration ID', size=16, required=False, help="ID for traceability of the lavoration"),
+        #'lavoration_number': fields.char('Lavoration ID', size=16, help="ID for traceability of the lavoration"),
         'accounting_sl_code': fields.char('Accounting SL code', size=8, help="Code of SL assigned during importation in accounting program (material and package)"),
 
         #NOTE: used other date for planning element because original date_planned and date_planned_end are update from mrp.production
         'real_date_planned': fields.datetime('Date planned', help = "Real date planned for scheduling operation", required = True),
         'real_date_planned_end': fields.datetime('Date planned end', help = "Real date planned end for scheduling operation"),
 
-        'single_cycle_duration': fields.float('Cycle duration', digits=(8, 3), required=False, help="Duration time for one cycle"),
-        'single_cycle_qty': fields.float('Cycle quantity', digits=(8, 3), required=False, help="Production quantity for one cycle"),
+        'single_cycle_duration': fields.float('Cycle duration', digits=(8, 3), help="Duration time for one cycle"),
+        'single_cycle_qty': fields.float('Cycle quantity', digits=(8, 3), help="Production quantity for one cycle"),
         'force_cycle_default': fields.boolean('Force as default parameters', help="Save this parameter for product cycle in this line as default, next lavoration start with this hour cycle values!"),
         'load_ids': fields.one2many('mrp.production.workcenter.load', 'line_id', 'Load'),
         'unload_confirmed': fields.boolean('Unload confirmed', help="All material in list are confirmed!"),
@@ -1187,17 +1187,24 @@ class mrp_production_workcenter_line_extra(osv.osv):
 class mrp_production_package(osv.osv):
     ''' Package to use for production
     '''
-    _name="mrp.production.package"
+    _name = "mrp.production.package"
     _description = 'Production package'
     _rec_name = 'partner_id'
     
     _columns = {
-        'production_id':fields.many2one('mrp.production', 'Production', required=False, ondelete='cascade', ),
-        'product_ul_id':fields.many2one('product.ul', 'Required package', required=False, ondelete='set null', ),
-        'partner_id':fields.many2one('res.partner', 'Customer', required=False, ondelete='set null', ),
-        'order_line_id':fields.many2one('sale.order.line', 'Sale order line', required=False, ondelete='set null', ),
+        'production_id':fields.many2one('mrp.production', 'Production', 
+            ondelete='cascade'),
+        # TODO field product_ul_id to remove (use package_id)    
+        'product_ul_id':fields.many2one('product.ul', 'Required package', 
+            ondelete='set null'),
+        'packaging_id':fields.many2one('product.packaging', 'Required package', 
+            ondelete='set null'),
+        'partner_id':fields.many2one('res.partner', 'Customer', 
+            ondelete='set null'),
+        'order_line_id':fields.many2one('sale.order.line', 'Sale order line', 
+            ondelete='set null'),
         'quantity': fields.float('Quantity', digits=(16, 2)),    
-        'stock': fields.boolean('Stock', required=False),
+        'stock': fields.boolean('Stock'),
     }
     _defaults = {
         'stock': lambda *x: True,
@@ -1402,13 +1409,13 @@ class mrp_production_extra(osv.osv):
             required=False),#write=['base.group_sale_manager'], read=['base.group_user','base.group_sale_salesman']),
         'bom_material_ids': fields.one2many(
             'mrp.production.material', 'mrp_production_id', 
-            'BOM material lines', required=False),
+            'BOM material lines'),
         'package_ids': fields.one2many(
             'mrp.production.package', 'production_id', 'Package', 
             required=False),
         'load_ids': fields.one2many(
             'mrp.production.workcenter.load', 
-            'production_id', 'Loads', required=False),
+            'production_id', 'Loads'),
         'accounting_qty': fields.related(
             'product_id','accounting_qty', type='float', 
             digits=(16, 3), string='Accounting Q.ty', store=False),
@@ -1556,8 +1563,8 @@ class sale_order_line_extra(osv.osv):
     _columns = {
         'state_info': fields.related('mrp_production_id', 'state_info', type="char", string="Production info", store = False),
 
-        'previous_product_qty': fields.float('Previous quantity', digits=(16, 6), required=False, help="Save last modified value if Q. is changed"),
-        'previous_product_id': fields.many2one('product.product', 'Previous product', required=False, help="Save last modified product_id if changed"),
+        'previous_product_qty': fields.float('Previous quantity', digits=(16, 6), help="Save last modified value if Q. is changed"),
+        'previous_product_id': fields.many2one('product.product', 'Previous product', help="Save last modified product_id if changed"),
         'mandatory_delivery': fields.function(
             _function_get_mandatory_delivery, method=True, type='boolean', 
             string='Mandatory delivery', store=False),

@@ -843,7 +843,7 @@
                                     <field name="date_deadline" />                    
                                     <field name="product_uom_qty" sum="Total" />
                                     <field name="product_uom" string="UOM"/>
-                                    <field name="product_ul_id" string="Package"/>
+                                    <field name="product_packaging" />
                                     <field name="state" invisible="1" />
                                     <button name="free_line" type="object" string="Free line" icon="gtk-disconnect" />
                                 </tree>
@@ -858,7 +858,7 @@
                                         <field name="product_uom_qty" readonly="1"/>
                                         <field name="product_uom" readonly="1"/>
 
-                                        <field name="product_ul_id" string="Package"/>
+                                        <field name="product_packaging" />
                                         <field name="date_deadline" readonly="1"/>                    
 
                                         <field name="state" invisible="1" />
@@ -873,11 +873,11 @@
 					                <field name="stock" />
                                     <field name="partner_id" attrs="{'required':[('stock','=',False)]}"/>
                                     <field name="quantity" sum="total"/>
-                                    <field name="product_ul_id" />                                    
+                                    <field name="packaging_id" />
                                 </tree>
 					            <form string="Package extra sale order">
                                     <field name="stock" />
-                                    <field name="product_ul_id" />                                    
+                                    <field name="packaging_id" />
                                     <field name="partner_id" attrs="{'required':[('stock','=',False)]}"/>
                                     <field name="production_id" invisible="1"/>
                                     <field name="quantity" sumn="total"/>
@@ -908,7 +908,7 @@
                     <filter icon="terp-go-home" name="uncovered" string="Uncovered" domain="[('mrp_production_id','=',False),('use_accounting_qty','=',False)]"/>
                     
                     <separator string="Package:"/>
-                    <filter icon="terp-go-home" name="unpackaged" string="Without package" domain="[('product_ul_id','=',False)]"/>
+                    <filter icon="terp-go-home" name="unpackaged" string="Without package" domain="[('product_packaging','=',False)]"/>
                     
                     <separator string="Manage Production:"/>
                     <!--<filter icon="terp-go-home" name="to_produce" string="Not to produce" domain="[('to_produce','=',True),('mrp_production_id','=',False)]" />-->
@@ -949,7 +949,7 @@
                     <field name="mandatory_delivery" invisible="1" />
                     <field name="product_uom" />
                     <field name="product_uom_qty" sum="Total" />
-                    <field name="product_ul_id" string="Package"/>
+                    <field name="product_packaging" />
                     <button name="close_with_accounting_store" type="object" string="Use mag." icon="gtk-go-forward" attrs="{'invisible':['|',('use_accounting_qty','=',True),('mrp_production_id','!=',False),]}"/>
                     <field name="use_accounting_qty" invisible="1"/>
                     <!--<field name="accounting_qty" />-->
@@ -976,7 +976,7 @@
                 <group colspan="4" col="4">                
                     <separator string="Line:" colspan="4" />
                     <field name="sequence" />
-                    <field name="product_ul_id" string="Package"/>                
+                    <field name="product_packaging" />
                     
                     <field name="product_id" />
                     <field name="product_uom_qty" />                    
