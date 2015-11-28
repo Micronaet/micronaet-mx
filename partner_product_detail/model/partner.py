@@ -93,7 +93,7 @@ class SaleOrderLine(orm.Model):
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, 
             fiscal_position=False, flag=False, context=None):
-        ''' Override function for set up extra fields
+        ''' Override function for set up extra fields as partner customization
         '''    
         context = context or {}
         

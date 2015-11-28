@@ -647,7 +647,6 @@ class sale_order_line(osv.osv):
             fiscal_position=False, flag=False, context=None):
         ''' On change product_id in sale.order.line
         '''    
-
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
         partner_obj = self.pool.get('res.partner')

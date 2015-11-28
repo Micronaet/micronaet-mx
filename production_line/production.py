@@ -612,13 +612,6 @@ class sale_order_line_extra(osv.osv):
         return self.pool.get('sale.order')._columns['state'].selection
        
     _columns = {
-        # TODO remove (moved in mx_sale:
-        'date_deadline': fields.date('Deadline'),
-        'date_delivery':fields.related(
-            'order_id', 'date_delivery', type='date', string='Date delivery'),
-        #'product_ul_id':fields.many2one('product.ul', 'Required package', required=False, ondelete='set null'),
-        # TODO remove ^^^^^^^^^^^^^^^^^^
-
         'partner_id': fields.related('order_id', 'partner_id', type='many2one', 
             relation='res.partner', string='Partner', store=True),
         'duelist_exposition': fields.related('partner_id', 
