@@ -188,7 +188,8 @@
     </record>        
     
     <!--sale.order-->
-    <record model="ir.ui.view" id="view_sale_order_form_booked">
+    <!--TODO No button!!!!-->
+    <!--<record model="ir.ui.view" id="view_sale_order_form_booked">
         <field name="name">Order deadline</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="mx_sale.view_sale_order_pickout_form" />
@@ -198,7 +199,7 @@
                 <field name="accounting_order" invisible="1" />                
             </field>        
         </field>
-    </record> 
+    </record>-->
     <record model="ir.ui.view" id="view_sale_order_form_extra_fields">
         <field name="name">Order deadline</field>
         <field name="model">sale.order</field>

@@ -109,7 +109,7 @@ class SaleOrder(orm.Model):
         return res
 
     _columns = {
-        # moved here from production:
+        # moved here from production: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
         # QUOTATION:
         'date_valid': fields.date('Validity date', 
             help='Max date for validity of offer'),
@@ -123,8 +123,7 @@ class SaleOrder(orm.Model):
         #'date_previous_deadline': fields.date(
         #    'Previous deadline', 
         #    help="If during sync deadline is modified this field contain old "
-        #        "value before update"),
-         
+        #        "value before update"),         
         # TODO remove:
         # Replaced with date_booked!!!    
         #'date_delivery': fields.date('Delivery', 
@@ -137,10 +136,8 @@ class SaleOrder(orm.Model):
             help='Delivery was booked and fixed!'),            
         'date_delivery': fields.date('Load / Availability',
             help='For ex works is availability date, other clause is '
-                'load date'),
-
-                
-        # moved ^^^^^^^^^^^^^^^^^^^^^
+                'load date'),                
+        # moved here from production ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # Account extra field saved in sale.order:
         'default_transport_id': fields.many2one('res.partner', 'Vector', 
@@ -209,7 +206,7 @@ class SaleOrderLine(orm.Model):
         # Moved here ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         'alias_id':fields.many2one(
-            'product.product', 'Alias product', ondelete='set null'),
+            'product.product', 'Marked as product', ondelete='set null'),
 
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,

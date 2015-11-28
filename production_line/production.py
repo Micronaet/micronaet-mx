@@ -187,7 +187,7 @@ class sale_order_add_extra(osv.osv):
             production orders
         '''
         order_proxy = self.browse(cr, uid, ids, context=context)[0]
-        data = {'accounting_state': 'planned',}
+        data = {'accounting_state': 'planned'}
 
         if not order_proxy.date_booked:
             data['date_booked'] = order_proxy.date_deadline or datetime.now(
