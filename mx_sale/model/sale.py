@@ -136,7 +136,10 @@ class SaleOrder(orm.Model):
             help='Delivery was booked and fixed!'),            
         'date_delivery': fields.date('Load / Availability',
             help='For ex works is availability date, other clause is '
-                'load date'),                
+                'load date'),
+        'date_delivery_confirmed': fields.boolean('Delivery confirmed' 
+            help='Delivery confirmed, product available '
+                '(2 cases depend on incoterms)'),
         # moved here from production ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # Account extra field saved in sale.order:

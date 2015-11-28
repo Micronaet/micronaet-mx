@@ -34,8 +34,10 @@
                             <!--order-->
                             <field name="date_confirm" />
                             <field name="date_deadline" />
-                            <field name="date_booked" />
-                            <field name="date_delivery" />                        
+                            <field name="date_booked" />                            
+                            <newline />
+                            <field name="date_delivery_confirmed" />
+                            <field name="date_delivery" />                  
                         </group>
                     </page>
                 </xpath>
