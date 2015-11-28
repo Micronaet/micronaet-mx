@@ -582,23 +582,28 @@ class sale_order_line(osv.osv):
         if not default:
             default = {}
         default.update({'move_ids': []})
-        return super(sale_order_line, self).copy_data(cr, uid, id, default, context=context)
+        return super(sale_order_line, self).copy_data(
+            cr, uid, id, default, context=context)
 
-    def product_packaging_change(self, cr, uid, ids, pricelist, product, qty=0, uom=False,
-                                   partner_id=False, packaging=False, flag=False, context=None):
+    def product_packaging_change(
+            self, cr, uid, ids, pricelist, product, qty=0, uom=False,
+            partner_id=False, packaging=False, flag=False, context=None):
         if not product:
             return {'value': {'product_packaging': False}}
+
         product_obj = self.pool.get('product.product')
         product_uom_obj = self.pool.get('product.uom')
         pack_obj = self.pool.get('product.packaging')
+        
         warning = {}
         result = {}
         warning_msgs = ''
         if flag:
+            # NOTE: No stock information in super call (sale module)
             res = self.product_id_change(cr, uid, ids, pricelist=pricelist,
                 product=product, qty=qty, uom=uom, partner_id=partner_id,
                 packaging=packaging, flag=False, context=context)
-            warning_msgs = res.get('warning') and res['warning']['message']
+            #warning_msgs = res.get('warning') and res['warning']['message']
 
         products = product_obj.browse(cr, uid, product, context=context)
         if not products.packaging:
@@ -610,24 +615,26 @@ class sale_order_line(osv.osv):
         if packaging:
             default_uom = products.uom_id and products.uom_id.id
             pack = pack_obj.browse(cr, uid, packaging, context=context)
-            q = product_uom_obj._compute_qty(cr, uid, uom, pack.qty, default_uom)
+            q = product_uom_obj._compute_qty(
+                cr, uid, uom, pack.qty, default_uom)
 #            qty = qty - qty % q + q
             if qty and (q and not (qty % q) == 0):
                 ean = pack.ean or _('(n/a)')
                 qty_pack = pack.qty
                 type_ul = pack.ul
-                if not warning_msgs:
-                    warn_msg = _(
-                        "You selected a quantity of %d Units.\n"
-                        "But it's not compatible with the selected packaging.\n"
-                        "Here is a proposition of quantities according to the packaging:\n"
-                        "EAN: %s Quantity: %s Type of ul: %s") % \
-                            (qty, ean, qty_pack, type_ul.name)
-                    warning_msgs += _("Picking Information ! : ") + warn_msg + "\n\n"
-                warning = {
-                       'title': _('Configuration Error!'),
-                       'message': warning_msgs
-                }
+                # TODO remove warning:
+                #if not warning_msgs:
+                #    warn_msg = _(
+                #        "You selected a quantity of %d Units.\n"
+                #        "But it's not compatible with the selected packaging.\n"
+                #        "Here is a proposition of quantities according to the packaging:\n"
+                #        "EAN: %s Quantity: %s Type of ul: %s") % \
+                #            (qty, ean, qty_pack, type_ul.name)
+                #    warning_msgs += _("Picking Information ! : ") + warn_msg + "\n\n"
+                #warning = {
+                #       'title': _('Configuration Error!'),
+                #       'message': warning_msgs
+                #}
             result['product_uom_qty'] = qty
 
         return {'value': result, 'warning': warning}
