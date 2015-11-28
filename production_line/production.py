@@ -322,7 +322,8 @@ class sale_order_add_extra(osv.osv):
                 if (oc_key) not in oc_header:
                     oc_header[oc_key] = [oc_id, False] # (ID, Deadline) # NOTE no deadline in header but take the first line for get it
             except:
-                _logger.error("Problem with record: %s > %s"%(oc, sys.exc_info()))
+                _logger.error("Problem with record: %s > %s" % (
+                    oc, sys.exc_info()))
 
         # Delete header (and line linked):
         for delete_id in all_order_ids: # TODO Notify that OC is deleted from account (delivery or deleted???):
@@ -348,7 +349,8 @@ class sale_order_add_extra(osv.osv):
 
         # Load all OC line in openerp in DB_line dict
         DB_line = {}
-        for ol in line_pool.browse(cr, uid, all_order_line_ids, context=context):
+        for ol in line_pool.browse(cr, uid, all_order_line_ids, 
+                context=context):
             if ol.order_id.id not in DB_line:
                 DB_line[ol.order_id.id] = []
 
@@ -410,7 +412,8 @@ class sale_order_add_extra(osv.osv):
                     'product_uom_qty': quantity,
                     'product_uom': uom_id,
                     'price_unit': (oc_line['NPZ_UNIT'] or 0.0) * conversion,
-                    'tax_id': [(6, 0, [product_browse.taxes_id[0].id, ])] if product_browse and product_browse.taxes_id else False, # CSG_IVA
+                    'tax_id': [(6, 0, [product_browse.taxes_id[0].id, ])
+                        ] if product_browse and product_browse.taxes_id else False, # CSG_IVA
                     'production_line': product_browse.supply_method == 'produce', # IMPORTANTE CORREGGERE METTENDOLO NELLA IMPORTAZIONE PRODOTTI production_line,
                     'to_produce': True,
                     'date_deadline': date_deadline,
@@ -437,14 +440,16 @@ class sale_order_add_extra(osv.osv):
                             break # exit this for (no other lines as analyzed)
 
                 if not mod: # Create record, not found: (product_id-date_deadline)
-                    oc_line_id = line_pool.create(cr, uid, data, context=context)
+                    oc_line_id = line_pool.create(cr, uid, data, 
+                        context=context)
 
                 # Save data for accounting evaluations:
                 if product_browse.id in is_to_produce_q:
                     is_to_produce_q[product_browse.id] += quantity or 0.0
                     is_to_produce_line[product_browse.id].append(oc_line_id)
                 else:    # new element
-                    is_to_produce_q[product_browse.id] = (quantity or 0.0) + product_browse.minimum_qty # Min q. + sum(all order Q)
+                    is_to_produce_q[product_browse.id] = (
+                        quantity or 0.0) + product_browse.minimum_qty # Min q. + sum(all order Q)
                     is_to_produce_line[product_browse.id] = [oc_line_id]
             except:
                 _logger.error("Problem with oc line record: %s\n%s" % (
@@ -471,7 +476,9 @@ class sale_order_add_extra(osv.osv):
                     item.mrp_production_id.name
                 )
 
-            if delete_oc_in_production_error and self.send_mail(cr, uid, "Import sale order: Warning deletion of OC line in production", delete_oc_in_production_error, context=context):
+            if delete_oc_in_production_error and self.send_mail(cr, uid, 
+                    "Import sale order: Warning deletion of OC line in production", 
+                    delete_oc_in_production_error, context=context):
                 _logger.warning("Send mail for error / warning (OC line in production deleted)!")
             else:
                 _logger.error("Server SMTP not setted up, no mail will be sent!")
@@ -512,7 +519,8 @@ class sale_order_add_extra(osv.osv):
         #                         Importation Analysis and log
         # ---------------------------------------------------------------------
         produce_product = []
-        for product in self.pool.get('product.product').browse(cr, uid, is_to_produce_q.keys()):
+        for product in self.pool.get('product.product').browse(
+                cr, uid, is_to_produce_q.keys()):
             if product.accounting_qty > is_to_produce_q[product.id]:
                 produce_product.extend(is_to_produce_line[product.id])
         line_pool.write(cr, uid, produce_product, {
@@ -523,11 +531,19 @@ class sale_order_add_extra(osv.osv):
             SELECT 
                 product_id, product_product.accounting_qty, 
                 product_product.default_code, sum(product_uom_qty) total
-            FROM sale_order_line
-            LEFT JOIN product_product
-            ON (sale_order_line.product_id = product_product.id)
-            GROUP BY product_id, use_accounting_qty, product_product.default_code, product_product.accounting_qty
-            HAVING use_accounting_qty = True and sum(product_uom_qty)>product_product.accounting_qty;""")
+            FROM 
+                sale_order_line
+            LEFT JOIN 
+                product_product
+            ON 
+                (sale_order_line.product_id = product_product.id)
+            GROUP BY 
+                product_id, use_accounting_qty, product_product.default_code, 
+                product_product.accounting_qty
+            HAVING 
+                use_accounting_qty = True and 
+                sum(product_uom_qty) > product_product.accounting_qty;
+            """)
 
         for product_id, accounting_qty, default_code, total in cr.fetchall():
             over_store_error += "Product %s covered for %s but in accounting there's %s\n" % (
@@ -535,10 +551,14 @@ class sale_order_add_extra(osv.osv):
 
         # Send mail for log error:
         if over_store_error:
-            if self.send_mail(cr, uid, "Import sale order: Warning variation in store cover", over_store_error, context=context):
-                _logger.warning("Send mail for error / warning (OC not covered with store)!")
+            if self.send_mail(
+                    cr, uid, "Import sale order: Warning variation in store cover", 
+                    over_store_error, context=context):
+                _logger.warning(
+                    "Send mail for error / warning (OC not covered with store)!")
             else:
-                _logger.error("Server SMTP not setted up, no mail will be sent!")
+                _logger.error(
+                    "Server SMTP not setted up, no mail will be sent!")
 
         # TODO testare bene gli ordini di produzione che potrebbero avere delle mancanze!
         _logger.info("End importation OC header and line!")
@@ -552,7 +572,8 @@ class sale_order_add_extra(osv.osv):
         #'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
         # TODO Moved in mx_sale ^^^^^^^
 
-        'accounting_order': fields.boolean('Accounting order', help='It true the order is generated from accounting program, so it is temporarly present in OpenERP only for production and delivery operations'),
+        'accounting_order': fields.boolean('Accounting order', 
+            help='It true the order is generated from accounting program, so it is temporarly present in OpenERP only for production and delivery operations'),
         'accounting_state': fields.selection([
             ('not', 'Not Confirmed'), # Not confirmed (first step during importation)
             ('new', 'New'),           # Confirmed
@@ -583,7 +604,8 @@ class sale_order_line_extra(osv.osv):
     def free_line(self, cr, uid, ids, context=None):
         ''' Free the line from production order 
         '''
-        return self.write(cr, uid, ids, {'mrp_production_id': False, }, context=context)
+        return self.write(
+            cr, uid, ids, {'mrp_production_id': False}, context=context)
         
     def close_with_accounting_store(self, cr, uid, ids, context=None):
         ''' This button test if there's accounting quantity enought to close
@@ -663,12 +685,19 @@ class mrp_production_material(osv.osv):
     _rec_name = "product_id"
 
     _columns = {
-        'product_id':fields.many2one('product.product', 'Product', required=True),
+        'product_id':fields.many2one('product.product', 'Product', 
+            required=True),
         'quantity': fields.float('Quantity', digits=(16, 2)),
-        'uom_id': fields.related('product_id','uom_id', type='many2one', relation='product.uom', string='UOM'),
-        'mrp_production_id':fields.many2one('mrp.production', 'Production order', ondelete="cascade"),        # Link if used mrp.production object
-        'workcenter_production_id':fields.many2one('mrp.production.workcenter.line', 'Lavoration', ondelete="cascade"), # Link if used mrp.production.workcenter.line object
-        'accounting_qty': fields.related('product_id','accounting_qty', type='float',  digits=(16, 3), string='Accounting Q.ty', store=False),
+        'uom_id': fields.related('product_id','uom_id', type='many2one', 
+            relation='product.uom', string='UOM'),
+        'mrp_production_id':fields.many2one('mrp.production', 
+            'Production order', ondelete="cascade"), # Link if used mrp.production object
+        'workcenter_production_id':fields.many2one(
+            'mrp.production.workcenter.line', 'Lavoration', 
+            ondelete="cascade"), # Link if used mrp.production.workcenter.line object
+        'accounting_qty': fields.related('product_id','accounting_qty', 
+            type='float', digits=(16, 3), string='Accounting Q.ty', 
+            store=False),
         }
 
 class mrp_production_workcenter_load(osv.osv):
@@ -694,13 +723,16 @@ class mrp_production_workcenter_load(osv.osv):
         wc_id = vals.get('line_id', False)
         if wc_id: # mandatory
             wc_pool = self.pool.get('mrp.production.workcenter.line')
-            for lavoration in wc_pool.browse(cr, uid, wc_id, context=context).production_id.workcenter_lines:
+            for lavoration in wc_pool.browse(
+                    cr, uid, wc_id, context=context
+                    ).production_id.workcenter_lines:
                 for load in lavoration.load_ids:
                     if last < load.sequence:
                         last = load.sequence
         sequence = last + 1
         vals['sequence']=sequence
-        res_id = super(mrp_production_workcenter_load, self).create(cr, uid, vals, context=context)
+        res_id = super(mrp_production_workcenter_load, self).create(cr, uid, 
+            vals, context=context)
         return res_id
 
     _columns = {
@@ -715,10 +747,12 @@ class mrp_production_workcenter_load(osv.osv):
         'line_id': fields.many2one('mrp.production.workcenter.line', 'Workcenter line', required=True),
 
         'package_id':fields.many2one('product.ul', 'Package'),
-        'ul_qty': fields.integer('Package q.', help="Package quantity to unload from accounting"),
+        'ul_qty': fields.integer('Package q.', 
+            help="Package quantity to unload from accounting"),
 
         'pallet_product_id':fields.many2one('product.product', 'Pallet'),
-        'pallet_qty': fields.integer('Pallet q.', help="Pallet quantity to unload for accounting"),
+        'pallet_qty': fields.integer('Pallet q.', 
+            help="Pallet quantity to unload for accounting"),
 
         # Information linked with accounting program:
         'accounting_cl_code': fields.char(
@@ -737,9 +771,14 @@ class mrp_production_workcenter_load(osv.osv):
         'wrong_comment': fields.text('Wrong comment'),
 
         'sequence': fields.integer('Seq. n.'),
-        'production_id': fields.related('line_id', 'production_id', type='many2one', relation='mrp.production', string='Production', store=True),
-        'product_id': fields.related('line_id', 'product', type='many2one', relation='product.product', string='Product', store=True),
-        'workcenter_line_id': fields.related('line_id', 'workcenter_id', type='many2one', relation='mrp.workcenter', string='Line', store=True),
+        'production_id': fields.related('line_id', 'production_id', 
+            type='many2one', relation='mrp.production', string='Production', 
+            store=True),
+        'product_id': fields.related('line_id', 'product', type='many2one', 
+            relation='product.product', string='Product', store=True),
+        'workcenter_line_id': fields.related('line_id', 'workcenter_id', 
+            type='many2one', relation='mrp.workcenter', string='Line', 
+            store=True),
         }
 
     _defaults={
@@ -759,21 +798,27 @@ class mrp_workcenter_history(osv.osv):
 
     _columns = {
         'date': fields.datetime('Date', help="Operation date", required=True),
-        'product_id': fields.many2one('product.product', 'Product', required=True),
-        'workcenter_id': fields.many2one('mrp.workcenter', 'Workcenter', required=True),
-        'single_cycle_duration': fields.float('Cycle duration', digits=(8, 3), help="Duration time for one cycle"),
-        'single_cycle_qty': fields.float('Cycle quantity', digits=(8, 3), help="Production quantity for one cycle"),
+        'product_id': fields.many2one('product.product', 'Product', 
+            required=True),
+        'workcenter_id': fields.many2one('mrp.workcenter', 'Workcenter', 
+            required=True),
+        'single_cycle_duration': fields.float('Cycle duration', digits=(8, 3), 
+            help="Duration time for one cycle"),
+        'single_cycle_qty': fields.float('Cycle quantity', digits=(8, 3), 
+            help="Production quantity for one cycle"),
         # Parameter:
-        'parameter_note':fields.text('Parameter note', readonly=False),
+        'parameter_note':fields.text('Parameter note'),
 
         #  E energo     S lubrificanti polvere
-        'parameter_hammer':fields.char('Hammers', size=15, readonly=False),
-        'parameter_grid':fields.char('Grid', size=15, readonly=False),
-        'parameter_speed':fields.char('Speed m/s', size=15, readonly=False),
-        'parameter_temperature':fields.char('Temperature', size=15, readonly=False), # also G grassi    O oli      F fosfatanti
+        'parameter_hammer':fields.char('Hammers', size=15),
+        'parameter_grid':fields.char('Grid', size=15),
+        'parameter_speed':fields.char('Speed m/s', size=15),
+        'parameter_temperature':fields.char('Temperature', size=15, 
+            readonly=False), # also G grassi    O oli      F fosfatanti
 
         #  X panflux    N sali
-        'parameter_time_misc': fields.float('Time misc.', digits=(8, 3), help="Time for misc."), # also G grassi    O oli      F fosfatanti
+        'parameter_time_misc': fields.float('Time misc.', digits=(8, 3), 
+            help="Time for misc."), # also G grassi    O oli      F fosfatanti
         }
 
     _defaults={
@@ -797,10 +842,15 @@ class mrp_workcenter(osv.osv):
     _inherit = 'mrp.workcenter'
 
     _columns = {
-        'history_lavoration_ids': fields.one2many('mrp.workcenter.history', 'workcenter_id', 'Lavoration history'),
-        'hour_daily_work': fields.float('Daily work hours', digits=(8,2), help="Usual working hour per day for this line"),
-        'cost_product_id': fields.many2one('product.product', 'Product linked', help='Product linked to the line for cost computation'),
-        'parent_workcenter_id': fields.many2one('mrp.workcenter', 'Parent workcenter', help='Parent workcenter line, used for put history elements (not for lavoration cost that are linked to line)'),
+        'history_lavoration_ids': fields.one2many('mrp.workcenter.history', 
+            'workcenter_id', 'Lavoration history'),
+        'hour_daily_work': fields.float('Daily work hours', digits=(8,2), 
+            help="Usual working hour per day for this line"),
+        'cost_product_id': fields.many2one('product.product', 'Product linked', 
+            help='Product linked to the line for cost computation'),
+        'parent_workcenter_id': fields.many2one('mrp.workcenter', 
+            'Parent workcenter', 
+            help='Parent workcenter line, used for put history elements (not for lavoration cost that are linked to line)'),
         }
     _defaults = {
         'hour_daily_work': lambda *x: 16, # default working hour
@@ -816,7 +866,9 @@ class mrp_production_workcenter_line_extra(osv.osv):
         ''' Add to datetime element the hour in format float and return result
         '''
         try:
-            res = (datetime.strptime(from_datetime, "%Y-%m-%d %H:%M:%S") + timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
+            res = (datetime.strptime(
+                from_datetime, "%Y-%m-%d %H:%M:%S") + timedelta(
+                    hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
             return res
         except:
             return False # raise error?
@@ -824,7 +876,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
     # -------------
     # Override ORM:
     # -------------
-    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False):
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', 
+            context=None, toolbar=False):
         """
         Return a view and fields for current model. where view will be depends on {view_type}.
         @param cr: cursor to database
@@ -847,7 +900,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
     def date_start_now(self, cr, uid, ids, context=None):
         ''' Set data start to now
         '''
-        return self.write(cr, uid, ids, {'date_start': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)}, context=context)
+        return self.write(cr, uid, ids, {'date_start': datetime.now().strftime(
+            DEFAULT_SERVER_DATETIME_FORMAT)}, context=context)
 
     def date_stop_now(self, cr, uid, ids, context=None):
         ''' Set data stop to now
@@ -856,7 +910,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
         now = datetime.now()
         try:
             lavoration_proxy = self.browse(cr, uid, ids, context=context)[0]
-            delay = now - datetime.strptime(lavoration_proxy.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
+            delay = now - datetime.strptime(lavoration_proxy.date_start, 
+                DEFAULT_SERVER_DATETIME_FORMAT)
             delay = delay.seconds / 3600.0
 
         except:
@@ -880,19 +935,22 @@ class mrp_production_workcenter_line_extra(osv.osv):
     def load_materials_from_production(self, cr, uid, ids, context=None):
         ''' Create lined from production elements
         '''
-        return self._create_bom_lines(cr, uid, ids[0], from_production=True, context=context)
+        return self._create_bom_lines(cr, uid, ids[0], from_production=True, 
+            context=context)
 
     # ------------------
     # Onchange function:
     # ------------------
-    def onchange_workcenter_load_cycle(self, cr, uid, ids, product, workcenter_id, real_date_planned,cycle,context=None):
+    def onchange_workcenter_load_cycle(self, cr, uid, ids, product, 
+            workcenter_id, real_date_planned,cycle,context=None):
         ''' Changing workcenter load hour values and reset all totals
         '''
         res = {'value': {}}
 
         if product and workcenter_id:
             # test if there's a parent (if so read there the history)
-            wc_proxy = self.pool.get('mrp.workcenter').browse(cr, uid, workcenter_id, context=context)
+            wc_proxy = self.pool.get('mrp.workcenter').browse(
+                cr, uid, workcenter_id, context=context)
             if wc_proxy.parent_workcenter_id:
                 workcenter_id = wc_proxy.parent_workcenter_id.id
             
@@ -907,7 +965,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
                 res['value']['single_cycle_qty'] = history_proxy.single_cycle_qty
                 res['force_cycle_default'] = False
                 if real_date_planned:
-                    res['value']['real_date_planned_end'] = self.add_hour(real_date_planned, history_proxy.single_cycle_duration)
+                    res['value']['real_date_planned_end'] = self.add_hour(
+                        real_date_planned, history_proxy.single_cycle_duration)
 
                 # Warning message because totals are reset and hourly are loaded from history:
                 res['warning'] = {
@@ -916,7 +975,9 @@ class mrp_production_workcenter_line_extra(osv.osv):
                 }
         return res
 
-    def onchange_cycle_values(self, cr, uid, ids, cycle, single_cycle_duration, single_cycle_qty, real_date_planned, hour, product_qty, context=None):#, mode='value', context=None):
+    def onchange_cycle_values(self, cr, uid, ids, cycle, single_cycle_duration, 
+            single_cycle_qty, real_date_planned, hour, product_qty, 
+            context=None):#, mode='value', context=None):
         ''' On change cycle parameters (one function for all elements for loop
             problems.
             self: obj instance
@@ -967,13 +1028,15 @@ class mrp_production_workcenter_line_extra(osv.osv):
              workcenter_id = vals.get('workcenter_id',False)
              
              # Test if workcenbter is child (if so take parent for save hist.)
-             wc_proxy = self.pool.get('mrp.workcenter').browse(cr, uid, workcenter_id, context=context)
+             wc_proxy = self.pool.get('mrp.workcenter').browse(
+                cr, uid, workcenter_id, context=context)
              if wc_proxy.parent_workcenter_id:
                  workcenter_id = wc_proxy.parent_workcenter_id.id
                  
              if not production_id:
                  return False # error
-             product_id = production_pool.browse(cr, uid, production_id, context=context).product_id.id
+             product_id = production_pool.browse(
+                cr, uid, production_id, context=context).product_id.id
 
              data = {
                  'product_id': product_id,
@@ -998,7 +1061,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
     # -----------------
     # Utility function:
     # -----------------
-    def _create_bom_lines(self, cr, uid, lavoration_id, from_production=False, context=None):
+    def _create_bom_lines(self, cr, uid, lavoration_id, from_production=False, 
+            context=None):
         ''' Create a BOM list for the passed lavoration
             Actual items will be deleted and reloaded with quantity passed
         '''
@@ -1042,7 +1106,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
         """ Override create method only for generare BOM materials in subfield
             bom_materials_ids, initially is a copy of mrp.production ones
         """
-        vals['real_date_planned_end'] = self.add_hour(vals.get('real_date_planned',False), vals.get('hour',False))
+        vals['real_date_planned_end'] = self.add_hour(vals.get(
+            'real_date_planned',False), vals.get('hour',False))
         if vals.get('force_cycle_default', False):
             res = self.cycle_historyzation(cr, uid, vals, context=context)
             vals['force_cycle_default'] = False # after historization force return False
@@ -1065,17 +1130,29 @@ class mrp_production_workcenter_line_extra(osv.osv):
         """
         wk_proxy=self.browse(cr, uid, ids, context=context)[0] # for load missing values:
         if vals.get('real_date_planned',False) or vals.get('hour',False):
-            vals['real_date_planned_end'] = self.add_hour(vals.get('real_date_planned',wk_proxy.real_date_planned), vals.get('hour',wk_proxy.hour))
+            vals['real_date_planned_end'] = self.add_hour(vals.get(
+                'real_date_planned',wk_proxy.real_date_planned), vals.get(
+                    'hour',wk_proxy.hour))
 
         if vals.get('force_cycle_default', False): # must save parameters for lavoration product-line
             # Update value if not present in write operation:
-            vals['workcenter_id'] = vals.get('workcenter_id', wk_proxy.workcenter_id.id)
-            vals['production_id'] = vals.get('production_id', wk_proxy.production_id.id) # TODO for get product_id jumping on production_id
-            vals['single_cycle_duration'] = vals.get('single_cycle_duration', wk_proxy.single_cycle_duration)
-            vals['single_cycle_qty'] = vals.get('single_cycle_qty', wk_proxy.single_cycle_qty)
-            vals['force_cycle_default'] = False # Return to false because the update operation is done!
-            update = self.cycle_historyzation(cr, uid, vals, context=context) # Update history of product-workcenter
-        return super(mrp_production_workcenter_line_extra, self).write(cr, uid, ids, vals, context=context, update=False)
+            vals['workcenter_id'] = vals.get(
+                'workcenter_id', wk_proxy.workcenter_id.id)
+            vals['production_id'] = vals.get(
+                'production_id', wk_proxy.production_id.id) # TODO for get product_id jumping on production_id
+            vals['single_cycle_duration'] = vals.get(
+                'single_cycle_duration', wk_proxy.single_cycle_duration)
+            vals['single_cycle_qty'] = vals.get(
+                'single_cycle_qty', wk_proxy.single_cycle_qty)
+            vals['force_cycle_default'] = False 
+            # Return to false because the update operation is done!
+
+            # Update history of product-workcenter
+            update = self.cycle_historyzation(
+                cr, uid, vals, context=context) 
+                
+        return super(mrp_production_workcenter_line_extra, self).write(
+            cr, uid, ids, vals, context=context, update=False)
 
         """#TODO: process before updating resource
         real_date_planned=vals.get('real_date_planned', False)
@@ -1086,7 +1163,8 @@ class mrp_production_workcenter_line_extra(osv.osv):
                 for order_line in lavoration.production_id.order_line_ids:
                     if order_line.order_id.state=='planned':
                         if real_date_planned > order_line.order_id.date_delivery: # mandatory
-                            raise osv.except_osv(_('Error!'), _("There's one order with planned delivery date [%s - %s]!"%(order_line.order_id.name, order_line.order_id.date_delivery)))
+                            raise osv.except_osv(_('Error!'), 
+                                _("There's one order with planned delivery date [%s - %s]!"%(order_line.order_id.name, order_line.order_id.date_delivery)))
 
             # 2. test state if can moved
         res = super(mrp_production_workcenter_line_extra, self).write(cr, user, ids, vals, context)
@@ -1194,9 +1272,12 @@ class mrp_production_package(osv.osv):
     _columns = {
         'production_id':fields.many2one('mrp.production', 'Production', 
             ondelete='cascade'),
-        # TODO field product_ul_id to remove (use package_id)    
+
+        # TODO field product_ul_id to remove (use package_id) vvvvvvvvvvvvvvvvv
         'product_ul_id':fields.many2one('product.ul', 'Required package', 
             ondelete='set null'),
+        # TODO field product_ul_id to remove (use package_id) ^^^^^^^^^^^^^^^^^
+            
         'packaging_id':fields.many2one('product.packaging', 'Required package', 
             ondelete='set null'),
         'partner_id':fields.many2one('res.partner', 'Customer', 
