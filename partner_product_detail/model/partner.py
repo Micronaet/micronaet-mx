@@ -61,7 +61,8 @@ class PartnerProductParticularity(orm.Model):
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
-        'ul_id': fields.many2one('product.ul', 'Packaging'),
+        #'ul_id': fields.many2one('product.ul', 'Packaging'),
+        'packaging_id': fields.many2one('product.packging', 'Packaging'),
 
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
@@ -88,22 +89,6 @@ class SaleOrderLine(orm.Model):
     '''    
     _inherit = 'sale.order.line'
     
-    # -------------------------------------------------------------------------
-    #                                  Override:
-    # -------------------------------------------------------------------------
-    # onchange:    
-    #def product_packaging_change(self, cr, uid, ids, pricelist, 
-    #    product, qty=0, uom=False, partner_id=False, packaging=False, 
-    #    flag=False, context=None):
-    #    ''' Override for remove check
-    #    '''
-    #    res = super(SaleOrderLine, self).product_packaging_change(cr, uid, 
-    #        ids, pricelist, product, qty, uom, 
-    #        partner_id, packaging, flag, context=context)
-    #    if 'warning' in res:    
-    #        del(res['warning'])    
-    #    return res        
-
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, 
@@ -127,7 +112,8 @@ class SaleOrderLine(orm.Model):
             res['value'].update({
                 'alias_id': False,                
                 'price_unit': False,
-                'ul_id': False,
+                #'ul_id': False,
+                'packaging_id': False,
                 'load_qty': False,
                 # TODO
                 })
@@ -150,13 +136,15 @@ class SaleOrderLine(orm.Model):
                     'alias_id': item.alias_id.id,
                     'price_unit': item.price,
                     'ul_id': item.ul_id.id,
+                    # TODO use first if not present in customization?
+                    'packaging_id': item.packaging_id.id, 
                     'load_qty': item.load_qty,
                     })
         return res
     
     _columns = {
-        'ul_id': fields.many2one('product.ul', 'Packaging', 
-            ondelete='set null'),
+        #'ul_id': fields.many2one('product.ul', 'Packaging', 
+        #    ondelete='set null'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         }
         
