@@ -109,7 +109,6 @@ class SaleOrder(orm.Model):
         return res
 
     _columns = {
-        # moved here from production: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
         # QUOTATION:
         'date_valid': fields.date('Validity date', 
             help='Max date for validity of offer'),
@@ -119,6 +118,15 @@ class SaleOrder(orm.Model):
             help='Order confirm by the customer'), # TODO yet present in order?
         'date_deadline': fields.date('Order deadline', 
             help='Delivery term for customer'),
+        # Fixed by delivery team:
+        'date_booked': fields.date('Booked date', 
+            help='Delivery was booked and fixed!'),            
+        'date_delivery': fields.date('Load / Availability',
+            help='For ex works is availability date, other clause is '
+                'load date'),
+        'date_delivery_confirmed': fields.boolean('Delivery confirmed',
+            help='Delivery confirmed, product available '
+                '(2 cases depend on incoterms)'),
         # TODO used?    
         #'date_previous_deadline': fields.date(
         #    'Previous deadline', 
@@ -130,17 +138,6 @@ class SaleOrder(orm.Model):
         #    help='Contain delivery date, when present production plan work '
         #        'with this instead of deadline value, if forced production '
         #        'cannot be moved'),
-
-        # Fixed by delivery team:
-        'date_booked': fields.date('Booked date', 
-            help='Delivery was booked and fixed!'),            
-        'date_delivery': fields.date('Load / Availability',
-            help='For ex works is availability date, other clause is '
-                'load date'),
-        'date_delivery_confirmed': fields.boolean('Delivery confirmed' 
-            help='Delivery confirmed, product available '
-                '(2 cases depend on incoterms)'),
-        # moved here from production ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         # Account extra field saved in sale.order:
         'default_transport_id': fields.many2one('res.partner', 'Vector', 
