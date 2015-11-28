@@ -32,6 +32,7 @@
         'base',
         'product',
         'sale',
+        'sale_stock', # TODO move in another module onchange
         ],
     'init_xml': [],
     'demo': [],

@@ -23,10 +23,18 @@
                     </div>
                     <field name="uncovered_payment" invisible="1" />
                 </xpath>
-
-                <field name="date_order" position="after">                
-                    <field name="date_load" />
+                <field name="date_order" position="after"> 
+                    <field name="date_valid" />
                 </field>
+
+                <xpath expr="/form/sheet/group[1]/group[2]" position="after">
+                    <group name="order_date_group" string="Order date:" colspan="4" col="4"> 
+                        <field name="date_confirm" />
+                        <field name="date_deadline" />
+                        <field name="date_booked" />
+                        <field name="date_load" />                        
+                    </group>
+                </xpath>
                 <field name="partner_id" position="after">
                     <field name="picking_ids" attrs="{'invisible': [('state','not in',('confirmed','done'))]}">
                         <tree string="Pick out" > <!--colors="black:ddt_number!=False"-->
@@ -46,8 +54,7 @@
                                <field name="goods_description_id" />
                                <field name="transportation_reason_id" />
                                <field name="payment_term_id" />
-                               <field name="bank_account_id" domain="[('partner_id', '=', partner_id)]"/>
-                               
+                               <field name="bank_account_id" domain="[('partner_id', '=', partner_id)]"/>                               
                         </group>     
                     </page>
                 </xpath>                
@@ -89,9 +96,6 @@
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='address_allotment_id']" position="attributes">
                      <attribute name="invisible">1</attribute>
                 </xpath>                
-                <!--<xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='delay']" position="attributes">
-                     <attribute name="invisible">1</attribute>
-                </xpath>-->
             </field>
         </record>
     </data>

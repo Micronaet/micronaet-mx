@@ -191,28 +191,23 @@
     <record model="ir.ui.view" id="view_sale_order_form_extra_fields">
         <field name="name">Order deadline</field>
         <field name="model">sale.order</field>
+        <field name="inherit_id" ref="mx_sale.view_sale_order_pickout_form" />
+        <field name="arch" type="xml">
+            <field name="date_booked" position="after">
+               <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" />
+                <field name="accounting_order" invisible="1" />                
+            </field>        
+        </field>
+    </record>    
+
+    <record model="ir.ui.view" id="view_sale_order_form_extra_fields">
+        <field name="name">Order deadline</field>
+        <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <!--<xpath expr="/form/header" position="attributes">
-               <attribute name="attrs">{'invisible':[('accounting_order','=',True)]}</attribute>
-            </xpath>-->
-
             <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
                <field name="accounting_state" />
             </xpath>
-
-            <!--<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree" position="attributes">
-               <attribute name="colors">red:accounting_state=='deleted'</attribute>
-            </xpath>-->
-            
-            <field name="date_order" position="after">
-                <group name="delivery" colspan="4" col="2">
-                   <field name="date_delivery" />
-                   <button colspan="2" name="confirm_delivery" type="object" string="Confirm delivery" />
-                </group>       
-                <!--<field name="accounting_state" readonly="1" />-->
-                <field name="accounting_order" invisible="1" />
-            </field>            
         </field>
     </record>    
     <record model="ir.ui.view" id="view_sale_order_tree_extra_fields">

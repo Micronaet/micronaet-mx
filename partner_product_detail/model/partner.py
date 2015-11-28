@@ -92,6 +92,18 @@ class SaleOrderLine(orm.Model):
     #                                  Override:
     # -------------------------------------------------------------------------
     # onchange:    
+    #def product_packaging_change(self, cr, uid, ids, pricelist, 
+    #    product, qty=0, uom=False, partner_id=False, packaging=False, 
+    #    flag=False, context=None):
+    #    ''' Override for remove check
+    #    '''
+    #    res = super(SaleOrderLine, self).product_packaging_change(cr, uid, 
+    #        ids, pricelist, product, qty, uom, 
+    #        partner_id, packaging, flag, context=context)
+    #    if 'warning' in res:    
+    #        del(res['warning'])    
+    #    return res        
+
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, 
@@ -127,6 +139,11 @@ class SaleOrderLine(orm.Model):
         # Udpate field instead:
         partner_proxy = partner_pool.browse(
             cr, uid, partner_id, context=context)
+            
+        # NOTE: Remove warning TODO module apart or configure
+        #if 'warning' in res:
+        #    del res['warning']
+        
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
                 res['value'].update({

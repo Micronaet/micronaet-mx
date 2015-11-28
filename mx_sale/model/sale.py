@@ -110,17 +110,38 @@ class SaleOrder(orm.Model):
 
     _columns = {
         # moved here from production:
-        'date_deadline': fields.date('Deadline', 
-            help='If all order has same deadline set only in header'),
-        'date_load': fields.date('Load date', 
-            help='Load date'),
-        'date_previous_deadline': fields.date(
-            'Previous deadline', 
-            help="If during sync deadline is modified this field contain old "
-                "value before update"),
-        'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
-        # moved ^^^^^^^^^^^^^^^^^^^^^
+        # QUOTATION:
+        'date_valid': fields.date('Validity date', 
+            help='Max date for validity of offer'),
         
+        # ORDER:
+        'date_confirm': fields.date('Date confirm', 
+            help='Order confirm by the customer'),
+        'date_deadline': fields.date('Deadline', 
+            help='Delivery was load '),
+        # TODO used?    
+        #'date_previous_deadline': fields.date(
+        #    'Previous deadline', 
+        #    help="If during sync deadline is modified this field contain old "
+        #        "value before update"),
+         
+        # TODO remove:
+        # Replaced with date_booked!!!    
+        #'date_delivery': fields.date('Delivery', 
+        #    help='Contain delivery date, when present production plan work '
+        #        'with this instead of deadline value, if forced production '
+        #        'cannot be moved'),
+
+        # Fixed by delivery team:
+        'date_booked': fields.date('Booked date', 
+            help='Delivery was booked and fixed!'),            
+        'date_load': fields.date('Load/Availability',
+            help='For ex works is availability date, other clause is '
+                'load date'),
+
+                
+        # moved ^^^^^^^^^^^^^^^^^^^^^
+
         # Account extra field saved in sale.order:
         'default_transport_id': fields.many2one('res.partner', 'Vector', 
             domain=[('is_vector', '=', True)]),
@@ -176,7 +197,7 @@ class SaleOrderLine(orm.Model):
         
          # Moved here from production:
         'date_deadline': fields.date('Deadline'),
-        'date_delivery':fields.related(
+        'date_delivery': fields.related(
             'order_id', 'date_delivery', type='date', string='Date delivery'),
             
         # TODO Note: there's yet product.package that is a sort of UL    
