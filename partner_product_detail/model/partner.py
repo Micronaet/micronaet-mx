@@ -61,8 +61,8 @@ class PartnerProductParticularity(orm.Model):
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
-        #'ul_id': fields.many2one('product.ul', 'Packaging'),
-        'packaging_id': fields.many2one('product.packging', 'Packaging'),
+        'packaging_id': fields.many2one('product.packaging', 'Packaging', 
+            ondelete='set null'),
 
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
@@ -112,8 +112,7 @@ class SaleOrderLine(orm.Model):
             res['value'].update({
                 'alias_id': False,                
                 'price_unit': False,
-                #'ul_id': False,
-                'packaging_id': False,
+                'product_packaging': False,
                 'load_qty': False,
                 # TODO
                 })
@@ -126,25 +125,18 @@ class SaleOrderLine(orm.Model):
         partner_proxy = partner_pool.browse(
             cr, uid, partner_id, context=context)
             
-        # NOTE: Remove warning TODO module apart or configure
-        #if 'warning' in res:
-        #    del res['warning']
-        
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
                 res['value'].update({
                     'alias_id': item.alias_id.id,
                     'price_unit': item.price,
-                    'ul_id': item.ul_id.id,
                     # TODO use first if not present in customization?
-                    'packaging_id': item.packaging_id.id, 
+                    'product_packaging': item.packaging_id.id, 
                     'load_qty': item.load_qty,
                     })
         return res
     
     _columns = {
-        #'ul_id': fields.many2one('product.ul', 'Packaging', 
-        #    ondelete='set null'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         }
         

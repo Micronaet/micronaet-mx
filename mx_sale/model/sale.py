@@ -201,6 +201,7 @@ class SaleOrderLine(orm.Model):
             'order_id', 'date_delivery', type='date', string='Date delivery'),
             
         # TODO Note: there's yet product.package that is a sort of UL    
+        # TODO remove?
         'product_ul_id':fields.many2one(
             'product.ul', 'Required package', ondelete='set null'),
         # Moved here ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

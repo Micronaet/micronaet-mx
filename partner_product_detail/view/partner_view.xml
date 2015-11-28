@@ -12,7 +12,7 @@
                             <tree editable="bottom" colspan="4" > <!--colors="red:deadline&lt;datetime.now().strftime('%%Y/%%mm/%%dd')"-->
                                 <field name="product_id" />
                                 <field name="alias_id" />
-                                <field name="ul_id" />
+                                <field name="packaging_id" domain="[('product_id', '=', product_id)]"/>
                                 <field name="load_qty" />
                                 <field name="price" />                                  
                                 <field name="date" />                                  
@@ -24,7 +24,7 @@
                                  <group colspan="4" col="4">
                                     <field name="product_id" />
                                     <field name="alias_id" />
-                                    <field name="ul_id" />
+                                    <field name="packaging_id" domain="[('product_id', '=', product_id)]" />
                                     <field name="load_qty" />
                                     <field name="price" />                                  
                                     <field name="date" />                                  
@@ -46,12 +46,8 @@
             <field name="arch" type="xml">
                 <!--sale.order.line-->
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='tax_id']" position="before">
-                    <field name="ul_id"/>
-                    <field name="load_qty"/>
+                    <field name="load_qty"/><!--near product_packaging-->
                 </xpath>                
-                <!--TODO<xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_packaging']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>-->
             </field>
        </record>         
 
