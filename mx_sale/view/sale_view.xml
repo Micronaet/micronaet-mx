@@ -35,7 +35,7 @@
                             <field name="date_confirm" />
                             <field name="date_deadline" />
                             <field name="date_booked" />
-                            <field name="date_load" />                        
+                            <field name="date_delivery" />                        
                         </group>
                     </page>
                 </xpath>

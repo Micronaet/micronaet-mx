@@ -97,24 +97,28 @@ class res_company_send_mail(osv.osv):
     _inherit = "res.company"
 
     # TODO Riscrivere con la gestione dei thread
-    def send_mail(self, cr, uid, subject, body, to_addr='nicola.riolini@gmail.com', from_addr='OpenERP <openerp@micronaet.it>', context=None):
+    def send_mail(self, cr, uid, subject, body, 
+            to_addr='nicola.riolini@gmail.com', 
+            from_addr='OpenERP <openerp@micronaet.it>', context=None):
         ''' Procedure for send control mail during importation
             Use default parameter for sending
             @return: False if mail is not sent
         '''
         from smtplib import SMTP
 
-        server_ids = self.pool.get('ir.mail_server').search(cr, uid, [], context=context)
+        server_ids = self.pool.get('ir.mail_server').search(
+            cr, uid, [], context=context)
         if not server_ids:
             return False
 
-        server_smtp = self.pool.get('ir.mail_server').browse(cr, uid, server_ids[0], context=context)
+        server_smtp = self.pool.get('ir.mail_server').browse(
+            cr, uid, server_ids[0], context=context)
         smtp = SMTP()
         smtp.set_debuglevel(0)
         smtp.connect(server_smtp.smtp_host, server_smtp.smtp_port)
         smtp.login(server_smtp.smtp_user, server_smtp.smtp_pass)
 
-        date = datetime.now().strftime("%d/%m/%Y %H:%M")
+        date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
         smtp.sendmail(
             from_addr, to_addr,
             "From: %s\nTo: %s\nSubject: %s\nDate: %s\n\n%s" % (
@@ -139,7 +143,8 @@ class sale_order_add_extra(osv.osv):
     #                              Utility function
     # -------------------------------------------------------------------------
     def get_uom(self, cr, uid, name, context=None):
-        uom_id = self.pool.get('product.uom').search(cr, uid, [('name', '=', name), ])
+        uom_id = self.pool.get('product.uom').search(cr, uid, [
+            ('name', '=', name), ])
         if uom_id:
             return uom_id[0] # take the first
         else:
@@ -152,11 +157,13 @@ class sale_order_add_extra(osv.osv):
         '''
         from smtplib import SMTP
 
-        server_ids = self.pool.get('ir.mail_server').search(cr, uid, [], context=context)
+        server_ids = self.pool.get('ir.mail_server').search(cr, uid, [
+            ], context=context)
         if not server_ids:
             return False
 
-        server_smtp = self.pool.get('ir.mail_server').browse(cr, uid, server_ids[0], context=context)
+        server_smtp = self.pool.get('ir.mail_server').browse(
+            cr, uid, server_ids[0], context=context)
         smtp = SMTP()
         smtp.set_debuglevel(0) # debuglevel = 0
         smtp.connect(server_smtp.smtp_host, server_smtp.smtp_port)
@@ -182,8 +189,9 @@ class sale_order_add_extra(osv.osv):
         order_proxy = self.browse(cr, uid, ids, context=context)[0]
         data = {'accounting_state': 'planned',}
 
-        if not order_proxy.date_delivery:
-            data['date_delivery'] = order_proxy.date_deadline or datetime.today().strftime("%Y-%m-%d")
+        if not order_proxy.date_booked:
+            data['date_booked'] = order_proxy.date_deadline or datetime.now(
+                ).strftime(DEFAULT_SERVER_DATE_FORMAT)
         self.write(cr, uid, ids, data, context=context)
         return True
 
@@ -512,8 +520,10 @@ class sale_order_add_extra(osv.osv):
 
         over_store_error = ""
         cr.execute("""
-            select product_id, product_product.accounting_qty, product_product.default_code, sum(product_uom_qty) total
-            from sale_order_line
+            SELECT 
+                product_id, product_product.accounting_qty, 
+                product_product.default_code, sum(product_uom_qty) total
+            FROM sale_order_line
             LEFT JOIN product_product
             ON (sale_order_line.product_id = product_product.id)
             GROUP BY product_id, use_accounting_qty, product_product.default_code, product_product.accounting_qty
@@ -535,12 +545,12 @@ class sale_order_add_extra(osv.osv):
         return
 
     _columns = {
-        # TODO remove: (need to keep the data!!!!
-        'date_deadline': fields.date('Deadline'),
-        'date_previous_deadline': fields.date('Previous deadline', help="If during sync deadline is modified this field contain old value before update"),
+        # TODO remove: (need to keep the data)!!!!
+        #'date_deadline': fields.date('Deadline'),
+        #'date_previous_deadline': fields.date('Previous deadline', help="If during sync deadline is modified this field contain old value before update"),
         #'mandatory_delivery': fields.boolean('Delivery mandatory', help='If true moving of order is not possible'),
-        'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
-        # TODO ^^^^^^^
+        #'date_delivery': fields.date('Delivery', help="Contain delivery date, when present production plan work with this instead of deadline value, if forced production cannot be moved"),
+        # TODO Moved in mx_sale ^^^^^^^
 
         'accounting_order': fields.boolean('Accounting order', help='It true the order is generated from accounting program, so it is temporarly present in OpenERP only for production and delivery operations'),
         'accounting_state': fields.selection([
@@ -560,7 +570,6 @@ class sale_order_add_extra(osv.osv):
 class sale_order_line_extra(osv.osv):
     ''' Create extra fields in sale.order.line obj
     '''
-    _name = "sale.order.line"
     _inherit = "sale.order.line"
     
     # -------------------------------------------------------------------------

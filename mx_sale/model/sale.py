@@ -135,7 +135,7 @@ class SaleOrder(orm.Model):
         # Fixed by delivery team:
         'date_booked': fields.date('Booked date', 
             help='Delivery was booked and fixed!'),            
-        'date_load': fields.date('Load/Availability',
+        'date_delivery': fields.date('Load / Availability',
             help='For ex works is availability date, other clause is '
                 'load date'),
 
