@@ -588,6 +588,8 @@ class sale_order_line(osv.osv):
     def product_packaging_change(
             self, cr, uid, ids, pricelist, product, qty=0, uom=False,
             partner_id=False, packaging=False, flag=False, context=None):
+        ''' Package block change (default first in product pack)
+        '''
         if not product:
             return {'value': {'product_packaging': False}}
 
@@ -603,7 +605,7 @@ class sale_order_line(osv.osv):
             res = self.product_id_change(cr, uid, ids, pricelist=pricelist,
                 product=product, qty=qty, uom=uom, partner_id=partner_id,
                 packaging=packaging, flag=False, context=context)
-            #warning_msgs = res.get('warning') and res['warning']['message']
+            # warning_msgs = res.get('warning') and res['warning']['message']
 
         products = product_obj.browse(cr, uid, product, context=context)
         if not products.packaging:
@@ -643,11 +645,15 @@ class sale_order_line(osv.osv):
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, 
             fiscal_position=False, flag=False, context=None):
+        ''' On change product_id in sale.order.line
+        '''    
+
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
         partner_obj = self.pool.get('res.partner')
         product_obj = self.pool.get('product.product')
         warning = {}
+        
         res = super(sale_order_line, self).product_id_change(
             cr, uid, ids, pricelist, product, qty=qty,
             uom=uom, qty_uos=qty_uos, uos=uos, name=name, 
@@ -674,17 +680,19 @@ class sale_order_line(osv.osv):
             uom2 = product_obj.uom_id
 
         # Calling product_packaging_change function after updating UoM
+        # (update packaging information and UOM
         res_packing = self.product_packaging_change(
             cr, uid, ids, pricelist, product, qty, uom, partner_id, packaging, 
             context=context)
-        res['value'].update(res_packing.get('value', {}))
-        #warning_msgs = res_packing.get(
-        #    'warning') and res_packing['warning']['message'] or ''
+
+        res['value'].update(res_packing.get('value', {}))        
         compare_qty = float_compare(
             product_obj.virtual_available, 
             qty, precision_rounding=uom2.rounding)
             
         # TODO remove warning message:
+        #warning_msgs = res_packing.get(
+        #    'warning') and res_packing['warning']['message'] or ''
         #if (product_obj.type == 'product') and int(compare_qty) == -1 \
         #        and (product_obj.procure_method=='make_to_stock'):
         #    warn_msg = _(
