@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_partner_product_particularity_user,partner.product.particularity,model_partner_product_particularity,base.group_user,1,1,1,1
+access_res_partner_pricelist_product_user,res.partner.pricelist.product,model_res_partner_pricelist_product,base.group_user,1,1,1,1
+
 
