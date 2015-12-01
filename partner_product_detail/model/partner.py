@@ -44,7 +44,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 
-class PartnerProductParticularity(orm.Model):
+class ResPartnerPpricelistProduct(orm.Model):
     ''' Class for manage particularity for partner - product
     '''    
     _name = 'res.partner.pricelist.product'
