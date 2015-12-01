@@ -36,6 +36,7 @@
     'init_xml': [],
     'demo': [],
     'data': [
+        'security/ir.model.access.csv',
         'view/agent_view.xml',
         'report/commission_report.xml',
         'wizard/print_commission.xml',
