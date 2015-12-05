@@ -114,7 +114,7 @@ class SaleOder(osv.osv):
                 ('id', '=', partner_id)], context=context)
             current_docs = [item.docs_id.id for item in partner_pool.browse(
                 cr, uid, partner_docs, context=context)]
-        elif: # document or partner   
+        else: # document or partner   
             current_docs = [item.docs_id.id for item in \
                 current_record.order_docs_ids]
             
