@@ -59,6 +59,22 @@ class SaleOrder(orm.Model):
     '''    
     _inherit = 'sale.order'
     
+    
+    # -------------------------------------------------------------------------
+    #                                  Button events:
+    # -------------------------------------------------------------------------
+    def force_all_deadline_date(self, cr, uid, ids, context=None):
+        ''' Force sale order date on all lines
+        '''
+        order_proxy = self.browse(cr, uid, ids, context=context)
+        
+        line_ids = [line.id for line in order_proxy.order_line]
+        self.pool.get('sale.order.line').write(cr, uid, line_ids, {
+            'date_deadline': order_proxy.date_deadline,
+            }, context=context)
+            
+        return True
+
     # -------------------------------------------------------------------------
     #                                  Override:
     # -------------------------------------------------------------------------
@@ -121,6 +137,8 @@ class SaleOrder(orm.Model):
         # Fixed by delivery team:
         'date_booked': fields.date('Booked date', 
             help='Delivery was booked and fixed!'),            
+        'date_booked_confirmed': fields.boolean('Booked confirmed',
+            help='Booked confirmed for this date'),
         'date_delivery': fields.date('Load / Availability',
             help='For ex works is availability date, other clause is '
                 'load date'),
