@@ -40,7 +40,8 @@
             <field name="arch" type="xml">
                 <field name="state" position="before">
                     <field name="extra_doc_status" />
-                    <field name="extra_doc_error" />
+                    <field name="extra_doc_error" invisible="1" />
+                    <button name="dummy_button" string="Docs error" type="object" icon="gtk-missing-image" attrs="{'invisible': [('extra_doc_error', '=', False)]}" />
                 </field>
             </field>
         </record>     

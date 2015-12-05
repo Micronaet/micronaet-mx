@@ -92,7 +92,7 @@ class SaleOder(osv.osv):
     
     # -------------
     # Button event:
-    # -------------
+    # -------------    
     # Utility for button:
     def load_only_new_from_proxy(self, cr, uid, ids, mode, context=None):
         ''' Load only record not present in order, list was passed (partner or
@@ -136,6 +136,11 @@ class SaleOder(osv.osv):
                     'mandatory': item.mandatory,
                     'note': item.note,
                     }, context=context)
+        return True
+
+    def dummy_button(self, cr, uid, ids, context=None):
+        ''' Dummy button do nothing
+        '''
         return True
         
     def load_from_partner(self, cr, uid, ids, context=None):
