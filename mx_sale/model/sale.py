@@ -193,7 +193,7 @@ class SaleOrderLine(orm.Model):
         
     _columns = {
         'gr_weight': fields.float('Gross weight'),
-        'colls': fields.integer('Colls')), 
+        'colls': fields.integer('Colls'), 
         #states={'draft': [('readonly', False)]}),
         
         'date_deadline': fields.date('Deadline'),

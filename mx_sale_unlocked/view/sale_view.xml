@@ -9,6 +9,9 @@
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_uom']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state','in',('invoice_except', 'done'))]}</attribute>
                 </xpath>
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='th_weight']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state','in',('invoice_except', 'done'))]}</attribute>
+                </xpath>
              </field>
         </record>
 
@@ -23,9 +26,6 @@
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='price_unit']" position="attributes">
                     <attribute name="attrs">{'readonly': [('state','in',('invoice_except', 'done'))]}</attribute>
                 </xpath>
-                <!--<xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='price_uom']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state','in',('invoice_except', 'done'))]}</attribute>
-                </xpath>-->
              </field>
         </record>
     </data>

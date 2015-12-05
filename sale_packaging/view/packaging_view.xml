@@ -28,24 +28,22 @@
     </record>  
     
     <!--sale.order-->
-        <record id="view_order_line_package_setup_form" model="ir.ui.view">
-            <field name="name">Package in line</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form" />
-            <field name="arch" type="xml">
-                <field name="tax_id" position="after">
-                <!--<field name="product_packaging" position="before">-->
-                   <newline />
-                   <separator string="Package return" />
-                   <newline />
-                   <field name="return_package" />
-                   <field name="package_qty" />
-                </field>
+    <record id="view_order_line_package_setup_form" model="ir.ui.view">
+        <field name="name">Package in line</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <field name="tax_id" position="after">
+               <newline />
+               <separator string="Package return" />
+               <newline />
+               <field name="return_package" />
+               <field name="package_qty" />
             </field>
-        </record>         
-
+        </field>
+    </record>    
     
-    
+    <!--TODO Not needed change in totals and manage return-->
     <record model="ir.ui.view" id="view_sale_order_line_package_search">
         <field name="name">Search OC line</field>
         <field name="model">sale.order.line</field>
@@ -54,7 +52,6 @@
             <search string="OC line">
                     <field name="product_id" string="Product" filter_domain="[('product_id','=',self)]"/>
                     <field name="order_id" string="Order" filter_domain="[('order_id','=',self)]"/> 
-                    <!--<field name="product_ul_id" string="Packager" filter_domain="[('product_ul_id','=',self)]"/>-->
 
                     <separator string="Package:"/>                    
                     <filter icon="terp-go-home" name="return_package" string="To returned package" domain="[('return_package','=',True),('return_package_ok','=',False)]"/>
