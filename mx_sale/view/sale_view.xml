@@ -71,6 +71,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='th_weight']" position="after">
                     <field name="gr_weight"/>
+                    <field name="colls"/>
                 </xpath>                
 
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']" position="attributes">

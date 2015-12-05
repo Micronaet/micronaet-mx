@@ -193,6 +193,7 @@ class SaleOrderLine(orm.Model):
         
     _columns = {
         'gr_weight': fields.float('Gross weight'),
+        'colls': fields.integer('Colls')), 
         #states={'draft': [('readonly', False)]}),
         
         'date_deadline': fields.date('Deadline'),
@@ -205,7 +206,9 @@ class SaleOrderLine(orm.Model):
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,
             string='Delivered', store=False, 
-            help='Quantity delivered with DDT out'),
-            
+            help='Quantity delivered with DDT out'),            
         }
+    _defaults = {
+        'colls': lambda *x: 1,
+        }    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
