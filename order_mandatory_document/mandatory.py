@@ -108,15 +108,22 @@ class SaleOder(osv.osv):
         
         # Load current list of docs:
         current_record = self.browse(cr, uid, ids, context=context)[0]        
-        current_docs = [item.docs_id.id for item in \
-            current_record.order_docs_ids]
+        partner_id = current_record.partner_id.id
+        if mode == 'list': # different in partner:
+            partner_docs = partner_pool.search(cr, uid, [
+                ('id', '=', partner_id)], context=context)
+            current_docs = [item.docs_id.id for item in partner_pool.browse(
+                cr, uid, partner_docs, context=context)]
+        elif: # document or partner   
+            current_docs = [item.docs_id.id for item in \
+                current_record.order_docs_ids]
             
         # Load origin list:    
-        key_field = 'order'
+        key_field = 'order_id'
+        target_pool = order_pool    
         if mode == 'partner':
             if not current_record.partner_id:
                 return True # TODO alert or delete all?
-            partner_id = current_record.partner_id.id
             partner_ids = partner_pool.search(cr, uid, [
                 ('partner_id', '=', partner_id)], context=context)
             item_proxy = partner_pool.browse(
@@ -124,6 +131,7 @@ class SaleOder(osv.osv):
         else: # 'document' and 'list' cases:
             if mode == 'list': 
                 key_field = 'partner_id' # link to partner (no order)          
+                target_pool = partner_pool    
             docs_ids = docs_pool.search(cr, uid, [], context=context)
             item_proxy = docs_pool.browse(cr, uid, docs_ids, context=context)
         
@@ -135,7 +143,7 @@ class SaleOder(osv.osv):
             else: #'document', 'list'
                 key_id = item.id
             if key_id not in current_docs:
-                order_pool.create(cr, uid, {
+                target_pool.create(cr, uid, {
                     key_field: ids[0],
                     'docs_id': key_id,
                     'mandatory': item.mandatory,
@@ -170,7 +178,7 @@ class ResPartner(osv.osv):
     def load_from_list(self, cr, uid, ids, context=None):
         ''' Load list from anagraphic
         '''
-        return self.pool.get('sale.order.line').load_only_new_from_proxy(
+        return self.pool.get('sale.order').load_only_new_from_proxy(
             cr, uid, ids, 'list', context=context)
     
     _columns = {
