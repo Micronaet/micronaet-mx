@@ -89,55 +89,65 @@ class SaleOder(osv.osv):
     '''    
     _inherit = 'sale.order'
     
+    # -------------
     # Button event:
-    #TODO clear all: def load_from_parent(self, cr, uid, ids, context=None):
-    
-    def load_from_partner(self, cr, uid, ids, context=None):
-        ''' Load list from anagraphic
+    # -------------
+    # Utility for button:
+    def load_only_new_from_proxy(self, cr, uid, ids, mode, context=None):
+        ''' Load only record not present in order, list was passed (partner or
+            all element)
+            mode: partner or document (origin of list to load)
         '''
+        # Pool used:
         docs_pool = self.pool.get('sale.order.docs')        
         order_pool = self.pool.get('sale.order.docs.order')        
         partner_pool = self.pool.get('sale.order.docs.partner')
         
-        current_record = self.browse(cr, uid, ids, context=context)[0]
-        if not current_record.partner_id:
-            return True # Do nothing TODO alert? delete all?            
-        partner_id = current_record.partner_id.id    
-
-        current_list = [item.id for item in current_record.order_docs_ids]        
-        partner_ids = partner_pool.search(cr, uid, [
-            ('partner_id', '=', partner_id)], context=context)
-
-        # TODO correct procedure
-        #for item in partner_pool.browse(cr, uid, partner_ids, context=context):
-        #    if item.id not in current_list:
-        #        order_pool.create(cr, uid, {
-        #            'order_id': ids[0],
-        #            'docs_id': item.id,
-        #            'mandatory': item.mandatory,
-        #            #'note': item.note,
-        #            }, context=context)
+        # Load current list of docs:
+        current_record = self.browse(cr, uid, ids, context=context)[0]        
+        current_docs = [item.docs_id.id for item in \
+            current_record.order_docs_ids]
+            
+        # Load origin list:    
+        if mode == 'partner':
+            if not current_record.partner_id:
+                return True # TODO alert or delete all?
+            partner_id = current_record.partner_id.id
+            partner_ids = partner_pool.search(cr, uid, [
+                ('partner_id', '=', partner_id)], context=context)
+            item_proxy = partner_pool.browse(
+                cr, uid, partner_ids, context=context)    
+        else: # 'document'
+            docs_ids = docs_pool.search(cr, uid, [], context=context)
+            item_proxy = docs_pool.browse(cr, uid, docs_ids, context=context)
+        
+        # Create only new elements:    
+        for item in item_proxy:
+            # 2 different key depend on mode:            
+            if mode == 'partner':
+                key_id = item.docs_id.id
+            else: #'document'
+                key_id = item.id
+            if key_id not in current_docs:
+                order_pool.create(cr, uid, {
+                    'order_id': ids[0],
+                    'docs_id': key_id,
+                    'mandatory': item.mandatory,
+                    'note': item.note,
+                    }, context=context)
         return True
+        
+    def load_from_partner(self, cr, uid, ids, context=None):
+        ''' Load list from anagraphic
+        '''
+        return self.load_only_new_from_proxy(
+            cr, uid, ids, 'partner', context=context)
 
     def load_from_list(self, cr, uid, ids, context=None):
         ''' Load list from anagraphic
         '''
-        docs_pool = self.pool.get('sale.order.docs')        
-        order_pool = self.pool.get('sale.order.docs.order')
-
-        current_list = [
-            item.id for item in self.browse(
-                cr, uid, ids, context=context)[0].order_docs_ids]
-        docs_ids = docs_pool.search(cr, uid, [], context=context)
-        for item in docs_pool.browse(cr, uid, docs_ids, context=context):
-            if item.id not in current_list:
-                order_pool.create(cr, uid, {
-                    'order_id': ids[0],
-                    'docs_id': item.id,
-                    'mandatory': item.mandatory,
-                    #'note': item.note,
-                    }, context=context)
-        return True
+        return self.load_only_new_from_proxy(
+            cr, uid, ids, 'document', context=context)
         
     _columns = {
         'order_docs_ids': fields.one2many('sale.order.docs.order', 'order_id',
