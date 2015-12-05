@@ -160,24 +160,27 @@ class ResPartner(osv.osv):
     '''
     _inherit = 'res.partner'
 
+    # -------------
     # Button event:
+    # -------------
     def load_from_list(self, cr, uid, ids, context=None):
-        ''' Load list from anagraphic
+        ''' Load list from anagraphic (quite same to order but use different 
+            object so keep this quite similar duplicate
         '''
         docs_pool = self.pool.get('sale.order.docs')        
         partner_pool = self.pool.get('sale.order.docs.partner')
 
-        current_list = [
-            item.id for item in self.browse(
+        current_docs = [
+            item.docs_id.id for item in self.browse(
                 cr, uid, ids, context=context)[0].order_docs_ids]
         docs_ids = docs_pool.search(cr, uid, [], context=context)
         for item in docs_pool.browse(cr, uid, docs_ids, context=context):
-            if item.id not in current_list:
+            if item.id not in current_docs:
                 partner_pool.create(cr, uid, {
                     'partner_id': ids[0],
                     'docs_id': item.id,
                     'mandatory': item.mandatory,
-                    #'note': item.note,
+                    'note': item.note,
                     }, context=context)
         return True
     
