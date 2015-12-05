@@ -96,10 +96,7 @@ class SaleOder(osv.osv):
     def load_only_new_from_proxy(self, cr, uid, ids, mode, context=None):
         ''' Load only record not present in order, list was passed (partner or
             all element)
-            mode: 
-                partner > in sale order load partner list
-                document > in sale order load document list
-                list > in partner load document list
+            mode: partner or document (origin of list to load)
         '''
         # Pool used:
         docs_pool = self.pool.get('sale.order.docs')        
@@ -112,7 +109,6 @@ class SaleOder(osv.osv):
             current_record.order_docs_ids]
             
         # Load origin list:    
-        key_field = 'order'
         if mode == 'partner':
             if not current_record.partner_id:
                 return True # TODO alert or delete all?
@@ -121,9 +117,7 @@ class SaleOder(osv.osv):
                 ('partner_id', '=', partner_id)], context=context)
             item_proxy = partner_pool.browse(
                 cr, uid, partner_ids, context=context)    
-        else: # 'document' and 'list' cases:
-            if mode == 'list': 
-                key_field = 'partner_id' # link to partner (no order)          
+        else: # 'document'
             docs_ids = docs_pool.search(cr, uid, [], context=context)
             item_proxy = docs_pool.browse(cr, uid, docs_ids, context=context)
         
@@ -132,11 +126,11 @@ class SaleOder(osv.osv):
             # 2 different key depend on mode:            
             if mode == 'partner':
                 key_id = item.docs_id.id
-            else: #'document', 'list'
+            else: #'document'
                 key_id = item.id
             if key_id not in current_docs:
                 order_pool.create(cr, uid, {
-                    key_field: ids[0],
+                    'order_id': ids[0],
                     'docs_id': key_id,
                     'mandatory': item.mandatory,
                     'note': item.note,
@@ -170,8 +164,23 @@ class ResPartner(osv.osv):
     def load_from_list(self, cr, uid, ids, context=None):
         ''' Load list from anagraphic
         '''
-        return self.pool.get('sale.order.line').load_only_new_from_proxy(
-            cr, uid, ids, 'list', context=context)
+        docs_pool = self.pool.get('sale.order.docs')        
+        partner_pool = self.pool.get('sale.order.docs.partner')
+
+        current_list = [
+            item.id for item in self.browse(
+                cr, uid, ids, context=context)[0].order_docs_ids]
+        docs_ids = docs_pool.search(cr, uid, [], context=context)
+        for item in docs_pool.browse(cr, uid, docs_ids, context=context):
+            if item.id not in current_list:
+                partner_pool.create(cr, uid, {
+                    'partner_id': ids[0],
+                    'docs_id': item.id,
+                    'mandatory': item.mandatory,
+                    #'note': item.note,
+                    }, context=context)
+        return True
+    
     
     _columns = {
         'order_docs_ids': fields.one2many('sale.order.docs.partner', 'partner_id',
