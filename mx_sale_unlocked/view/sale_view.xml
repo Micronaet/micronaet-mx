@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
-        <!--<record model="ir.ui.view" id="view_sale_order_pickout_form">
+    <data>        
+        <record model="ir.ui.view" id="view_sale_stock_order_unlock_form">
             <field name="name">sale.order.pick.form</field>
             <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit" />
             <field name="arch" type="xml">
-                <xpath expr="/form/header/field[@name='state']" position="after">
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state','in',('invoice_except', 'done'))]}</attribute>
                 </xpath>
-
-                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']" position="attributes">
-                    <attribute name="context">{'default_date_deadline': date_deadline}</attribute>
+                <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='price_unit']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state','in',('invoice_except', 'done'))]}</attribute>
                 </xpath>
              </field>
-        </record>-->
+        </record>
     </data>
 </openerp>
