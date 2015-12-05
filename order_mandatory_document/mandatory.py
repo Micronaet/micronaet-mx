@@ -66,6 +66,7 @@ class SaleOrderDocsOrder(osv.osv):
         'docs_id': fields.many2one('sale.order.docs', 'Document'),
         'mandatory': fields.boolean('Mandatory for order'),
         'note': fields.text('Note'),
+        'present': fields.boolean('Present (done)'),
         }
 
 class SaleOrderDocsPartner(osv.osv):    
@@ -148,10 +149,45 @@ class SaleOder(osv.osv):
         '''
         return self.load_only_new_from_proxy(
             cr, uid, ids, 'document', context=context)
+
+    def _get_extra_doc_status(self, cr, uid, ids, fields, args, context=None):
+        ''' Fields function for calculate         
+        '''    
+        res = {}
+        for item in self.browse(cr, uid, ids, context=context):
+            res[item.id] = {}
+            res[item.id]['extra_doc_error'] = False                    
+            total = [0, 0, 0, 0] # done / mandatory, done / not mandatory
+            for line in item.order_docs_ids:
+                if line.mandatory:
+                    total[1] += 1
+                    if line.present:
+                        total[0] += 1
+                else:
+                    if line.present:
+                        total[2] += 1
+                    total[3] += 1
+            if total[0] != total[1] or total[2] != total[3]:
+                res[item.id]['extra_doc_error'] = True
+            if any(total):    
+                res[item.id][
+                    'extra_doc_status'] = '%s/%s(mand) %s/%s' % (
+                        total[0], total[1], total[2], total[3])
+            else:
+                res[item.id]['extra_doc_status'] = False
+        return res
         
     _columns = {
         'order_docs_ids': fields.one2many('sale.order.docs.order', 'order_id',
             'Mandatory document'),
+        'extra_doc_status': fields.function(
+            _get_extra_doc_status, method=True, 
+            type='char', size='40', string='Docs', 
+            store=False, multi=True), 
+        'extra_doc_error': fields.function(
+            _get_extra_doc_status, method=True, 
+            type='boolean', string='Docs error', 
+            store=False, multi=True),                         
         }
 
 

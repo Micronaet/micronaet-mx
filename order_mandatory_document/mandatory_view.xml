@@ -33,6 +33,31 @@
         </record>
 
         <!--INHERIT sale.order-->
+        <record model="ir.ui.view" id="view_quotation_mandatory_docs_tree">
+            <field name="name">Order extra docs</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree" />
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <field name="extra_doc_status" />
+                    <field name="extra_doc_error" />
+                </field>
+            </field>
+        </record>     
+        <record model="ir.ui.view" id="view_order_mandatory_docs_tree">
+            <field name="name">Order extra docs</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree" />
+            <field name="arch" type="xml">
+                <!--TODO colors? grey:state=='cancel';blue:state in ('waiting_date','manual');red:state in ('invoice_except','shipping_except')-->
+                <field name="state" position="before">
+                    <field name="extra_doc_status" />
+                    <field name="extra_doc_error" invisible="1" />
+                    <button name="dummy_button" string="Docs error" type="object" icon="gtk-missing-image" attrs="{'invisible': [('extra_doc_error', '=', False)]}" />
+                </field>
+            </field>
+        </record>     
+        
         <record model="ir.ui.view" id="view_sale_order_docs_order_form">
             <field name="name">Order extra docs</field>
             <field name="model">sale.order</field>
@@ -47,6 +72,7 @@
                                 <tree editable="bottom" colspan="4" >
                                     <field name="sequence" />
                                     <field name="mandatory" />
+                                    <field name="present" />
                                     <field name="docs_id" />
                                     <field name="note" />
                                 </tree>
@@ -55,6 +81,7 @@
                                      <group colspan="4" col="4">
                                         <field name="sequence" />
                                         <field name="mandatory" />
+                                        <field name="present" />
                                         <field name="docs_id" />
                                         <field name="note"/>
                                      </group>
