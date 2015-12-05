@@ -67,8 +67,8 @@
                 <xpath expr="/form/sheet/notebook/page" position="after">
                     <page string="Extra docs">
                         <group colspan="4" col="4">    
-                            <button name="load_from_list" string="Load from list" type="object" />                       
                             <button name="load_from_partner" string="Load from partner" type="object" />    
+                            <button name="load_from_list" string="Load from list" type="object" />                       
                             <field name="order_docs_ids" colspan="4" nolabel="1">
                                 <tree editable="bottom" colspan="4" >
                                     <field name="sequence" />
