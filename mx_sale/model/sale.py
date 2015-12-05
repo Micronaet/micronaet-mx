@@ -63,10 +63,10 @@ class SaleOrder(orm.Model):
     # -------------------------------------------------------------------------
     #                                  Button events:
     # -------------------------------------------------------------------------
-    def force_all_deadline_date(self, cr, uid, ids, context=None):
+    def button_force_all_deadline_date(self, cr, uid, ids, context=None):
         ''' Force sale order date on all lines
         '''
-        order_proxy = self.browse(cr, uid, ids, context=context)
+        order_proxy = self.browse(cr, uid, ids, context=context)[0]
         
         line_ids = [line.id for line in order_proxy.order_line]
         self.pool.get('sale.order.line').write(cr, uid, line_ids, {

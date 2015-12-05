@@ -34,7 +34,7 @@
                             <!--order-->
                             <field name="date_confirm" />
                             <field name="date_deadline" />
-                            <button name="force_all_deadline_date" string="Force all line" colspan="1"/>
+                            <button name="button_force_all_deadline_date" string="Force all line" colspan="1" type="object"/>
                             <newline />
                             <field name="date_booked_confirmed" />
                             <field name="date_booked" attrs="{'required': [('date_booked_confirmed','=',True)]}"/>
