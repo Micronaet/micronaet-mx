@@ -160,6 +160,22 @@ class ResPartner(osv.osv):
     '''
     _inherit = 'res.partner'
 
+
+    # ------------------------
+    # Override onchange event:
+    # ------------------------
+    """def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+        ''' Override event for load docs list from partner
+        '''
+        if partner_id:
+            
+        partner_pool = self.pool.get('sale.order.docs.partner')
+
+        res = super(ClassName, self).write(
+            cr, user, ids, vals, context=context)
+        
+        retrun True"""
+    
     # -------------
     # Button event:
     # -------------
