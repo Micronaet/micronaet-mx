@@ -439,6 +439,12 @@ class sale_order(osv.osv):
                 created if ommitted.
             :return: True
         """
+        context = context or {}
+        
+        # Procedure work only called from wizard, no picking will be created:
+        if not context.get('from_wizard', False):
+            return True
+            
         move_obj = self.pool.get('stock.move')
         picking_obj = self.pool.get('stock.picking')
         procurement_obj = self.pool.get('procurement.order')
@@ -539,7 +545,6 @@ class sale_order(osv.osv):
                 if order_line.product_id and order_line.product_id.type in ('product', 'consu'):
                     return True
         return False
-
 
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'

@@ -93,6 +93,8 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
     def action_delivery(self, cr, uid, ids, context=None):
         ''' Event for button done the delivery
         '''
+        assert len(ids) == 1, 'Button work only with one record a time!'
+
         if context is None: 
             context = {}        
         
@@ -124,7 +126,7 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
     _columns = {
         # Sale order line reference:
         'wizard_id': fields.many2one('sale.delivery.partial.wizard', 
-            'Wizard ref.'),
+            'Wizard ref.', ondelete='cascade'),
         'order_line_id': fields.many2one('sale.order.line', 'Order line ref.'),
         'sequence': fields.integer(
             'Sequence', readonly=True,
@@ -142,7 +144,7 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
             'product.uom', 'Unit of Measure', readonly=True),
         'date_deadline': fields.date('Deadline', readonly=True),        
         
-        # Function load during default procedure:
+        # Load during default procedure:
         'product_delivered_qty': fields.float(
             'Delivered', digits_compute=dp.get_precision('Product UoS'), 
             readonly=True),
@@ -169,8 +171,8 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
             return False # error
         
         # TODO calculare remain quantity (not function fields)
-        product_remain_qty = 1.0 
         product_delivered_qty = 1.0
+        product_remain_qty = 1.0 
         
         sale_proxy = sale_pool.browse(cr, uid, order_id, context)
         res = []
