@@ -356,7 +356,7 @@ class sale_order(osv.osv):
             'sale_id': order.id,
             # Partner in cascade assignment:
             'partner_id': order.partner_shipping_id.id or order.address_id.id \
-                order.partner_.id,
+                or order.partner_id.id,
             'note': order.note,
             'invoice_state': (
                 order.order_policy=='picking' and '2binvoiced') or 'none',

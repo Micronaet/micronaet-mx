@@ -71,7 +71,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         return True    
 
     _columns = {
-        'order_id': fields.many2one('sale.order', 'Order ref.'),
+        'order_id': fields.many2one('sale.order', 'Order ref.', readonly=True),
         'deadline': fields.date('Deadline', 
             help='Used for force delivery of deadline records'),
         }
@@ -100,7 +100,7 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
             readonly=True),
         'product_uom': fields.many2one(
             'product.uom', 'Unit of Measure', readonly=True),
-        'deadline': fields.date('Deadline', required=True),        
+        'date_deadline': fields.date('Deadline', readonly=True),        
         
         # Function fields (delivered, invoiced):
         # TODO
@@ -115,10 +115,38 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
     '''
     _inherit = 'sale.delivery.partial.wizard'
     
+    def _load_default_line_ids(self, cr, uid, context=None):
+        ''' Load order line as default values
+        '''
+        sale_pool = self.pool.get('sale.order')
+        order_id = context.get('active_id', False)
+        if not order_id:
+            return False # errotr
+        
+        sale_proxy = sale_pool.browse(cr, uid, order_id, context)
+        res = []
+        for line in sale_proxy.order_line:
+            res.append((0, False, {
+                #'wizard_id': 1,
+                'order_line_id': line.id,
+                'sequence': line.sequence,
+                'product_id': line.product_id.id,
+                'price_unit': line.price_unit,
+                'product_uom_qty': line.product_uom_qty,
+                'product_uom': line.product_uom.id,
+                'deadline': line.date_deadline,
+                }))
+        return res
+        
     _columns = {
         'line_ids': fields.one2many(
             'sale.delivery.partial.line.wizard', 'wizard_id', 'Wizard'), 
         }
+    
+    _defaults = {
+        'line_ids': lambda s, cr, uid, ctx: s._load_default_line_ids(
+            cr, uid, ctx)
+        }    
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
