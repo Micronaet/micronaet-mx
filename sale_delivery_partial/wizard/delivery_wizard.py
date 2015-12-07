@@ -45,12 +45,50 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
     '''
     _name = 'sale.delivery.partial.wizard'
 
-    # TODO init function for load!
-    
     # --------------------
     # Wizard button event:
     # --------------------
-    def action_done(self, cr, uid, ids, context=None):
+    def setup_deliver_remain_qty(self, cr, uid, ids, with_deadline, 
+            context=None):
+        ''' Function used from 2 button as set up remain q, depend or not 
+            from date deadline value
+        '''    
+        assert len(ids) == 1, 'Button work only with one record a time!'
+        
+        # Set all line delivery q. to remain q
+        item_proxy = self.browse(cr, uid, ids, context=context)[0]
+        updated = 0
+        for line in item_proxy.line_ids:
+            # Deadline check:
+            if not with_deadline or \
+                    line.date_deadline == item_proxy.date_deadline:
+                # Set remain q.:    
+                self.write(cr, uid, line.id, {
+                    'delivery_uom_qty': line.product_remain_qty,
+                    }, context=context)
+                updated += 1    
+
+        if updated:
+            # Call delivery button:                
+            return self.action_delivery(cr, uid, ids, context=context)    
+        else: # Raise error:
+            raise osv.except_osv(
+                _('Error!'),
+                _('No elements to update, change remain q. or deadline!'))
+    
+    def deliver_remain_qty(self, cr, uid, ids, context=None):
+        ''' Set remain qty to pick out quantity
+        '''
+        return self.setup_deliver_remain_qty(cr, uid, ids, with_deadline=False, 
+            context=context) 
+    
+    def deliver_remain_deadline_qty(self, cr, uid, ids, context=None):
+        ''' Set remain qty to pick out quantity
+        '''
+        return self.setup_deliver_remain_qty(cr, uid, ids, with_deadline=True, 
+            context=context) 
+    
+    def action_delivery(self, cr, uid, ids, context=None):
         ''' Event for button done the delivery
         '''
         if context is None: 
@@ -72,7 +110,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
 
     _columns = {
         'order_id': fields.many2one('sale.order', 'Order ref.', readonly=True),
-        'deadline': fields.date('Deadline', 
+        'date_deadline': fields.date('Deadline', 
             help='Used for force delivery of deadline records'),
         }
 
@@ -81,17 +119,6 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
     '''
     _name = 'sale.delivery.partial.line.wizard'
 
-    def set_remain_qty(self, cr, uid, ids, context=None):
-        ''' Set remain qty to pick out quantity
-        '''
-        assert len(ids) == 1, 'Button work only with one record a time!'
-        
-        item_proxy = self.browse(cr, uid, ids, context=context)[0]
-        self.write(cr, uid, ids[0], {
-            'delivery_uom_qty': item_proxy.product_remain_qty,
-            }, context=context)
-        return True # TODO action?
-    
     # Field function:
     def _get_delivery_information(self, cr, uid, ids, fields, args, context=None):
         ''' Fields function for calculate 

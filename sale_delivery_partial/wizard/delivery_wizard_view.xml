@@ -9,11 +9,15 @@
                 <form string="Wizard" version="7.0">
                    <header>
                        <button string="Cancel" special="cancel" />
-                       <button name="action_done" string="Done" type="object" icon="gtk-jump-to" class="oe_highlight" />
+
+                       <button name="deliver_remain_qty" string="Delivery remain" type="object" />                                
+                       <button name="deliver_remain_deadline_qty" string="Delivery remain deadline" type="object" attrs="{'invisible':[('date_deadline','=',False)]}"/>
+                       <button name="action_delivery" string="Done" type="object" icon="gtk-jump-to" class="oe_highlight" />
                    </header>                   
                    <group colspan="4" col="4">
                         <field name="order_id" />
-                        <field name="deadline" />
+                        <field name="date_deadline" />
+                        
                         <separator string="Order line:"/>
                         <field name="line_ids" colspan="4" nolabel="1">
                             <tree string="Order line:" editable="bottom">
@@ -27,7 +31,6 @@
                                 <field name="product_delivered_qty" />
                                 <field name="product_remain_qty" />
                                 
-                                <button name="set_remain_qty" string=">>" type="object" />
                                 <field name="delivery_uom_qty" />
                             </tree>
                         </field>
