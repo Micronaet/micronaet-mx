@@ -64,6 +64,7 @@
                                <field name="transportation_reason_id" />
                                <field name="payment_term_id" />
                                <field name="bank_account_id" domain="[('partner_id', '=', partner_id)]"/>                               
+                               <field name="bank_account_company_id" domain="[('partner_id', '=', company_id)]"/>                               
                         </group>     
                     </page>
                 </xpath>                

@@ -47,7 +47,7 @@
           <field name="target">new</field>
           <field name="view_id" ref="sale_delivery_partial_wizard_view"/>
       </record>      
-      
+
       <!--sale.order-->      
       <record model="ir.ui.view" id="view_sale_order_partiel_delivery_inherit_form">
           <field name="name">sale.order.partial.delivery.form</field>

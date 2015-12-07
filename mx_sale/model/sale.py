@@ -169,7 +169,9 @@ class SaleOrder(orm.Model):
         'payment_term_id': fields.many2one(
             'account.payment.term', 'Payment term'),            
         'bank_account_id': fields.many2one(
-            'res.partner.bank', 'Bank account'),
+            'res.partner.bank', 'Partner bank account'),
+        'bank_account_company_id': fields.many2one(
+            'res.partner.bank', 'Company bank account'),
         
         # Alert:
         'uncovered_payment': fields.boolean('Uncovered payment'),    
