@@ -80,6 +80,30 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
     ''' Temp object for document line
     '''
     _name = 'sale.delivery.partial.line.wizard'
+
+    def set_remain_qty(self, cr, uid, ids, context=None):
+        ''' Set remain qty to pick out quantity
+        '''
+        assert len(ids) == 1, 'Button work only with one record a time!'
+        
+        item_proxy = self.browse(cr, uid, ids, context=context)[0]
+        self.write(cr, uid, ids[0], {
+            'delivery_uom_qty': item_proxy.product_remain_qty,
+            }, context=context)
+        return True # TODO action?
+    
+    # Field function:
+    def _get_delivery_information(self, cr, uid, ids, fields, args, context=None):
+        ''' Fields function for calculate 
+        '''
+        res = {}
+        for item in self.pool.get(cr, uid, ids, context=context):
+            res[item.id] = {}
+            # TODO calculate!!!
+            res[item.id]['product_delivered_qty'] = 1.0
+            res[item.id]['product_remain_qty'] = 1.0
+            
+        return res
     
     _columns = {
         # Sale order line reference:
@@ -104,6 +128,13 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
         
         # Function fields (delivered, invoiced):
         # TODO
+        'product_delivered_qty': fields.function(
+            _get_delivery_information, method=True, type='float', 
+            string='Delivered', store=False, multi=True), 
+        'product_remain_qty': fields.function(
+            _get_delivery_information, method=True, type='float', 
+            string='Remain', store=False, multi=True), 
+                        
 
         # Input fields:
         'delivery_uom_qty': fields.float(
@@ -134,7 +165,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
                 'price_unit': line.price_unit,
                 'product_uom_qty': line.product_uom_qty,
                 'product_uom': line.product_uom.id,
-                'deadline': line.date_deadline,
+                'date_deadline': line.date_deadline,
                 }))
         return res
         
