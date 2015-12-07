@@ -79,7 +79,7 @@ class SaleOrder(orm.Model):
         extra_fields = ('transportation_reason_id', 
                 'goods_description_id', 'carriage_condition_id')
         for field in extra_fields:
-            picking_data[field] = order.__attrs__(field).id
+            picking_data[field] = order.__getattr__(field).id
         
         # Create record        
         picking_id = picking_pool.create(cr, uid, picking_data, 
