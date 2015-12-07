@@ -94,6 +94,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         ''' Event for button done the delivery
         '''
         assert len(ids) == 1, 'Button work only with one record a time!'
+        import pdb; pdb.set_trace()
 
         if context is None: 
             context = {}
