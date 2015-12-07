@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-       <!-- module.wizard -->
-       <record id="_wizard_view" model="ir.ui.view">
+       <!-- sale.delivery.partial.wizard -->
+       <record id="sale_delivery_partial_wizard_view" model="ir.ui.view">
             <field name="name"></field>
-            <field name="model">.wizard</field>
+            <field name="model">sale.delivery.partial.wizard</field>
             <field name="arch" type="xml">
                 <form string="Wizard" version="7.0">
                    <header>
@@ -12,21 +12,45 @@
                        <button name="action_done" string="Done" type="object" icon="gtk-jump-to" class="oe_highlight" />
                    </header>                   
                    <group colspan="4" col="4">
-                        <field name="product_id" />
-                        <separator string="Note" colspan="4"/>
-                        <field name="note" nolabel="1" colspan="4" readonly="1"/>                        
+                        <field name="name" />
+                        <field name="delivery" />
+                        <separator string="Order line:"/>
+                        <field name="line_ids" colspan="4" nolabel="1">
+                            <tree string="Order line:" editable="bottom">
+                                <field name="sequence" />
+                                <field name="product_id" />
+                                <field name="product_uom_qty" />
+                                <field name="product_uom" />
+                                <field name="price_unit" />
+                                <field name="deadline" />
+                                
+                                <field name="delivery_uom_qty" />
+                            </tree>
+                        </field>
                    </group>
                 </form>
             </field>
       </record>
 
-      <record model="ir.actions.act_window" id="action__wizard_form">
-          <field name="name"></field>
-          <field name="res_model">.wizard</field>
+      <record model="ir.actions.act_window" id="action_sale_delivery_partial_wizard">
+          <field name="name">Delivery wizard</field>
+          <field name="res_model">sale.delivery.partial.wizard</field>
           <field name="view_type">form</field>
           <field name="view_mode">form</field>
           <field name="target">new</field>
-          <field name="view_id" ref="_wizard_view"/>
+          <field name="view_id" ref="sale_delivery_partial_wizard_view"/>
       </record>      
+      
+      <!--sale.order-->      
+      <record model="ir.ui.view" id="view_sale_order_partiel_delivery_inherit_form">
+          <field name="name">sale.order.partial.delivery.form</field>
+          <field name="model">sale.order</field>
+          <field name="inherit_id" ref="sale.view_order_form"/>
+          <field name="arch" type="xml">
+              <xpath expr="/form/sheet/notebook" position="before">
+                  <button name="%(action_sale_delivery_partial_wizard)d" string="Delivery wizard" type="action" /> 
+              </xpath>
+          </field>
+      </record>
     </data>
 </openerp>

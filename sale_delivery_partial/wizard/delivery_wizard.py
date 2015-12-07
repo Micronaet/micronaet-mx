@@ -87,10 +87,11 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
             'Wizard ref.'),
         'order_line_id': fields.many2one('sale.order.line', 'Order line ref.'),
         'sequence': fields.integer(
-            'Sequence', 
+            'Sequence', readonly=True,
             help="Gives the sequence order when displaying in list mode."),
         'product_id': fields.many2one(
-            'product.product', 'Product', domain=[('sale_ok', '=', True)]),
+            'product.product', 'Product', domain=[('sale_ok', '=', True)],
+            readonly=True),
         'price_unit': fields.float(
             'Unit Price', digits_compute=dp.get_precision('Product Price'), 
             readonly=True),
