@@ -34,7 +34,16 @@ class Parser(report_sxw.rml_parse):
         self.localcontext.update({
             'get_counter': self.get_counter,
             'set_counter': self.set_counter,
+            'bank': self.get_company_bank,
         })
+
+    def get_company_bank(self, o, field):
+        ''' Short function for readability
+        '''
+        try:
+           return obj.bank_account_company_id.__getattr__(field)
+        except:
+            return ''   
 
     def get_counter(self, name):
         ''' Get counter with name passed (else create an empty)
