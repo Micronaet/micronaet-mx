@@ -339,18 +339,27 @@ class sale_order(osv.osv):
         }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
-        pick_name = self.pool.get('ir.sequence').get(cr, uid, 'stock.picking.out')
+        context = context or {}
+        # Create on date deadline if present:
+        date = context.get(
+            'force_date_deadline', 
+            self.date_to_datetime(cr, uid, order.date_order, context))
+        pick_name = self.pool.get('ir.sequence').get(
+            cr, uid, 'stock.picking.out')
         return {
             'name': pick_name,
             'origin': order.name,
-            'date': self.date_to_datetime(cr, uid, order.date_order, context),
+            'date': date,
             'type': 'out',
             'state': 'auto',
             'move_type': order.picking_policy,
             'sale_id': order.id,
-            'partner_id': order.partner_shipping_id.id,
+            # Partner in cascade assignment:
+            'partner_id': order.partner_shipping_id.id or order.address_id.id \
+                order.partner_.id,
             'note': order.note,
-            'invoice_state': (order.order_policy=='picking' and '2binvoiced') or 'none',
+            'invoice_state': (
+                order.order_policy=='picking' and '2binvoiced') or 'none',
             'company_id': order.company_id.id,
         }
 
@@ -368,8 +377,12 @@ class sale_order(osv.osv):
             current_move = move_obj.browse(cr, uid, move_id)
             moves = []
             for picking in order.picking_ids:
-                if picking.id != current_move.picking_id.id and picking.state != 'cancel':
-                    moves.extend(move for move in picking.move_lines if move.state != 'cancel' and move.sale_line_id.id == line.id)
+                if picking.id != current_move.picking_id.id and \
+                        picking.state != 'cancel':
+                    moves.extend(
+                        move for move in picking.move_lines if \
+                            move.state != 'cancel' and \
+                            move.sale_line_id.id == line.id)
             if moves:
                 product_qty = current_move.product_qty
                 product_uos_qty = current_move.product_uos_qty
@@ -390,7 +403,8 @@ class sale_order(osv.osv):
                     proc_obj.unlink(cr, uid, [proc_id])
         return True
 
-    def _get_date_planned(self, cr, uid, order, line, start_date, context=None):
+    def _get_date_planned(self, cr, uid, order, line, start_date, 
+            context=None):
         start_date = self.date_to_datetime(cr, uid, start_date, context)
         date_planned = datetime.strptime(
             start_date, DEFAULT_SERVER_DATETIME_FORMAT) + relativedelta(
@@ -403,23 +417,27 @@ class sale_order(osv.osv):
 
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, 
             picking_id=False, context=None):
-        """Create the required procurements to supply sales order lines, also connecting
-        the procurements to appropriate stock moves in order to bring the goods to the
-        sales order's requested location.
+        """ Create the required procurements to supply sales order lines, also 
+            connecting the procurements to appropriate stock moves in order to 
+            bring the goods to the sales order's requested location.
+            If ``picking_id`` is provided, the stock moves will be added to it, 
+            otherwise a standard outgoing picking will be created to wrap the 
+            stock moves, as returned 
+            by :meth:`~._prepare_order_picking`.
 
-        If ``picking_id`` is provided, the stock moves will be added to it, otherwise
-        a standard outgoing picking will be created to wrap the stock moves, as returned
-        by :meth:`~._prepare_order_picking`.
+            Modules that wish to customize the procurements or partition the 
+            stock moves over multiple stock pickings may override this method 
+            and call ``super()`` with different subsets of ``order_lines`` 
+            and/or preset ``picking_id`` values.
 
-        Modules that wish to customize the procurements or partition the stock moves over
-        multiple stock pickings may override this method and call ``super()`` with
-        different subsets of ``order_lines`` and/or preset ``picking_id`` values.
-
-        :param browse_record order: sales order to which the order lines belong
-        :param list(browse_record) order_lines: sales order line records to procure
-        :param int picking_id: optional ID of a stock picking to which the created stock moves
-                               will be added. A new picking will be created if ommitted.
-        :return: True
+            :param browse_record order: sales order to which the order lines 
+                belong
+            :param list(browse_record) order_lines: sales order line records to 
+                procure
+            :param int picking_id: optional ID of a stock picking to which the 
+                created stock moves will be added. A new picking will be 
+                created if ommitted.
+            :return: True
         """
         move_obj = self.pool.get('stock.move')
         picking_obj = self.pool.get('stock.picking')
@@ -427,23 +445,26 @@ class sale_order(osv.osv):
         proc_ids = []
         date_pick = {} # dict with the pick-out created for same date line
         
-        # TODO load pick out date dict for control (and lines)
-
-        # TODO Split depend on date: **************************************************************************
+        # ---------------------------------------------------------------------
+        #                    TODO Split depend on deadline date
+        # ---------------------------------------------------------------------
         for line in order_lines:
             if line.state == 'done':
                 continue
 
             #date_planned = self._get_date_planned(
             #    cr, uid, order, line, order.date_order, context=context)
-
             if line.product_id:
                 date_planned = line.date_deadline # every line has its deadline
                 if line.product_id.type in ('product', 'consu'): # not service
-                    if not picking_id:
-                        picking_id = picking_obj.create(
+                    if not picking_id and not date_pick[date_planned]:                        
+                        # TODO pass deadline for create correct
+                        context['force_date_deadline'] = date_planned
+                        date_pick[date_planned] = picking_obj.create(
                             cr, uid, self._prepare_order_picking(
                                 cr, uid, order, context=context))
+                    else:
+                        date_pick[date_planned]            
                                 
                     move_id = move_obj.create(
                         cr, uid, self._prepare_order_line_move(
@@ -453,7 +474,7 @@ class sale_order(osv.osv):
                     # a service has no stock move
                     move_id = False
 
-                # TODO Servono?? **********************************************************************************************************
+                # TODO Servono?? **********************************************
                 proc_id = procurement_obj.create(
                     cr, uid, self._prepare_order_line_procurement(
                         cr, uid, order, line, move_id, date_planned, 
