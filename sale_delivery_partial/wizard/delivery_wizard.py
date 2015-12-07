@@ -55,6 +55,8 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         '''    
         assert len(ids) == 1, 'Button work only with one record a time!'
         
+        line_pool = self.pool.get('sale.delivery.partial.line.wizard')
+        
         # Set all line delivery q. to remain q
         item_proxy = self.browse(cr, uid, ids, context=context)[0]
         updated = 0
@@ -63,7 +65,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
             if not with_deadline or \
                     line.date_deadline == item_proxy.date_deadline:
                 # Set remain q.:    
-                self.write(cr, uid, line.id, {
+                line_pool.write(cr, uid, line.id, {
                     'delivery_uom_qty': line.product_remain_qty,
                     }, context=context)
                 updated += 1    
@@ -119,19 +121,6 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
     '''
     _name = 'sale.delivery.partial.line.wizard'
 
-    # Field function:
-    def _get_delivery_information(self, cr, uid, ids, fields, args, context=None):
-        ''' Fields function for calculate 
-        '''
-        res = {}
-        for item in self.pool.get(cr, uid, ids, context=context):
-            res[item.id] = {}
-            # TODO calculate!!!
-            res[item.id]['product_delivered_qty'] = 1.0
-            res[item.id]['product_remain_qty'] = 1.0
-            
-        return res
-    
     _columns = {
         # Sale order line reference:
         'wizard_id': fields.many2one('sale.delivery.partial.wizard', 
@@ -153,15 +142,13 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
             'product.uom', 'Unit of Measure', readonly=True),
         'date_deadline': fields.date('Deadline', readonly=True),        
         
-        # Function fields (delivered, invoiced):
-        # TODO
-        'product_delivered_qty': fields.function(
-            _get_delivery_information, method=True, type='float', 
-            string='Delivered', store=False, multi=True), 
-        'product_remain_qty': fields.function(
-            _get_delivery_information, method=True, type='float', 
-            string='Remain', store=False, multi=True), 
-                        
+        # Function load during default procedure:
+        'product_delivered_qty': fields.float(
+            'Delivered', digits_compute=dp.get_precision('Product UoS'), 
+            readonly=True),
+        'product_remain_qty': fields.float(
+            'Remain', digits_compute=dp.get_precision('Product UoS'), 
+            readonly=True),
 
         # Input fields:
         'delivery_uom_qty': fields.float(
@@ -179,7 +166,11 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         sale_pool = self.pool.get('sale.order')
         order_id = context.get('active_id', False)
         if not order_id:
-            return False # errotr
+            return False # error
+        
+        # TODO calculare remain quantity (not function fields)
+        product_remain_qty = 1.0 
+        product_delivered_qty = 1.0
         
         sale_proxy = sale_pool.browse(cr, uid, order_id, context)
         res = []
@@ -193,6 +184,9 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
                 'product_uom_qty': line.product_uom_qty,
                 'product_uom': line.product_uom.id,
                 'date_deadline': line.date_deadline,
+                
+                'product_delivered_qty': product_delivered_qty,
+                'product_remain_qty': product_remain_qty,
                 }))
         return res
         
