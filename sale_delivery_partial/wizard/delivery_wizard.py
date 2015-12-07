@@ -94,7 +94,6 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         ''' Event for button done the delivery
         '''
         assert len(ids) == 1, 'Button work only with one record a time!'
-        import pdb; pdb.set_trace()
 
         if context is None: 
             context = {}
@@ -113,6 +112,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         
         # Create pick out with new procedure (not standard):
         context['force_date_deadline'] = wiz_browse.date_deadline or False
+        
         picking_id = sale_pool._create_pickings_from_wizard(
             cr, uid, wiz_browse.order_id, pick_line_ids, 
             context=context)

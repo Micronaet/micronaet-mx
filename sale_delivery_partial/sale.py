@@ -55,36 +55,54 @@ class SaleOrder(orm.Model):
         context = context or {}
         
         # Pool used:        
+        line_pool = self.pool.get('sale.order.line')
         move_pool = self.pool.get('stock.move')
         picking_pool = self.pool.get('stock.picking')
 
         # Browse obj used:
-        order_line = self.browse(cr, uid, order_line_ids.keys(), 
+        order_line = line_pool.browse(cr, uid, order_line_ids.keys(), 
             context=context)
         
+        # ---------------------------------------------------------------------
+        # Picking creation:
+        # ---------------------------------------------------------------------
+        # Get normal data from original function:
         picking_data = self._prepare_order_picking(
             cr, uid, order, context=context)
-        # TODO Force deadline date
+
+        # Add extra fields to picking:
+        picking_data['date'] = context.get(
+            'force_date_deadline', False) or datetime.now().strftime(
+                DEFAULT_SERVER_DATE_FORMAT)
+        
+        # Add dependency for this fields: TODO vector and others needed!
+        extra_fields = ('transportation_reason_id', 
+                'goods_description_id', 'carriage_condition_id')
+        for field in extra_fields:
+            picking_data[field] = order.__attrs__(field).id
+        
+        # Create record        
         picking_id = picking_pool.create(cr, uid, picking_data, 
             context=context)
-        # TODO date_planned?    
         
         # ---------------------------------------------------------------------
         #                    TODO Split depend on deadline date
         # ---------------------------------------------------------------------
-        for line in order_lines:
+        import pdb; pdb.set_trace()        
+        for line in order_line:
             if line.state == 'done':
                 continue
 
             if line.product_id:
                 if line.product_id.type in ('product', 'consu'): # not service
                     move_data = self._prepare_order_line_move(
-                        cr, uid, order, line, picking_id, date_planned,
+                        cr, uid, order, line, picking_id, 
+                        picking_data['date'],
                         context=context)
                     # Force qty:
                     product_uom_qty = order_line_ids[line.id]                        
                     move_id = move_pool.create(
-                        cr, uid, move_data)
+                        cr, uid, move_data, context=context)
                 else:
                     # a service has no stock move
                     move_id = False
