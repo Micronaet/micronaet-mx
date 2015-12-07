@@ -96,10 +96,26 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         assert len(ids) == 1, 'Button work only with one record a time!'
 
         if context is None: 
-            context = {}        
+            context = {}
         
-        wizard_browse = self.browse(cr, uid, ids, context=context)[0]
+        # Pool used:
+        sale_pool = self.pool.get('sale.order')
         
+        # Proxy used:
+        wiz_browse = self.browse(cr, uid, ids, context=context)[0]
+        
+        # Generate line to pick out:
+        pick_line_ids = {}
+        for line in wiz_browse.line_ids:
+            pick_line_ids[
+                line.order_line_id.id] = line.delivery_uom_qty
+        
+        # Create pick out with new procedure (not standard):
+        context['force_date_deadline'] = wiz_browse.date_deadline or False
+        picking_id = sale_pool._create_pickings_from_wizard(
+            cr, uid, wiz_browse.order_id, pick_line_ids, 
+            context=context)
+            
         # TODO return new order:
         return {
             'type': 'ir.actions.act_window_close'

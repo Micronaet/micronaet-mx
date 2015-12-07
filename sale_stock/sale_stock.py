@@ -442,14 +442,14 @@ class sale_order(osv.osv):
         context = context or {}
         
         # Procedure work only called from wizard, no picking will be created:
-        if not context.get('from_wizard', False):
+        if not context.get('from_wizard', False) or not picking_id:
             return True
+        #picking_obj.create(cr, uid, self._prepare_order_picking( cr, uid, order, context=context))
             
         move_obj = self.pool.get('stock.move')
         picking_obj = self.pool.get('stock.picking')
-        procurement_obj = self.pool.get('procurement.order')
-        proc_ids = []
-        date_pick = {} # dict with the pick-out created for same date line
+        #procurement_obj = self.pool.get('procurement.order')
+        #proc_ids = []
         
         # ---------------------------------------------------------------------
         #                    TODO Split depend on deadline date
@@ -458,58 +458,47 @@ class sale_order(osv.osv):
             if line.state == 'done':
                 continue
 
-            #date_planned = self._get_date_planned(
-            #    cr, uid, order, line, order.date_order, context=context)
             if line.product_id:
-                date_planned = line.date_deadline # every line has its deadline
-                if line.product_id.type in ('product', 'consu'): # not service
-                    if not picking_id and not date_pick[date_planned]:                        
-                        # TODO pass deadline for create correct
-                        context['force_date_deadline'] = date_planned
-                        date_pick[date_planned] = picking_obj.create(
-                            cr, uid, self._prepare_order_picking(
-                                cr, uid, order, context=context))
-                    else:
-                        date_pick[date_planned]            
-                                
+                if line.product_id.type in ('product', 'consu'): # not service                                
                     move_id = move_obj.create(
                         cr, uid, self._prepare_order_line_move(
-                            cr, uid, order, line, picking_id, date_planned, 
+                            cr, uid, order, line, picking_id, date_planned,
                             context=context))
                 else:
                     # a service has no stock move
                     move_id = False
 
                 # TODO Servono?? **********************************************
-                proc_id = procurement_obj.create(
-                    cr, uid, self._prepare_order_line_procurement(
-                        cr, uid, order, line, move_id, date_planned, 
-                        context=context))
-                proc_ids.append(proc_id)
-                line.write({'procurement_id': proc_id})
-                self.ship_recreate(cr, uid, order, line, move_id, proc_id)
+                #proc_id = procurement_obj.create(
+                #    cr, uid, self._prepare_order_line_procurement(
+                #        cr, uid, order, line, move_id, date_planned, 
+                #        context=context))
+                #proc_ids.append(proc_id)
+                #line.write({'procurement_id': proc_id})
+                
+                # TODO Check:
+                #self.ship_recreate(cr, uid, order, line, move_id, proc_id)
 
         wf_service = netsvc.LocalService("workflow")
         if picking_id:
             wf_service.trg_validate(
                 uid, 'stock.picking', picking_id, 'button_confirm', cr)
 
-        for proc_id in proc_ids:
-            wf_service.trg_validate(
-                uid, 'procurement.order', proc_id, 'button_confirm', cr)
+        #for proc_id in proc_ids:
+        #    wf_service.trg_validate(
+        #        uid, 'procurement.order', proc_id, 'button_confirm', cr)
 
         val = {}
-        if order.state == 'shipping_except':
-            val['state'] = 'progress'
-            val['shipped'] = False
-
-            if (order.order_policy == 'manual'):
-                for line in order.order_line:
-                    if (not line.invoiced) and (
-                            line.state not in ('cancel', 'draft')):
-                        val['state'] = 'manual'
-                        break
-        order.write(val)
+        #if order.state == 'shipping_except':
+        #    val['state'] = 'progress'
+        #    val['shipped'] = False
+        #    if (order.order_policy == 'manual'):
+        #        for line in order.order_line:
+        #            if (not line.invoiced) and (
+        #                    line.state not in ('cancel', 'draft')):
+        #                val['state'] = 'manual'
+        #                break
+        #order.write(val)
         return True
 
     def action_ship_create(self, cr, uid, ids, context=None):
