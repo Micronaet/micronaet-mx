@@ -92,7 +92,7 @@ class SaleOrder(orm.Model):
         if not partner_id: # reset:
             res['value'].update({
                 'incoterm': False,                
-                'default_carrier_id': False,
+                'carrier_id': False,
                 'carriage_condition_id': False,
                 'goods_description_id': False,
                 'transportation_reason_id': False,
@@ -108,7 +108,7 @@ class SaleOrder(orm.Model):
         
         res['value'].update({
             'incoterm': partner_proxy.incoterm_id.id,
-            'default_carrier_id': partner_proxy.default_carrier_id.id,
+            'carrier_id': partner_proxy.default_carrier_id.id,
             'carriage_condition_id': partner_proxy.carriage_condition_id.id,
             'goods_description_id': partner_proxy.goods_description_id.id,
             'transportation_reason_id': 

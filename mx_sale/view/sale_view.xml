@@ -58,7 +58,7 @@
                     <page string="Invoice parameters">
                         <group colspan="4" col="4">
                            <separator string="Delivery:" colspan="4"/>
-                               <field name="default_carrier_id" />
+                               <!--<field name="default_carrier_id" />-->
                                <field name="carriage_condition_id" />
                                <field name="goods_description_id" />
                                <field name="transportation_reason_id" />
