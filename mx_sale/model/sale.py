@@ -92,7 +92,7 @@ class SaleOrder(orm.Model):
         if not partner_id: # reset:
             res['value'].update({
                 'incoterm': False,                
-                'default_transport_id': False,
+                'default_carrier_id': False,
                 'carriage_condition_id': False,
                 'goods_description_id': False,
                 'transportation_reason_id': False,
@@ -108,7 +108,7 @@ class SaleOrder(orm.Model):
         
         res['value'].update({
             'incoterm': partner_proxy.incoterm_id.id,
-            'default_transport_id': partner_proxy.default_transport_id.id,
+            'default_carrier_id': partner_proxy.default_carrier_id.id,
             'carriage_condition_id': partner_proxy.carriage_condition_id.id,
             'goods_description_id': partner_proxy.goods_description_id.id,
             'transportation_reason_id': 
@@ -158,7 +158,7 @@ class SaleOrder(orm.Model):
         #        'cannot be moved'),
 
         # Account extra field saved in sale.order:
-        'default_transport_id': fields.many2one('res.partner', 'Vector', 
+        'default_carrier_id': fields.many2one('delivery.carrier', 'Carrier', 
             domain=[('is_vector', '=', True)]),
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),
