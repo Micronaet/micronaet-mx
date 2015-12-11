@@ -444,6 +444,8 @@ class sale_order(osv.osv):
         # Procedure work only called from wizard, no picking will be created:
         if not context.get('from_wizard', False) or not picking_id:
             return True
+        # ---------------------------------------------------------------------
+            
         #picking_obj.create(cr, uid, self._prepare_order_picking( cr, uid, order, context=context))
             
         move_obj = self.pool.get('stock.move')

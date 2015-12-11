@@ -88,10 +88,9 @@ class SaleOrder(orm.Model):
         # ---------------------------------------------------------------------
         #                    TODO Split depend on deadline date
         # ---------------------------------------------------------------------
-        import pdb; pdb.set_trace()        
         for line in order_line:
-            if line.state == 'done':
-                continue
+            #if line.state == 'done':
+            #    continue
 
             if line.product_id:
                 if line.product_id.type in ('product', 'consu'): # not service
