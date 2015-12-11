@@ -69,5 +69,15 @@ class SaleOrder(orm.Model):
             'datas': datas, 
             'nodestroy': True,
             }
+    _columns = {
+        'quotation_mode': fields.selection([
+            ('with', 'With code'),
+            ('without', 'Without code'),
+            ], 'Quotation mode', required=True)
+        }
 
+    _defaults = {    
+        # Default value:
+        'quotation_mode': lambda *x: 'with',
+        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
