@@ -57,8 +57,7 @@ class ResPartner(orm.Model):
 class SaleOrder(orm.Model):
     ''' Extra field for order
     '''    
-    _inherit = 'sale.order'
-    
+    _inherit = 'sale.order'    
     
     # -------------------------------------------------------------------------
     #                                  Button events:
