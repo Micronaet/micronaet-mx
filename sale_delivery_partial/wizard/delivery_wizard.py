@@ -176,6 +176,17 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
     '''
     _inherit = 'sale.delivery.partial.wizard'
     
+    # On change event:
+    def onchange_delivery_qty(self, cr, uid, ids, 
+            delivery_uom_qty, product_remain_qty, context=None):
+        ''' Check that delivered not greater that remain
+        '''    
+        res = {}
+        if delivery_uom_qty > product_remain_qty:
+            res['value'] = {}
+            res['value']['delivery_uom_qty'] = product_remain_qty
+        return res    
+            
     def _load_default_line_ids(self, cr, uid, context=None):
         ''' Load order line as default values
         '''
@@ -184,13 +195,20 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         if not order_id:
             return False # error
         
-        # TODO calculare remain quantity (not function fields)
-        product_delivered_qty = 1.0
-        product_remain_qty = 1.0 
-        
         sale_proxy = sale_pool.browse(cr, uid, order_id, context)
+
+        # Read delivered per sale order line (or picked)
+        sol_status = {}
+        for pick in sale_proxy.picking_ids :
+            for line in pick.move_lines:
+                sol_id = line.sale_line_id.id # TODO correct?
+                if sol_id not in sol_status:
+                    sol_status[sol_id] = 0.0
+                sol_status[sol_id] += line.product_qty # TODO uos?
+        
         res = []
-        for line in sale_proxy.order_line:
+        for line in sale_proxy.order_line:            
+            product_delivered_qty = sol_status.get(line.id, 0.0)
             res.append((0, False, {
                 #'wizard_id': 1,
                 'order_line_id': line.id,
@@ -201,8 +219,10 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
                 'product_uom': line.product_uom.id,
                 'date_deadline': line.date_deadline,
                 
+                # Calculated:
                 'product_delivered_qty': product_delivered_qty,
-                'product_remain_qty': product_remain_qty,
+                'product_remain_qty':
+                    line.product_uom_qty - product_delivered_qty,
                 }))
         return res
         
