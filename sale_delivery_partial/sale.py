@@ -91,7 +91,6 @@ class SaleOrder(orm.Model):
         for line in order_line:
             #if line.state == 'done':
             #    continue
-
             if line.product_id:
                 if line.product_id.type in ('product', 'consu'): # not service
                     move_data = self._prepare_order_line_move(
@@ -99,7 +98,9 @@ class SaleOrder(orm.Model):
                         picking_data['date'],
                         context=context)
                     # Force qty:
-                    product_uom_qty = order_line_ids[line.id]                        
+                    #product_uom_qty = order_line_ids[line.id]                        
+                    move_data['product_uos_qty'] = order_line_ids[line.id]                        
+                    move_data['product_qty'] = order_line_ids[line.id]                        
                     move_id = move_pool.create(
                         cr, uid, move_data, context=context)
                 else:

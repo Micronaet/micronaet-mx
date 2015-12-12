@@ -103,7 +103,6 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
         
         # Proxy used:
         wiz_browse = self.browse(cr, uid, ids, context=context)[0]
-        
         # Generate line to pick out:
         pick_line_ids = {}
         for line in wiz_browse.line_ids:
@@ -118,9 +117,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
             context=context)
             
         # TODO return new order:
-        return {
-            'type': 'ir.actions.act_window_close'
-            }
+        return {'type': 'ir.actions.act_window_close'}
 
     def force_deadline_delivery(self, cr, uid, ids, context=None):
         ''' Set up line that have to be delivered depend on date
