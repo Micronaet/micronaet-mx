@@ -56,7 +56,7 @@
           <field name="arch" type="xml">
               <field name="pricelist_id" position="after">
               <!--<xpath expr="/form/sheet/notebook" position="before"></xpath>-->
-                  <button name="%(action_sale_delivery_partial_wizard)d" string="Delivery wizard" type="action" context="{'default_order_id': active_id}" colspan="2"/> 
+                  <button name="%(action_sale_delivery_partial_wizard)d" string="Delivery wizard" type="action" context="{'default_order_id': active_id}" colspan="2" attrs="{'invisible':[('state', 'in', ('draft', 'sent', 'cancel'))]}"/> 
               </field>
           </field>
       </record>
