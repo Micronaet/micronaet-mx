@@ -137,6 +137,21 @@ class SaleDeliveryPartialLineWizard(orm.TransientModel):
     '''
     _name = 'sale.delivery.partial.line.wizard'
 
+    # On change event:
+    def onchange_delivery_qty(self, cr, uid, ids, 
+            delivery_uom_qty, product_remain_qty, context=None):
+        ''' Check that delivered not greater that remain
+        '''    
+        context = context or {}
+        res = {}
+
+        if delivery_uom_qty > product_remain_qty:
+            res['warning'] = {
+                'title': _('Error'),
+                'message': _('Max value admitted: %s' % product_remain_qty),
+                }
+        return res
+
     _columns = {
         # Sale order line reference:
         'wizard_id': fields.many2one('sale.delivery.partial.wizard', 
@@ -175,18 +190,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
     ''' Add *many fields:
     '''
     _inherit = 'sale.delivery.partial.wizard'
-    
-    # On change event:
-    def onchange_delivery_qty(self, cr, uid, ids, 
-            delivery_uom_qty, product_remain_qty, context=None):
-        ''' Check that delivered not greater that remain
-        '''    
-        res = {}
-        if delivery_uom_qty > product_remain_qty:
-            res['value'] = {}
-            res['value']['delivery_uom_qty'] = product_remain_qty
-        return res    
-            
+                
     def _load_default_line_ids(self, cr, uid, context=None):
         ''' Load order line as default values
         '''

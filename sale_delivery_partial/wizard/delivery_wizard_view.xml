@@ -31,7 +31,7 @@
                                 <field name="product_delivered_qty" />
                                 <field name="product_remain_qty" />
                                 
-                                <field name="delivery_uom_qty" on_change="onchange_delivery_qty(delivery_uom_qty,product_remain_qty)"/>
+                                <field name="delivery_uom_qty" on_change="onchange_delivery_qty(delivery_uom_qty,product_remain_qty,context)"/>
                             </tree>
                         </field>
                    </group>
