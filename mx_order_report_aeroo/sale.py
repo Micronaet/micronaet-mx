@@ -70,6 +70,7 @@ class SaleOrder(orm.Model):
             'nodestroy': True,
             }
     _columns = {
+        'printed_time': fields.boolean('Printed time'),
         'quotation_mode': fields.selection([
             ('with', 'With code'),
             ('without', 'Without code'),
@@ -77,7 +78,7 @@ class SaleOrder(orm.Model):
         }
 
     _defaults = {    
-        # Default value:
+        'printed_time': lambda *x: True,
         'quotation_mode': lambda *x: 'with',
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

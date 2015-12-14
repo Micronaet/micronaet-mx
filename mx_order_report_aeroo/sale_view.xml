@@ -8,7 +8,8 @@
             <field name="arch" type="xml">
                 <field name="date_order" position="after">
                     <field name="quotation_mode" />
-                </field>                
+                    <field name="printed_time" />
+                </field>
             </field>
         </record>
     </data>
