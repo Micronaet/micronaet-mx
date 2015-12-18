@@ -1397,7 +1397,7 @@ class stock_picking(osv.osv):
 class stock_production_lot(osv.osv):
 
     def name_get(self, cr, uid, ids, context=None):
-        if not ids:
+        if not ids or not ids[0]:
             return []
         reads = self.read(cr, uid, ids, ['name', 'prefix', 'ref'], context)
         res = []
