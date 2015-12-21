@@ -33,12 +33,32 @@ class Parser(report_sxw.rml_parse):
         super(Parser, self).__init__(cr, uid, name, context)
         self.localcontext.update({
             'get_address': self.get_address,
+            'unify_lot': self.unify_lot,
             'get_extra_data': self.get_extra_data,
             'get_partner_list': self.get_partner_list,
             'get_counter': self.get_counter,
             'set_counter': self.set_counter,
         })
 
+    def unify_lot(self, line):
+        ''' Read line browse obj for unify quantity for same product (but
+            different lot)
+        '''
+        res = []
+        
+        db = {}
+        sequence = []
+        for item in line:
+            if item.product_id.id not in db:
+                db[item.product_id.id] = [item, 0.0]
+                sequence.append(item.product_id.id)
+            db[item.product_id.id][1] += item.product_uos_qty # TODO UOM
+        
+        # Keep in correct order:    
+        for product_id in sequence:
+            res.append(db[product_id])
+        return res
+        
     def get_counter(self, name):
         ''' Get counter with name passed (else create an empty)
         '''

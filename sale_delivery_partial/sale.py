@@ -161,6 +161,8 @@ class SaleOrder(orm.Model):
                     #product_uom_qty = order_line_ids[line.id]                        
                     move_data['product_uos_qty'] = order_line_ids[line.id]                        
                     move_data['product_qty'] = order_line_ids[line.id]                        
+                    if not move_data['product_qty']:
+                        continue
                     move_id = move_pool.create(
                         cr, uid, move_data, context=context)
                 else:

@@ -211,7 +211,7 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
                 sol_status[sol_id] += line.product_qty # TODO uos?
         
         res = []
-        for line in sale_proxy.order_line:            
+        for line in sale_proxy.order_line:                      
             product_delivered_qty = sol_status.get(line.id, 0.0)
             res.append((0, False, {
                 #'wizard_id': 1,

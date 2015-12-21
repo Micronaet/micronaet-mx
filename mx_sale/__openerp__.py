@@ -34,6 +34,7 @@
         'sale_stock',
         'sale_address',
         'l10n_it_sale',
+        'mexal_ddt', # for print button
         ],
     'init_xml': [],
     'demo': [],
