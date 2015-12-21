@@ -45,9 +45,9 @@ class SaleDeliveryPartialWizard(orm.TransientModel):
     '''
     _name = 'sale.delivery.partial.wizard'
 
-    # --------------------
-    # Wizard button event:
-    # --------------------
+    # -------------------------------------------------------------------------
+    #                             Wizard button event
+    # -------------------------------------------------------------------------
     def setup_deliver_remain_qty(self, cr, uid, ids, with_deadline, 
             context=None):
         ''' Function used from 2 button as set up remain q, depend or not 
