@@ -83,14 +83,12 @@ class mrp_print_lavoration_week__wizard(osv.osv_memory):
             context=None):
         ''' Get default value for 4 type of data:
         '''        
-        import datetime
         from dateutil.relativedelta import relativedelta
         
         if reference_date:
-            ref = datetime.datetime.strptime(reference_date, "%Y-%m-%d")
+            ref = datetime.strptime(reference_date, "%Y-%m-%d")
         else:
-            #ref = datetime.date.today()
-            ref = datetime.datetime.strptime(datetime.now(), "%Y-%m-%d")
+            ref = datetime.now()
         iso_info = ref.isocalendar()
 
         if data_type == 'date':
