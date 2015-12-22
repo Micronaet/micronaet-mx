@@ -89,7 +89,8 @@ class mrp_print_lavoration_week__wizard(osv.osv_memory):
         if reference_date:
             ref = datetime.datetime.strptime(reference_date, "%Y-%m-%d")
         else:
-            ref = datetime.date.today()
+            #ref = datetime.date.today()
+            ref = datetime.datetime.strptime(datetime.now(), "%Y-%m-%d")
         iso_info = ref.isocalendar()
 
         if data_type == 'date':
