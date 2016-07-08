@@ -44,7 +44,7 @@
         'partner_addresses',
         'base_log_scheduler',        
         
-        'mx_sale', # for deadline in order
+        #'mx_sale', # for deadline in order
         ],
     'init_xml': [],
     'demo_xml': [],

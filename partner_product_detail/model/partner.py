@@ -58,14 +58,19 @@ class ResPartnerPpricelistProduct(orm.Model):
 
         'date': fields.date('Date'),
         'deadline': fields.date('Deadline'),
-        'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
         'packaging_id': fields.many2one('product.packaging', 'Packaging', 
             ondelete='set null'),
-
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
+            
+        # ---------------------------------------------------------------------
+        # TODO used for calculate packaging? XXX not used for now
+        'product_ul': fields.many2one('product.ul', 'Pack', 
+            ondelete='set null'),
+        'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
+        # ---------------------------------------------------------------------
         }
 
     _defaults = {
@@ -96,7 +101,6 @@ class SaleOrderLine(orm.Model):
         ''' Override function for set up extra fields as partner customization
         '''    
         context = context or {}
-        
         res = super(SaleOrderLine, self).product_id_change(
             cr, uid, ids, pricelist=pricelist, product=product, qty=qty,
             uom=uom, qty_uos=qty_uos, uos=uos, name=name, 
@@ -137,6 +141,7 @@ class SaleOrderLine(orm.Model):
         return res
     
     _columns = {
+        # TODO remove?
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
         }
         

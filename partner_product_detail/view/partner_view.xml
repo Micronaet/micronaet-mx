@@ -14,7 +14,7 @@
                                 <field name="product_id" />
                                 <field name="alias_id" />
                                 <field name="packaging_id" domain="[('product_id', '=', product_id)]"/>
-                                <field name="load_qty" />
+                                <!--<field name="load_qty" />-->
                                 <field name="price" />                                  
                                 <field name="date" />                                  
                                 <field name="deadline" />
@@ -26,7 +26,7 @@
                                     <field name="product_id" />
                                     <field name="alias_id" />
                                     <field name="packaging_id" domain="[('product_id', '=', product_id)]" />
-                                    <field name="load_qty" />
+                                    <!--<field name="load_qty" />-->
                                     <field name="price" />                                  
                                     <field name="date" />                                  
                                     <field name="deadline" />                                  
@@ -39,18 +39,16 @@
                 </xpath>
             </field>
         </record>
-        
-       <record model="ir.ui.view" id="view_sale_order_line_default">
+       <!--<record model="ir.ui.view" id="view_sale_order_line_default">
             <field name="name">sale.order.line.default</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
-                <!--sale.order.line-->
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='tax_id']" position="before">
-                    <field name="load_qty"/><!--near product_packaging-->
+                    <field name="load_qty"/>
                 </xpath>                
             </field>
-       </record>         
+       </record>-->
 
     </data>
 </openerp>
