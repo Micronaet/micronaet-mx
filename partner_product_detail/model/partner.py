@@ -143,6 +143,5 @@ class SaleOrderLine(orm.Model):
     _columns = {
         # TODO remove?
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),            
-        }
-        
+        }        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
