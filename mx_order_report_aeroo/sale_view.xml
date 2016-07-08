@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_view_order_version_form">
+            <field name="name">sale.order.version.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="date_order" position="after">
+                    <field name="quotation_mode" />
+                    <field name="printed_time" />
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
+

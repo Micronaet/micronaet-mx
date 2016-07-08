@@ -27,11 +27,11 @@
                                 <field name="price_unit" />
                                 <field name="product_uom" />
                                 <field name="product_uom_qty" />
-                                
+
                                 <field name="product_delivered_qty" />
                                 <field name="product_remain_qty" />
-                                
-                                <field name="delivery_uom_qty" />
+
+                                <field name="delivery_uom_qty" on_change="onchange_delivery_qty(delivery_uom_qty,product_remain_qty,context)"/>
                             </tree>
                         </field>
                    </group>
@@ -55,10 +55,13 @@
           <field name="inherit_id" ref="sale.view_order_form"/>
           <field name="arch" type="xml">
               <field name="pricelist_id" position="after">
-              <!--<xpath expr="/form/sheet/notebook" position="before"></xpath>-->
-                  <button name="%(action_sale_delivery_partial_wizard)d" string="Delivery wizard" type="action" context="{'default_order_id': active_id}"/> 
+                  <button name="%(action_sale_delivery_partial_wizard)d" 
+                      string="Delivery wizard" type="action" colspan="2" 
+                      context="{'default_order_id': active_id}" 
+                      attrs="{'invisible':[('state', 'in', ('draft', 'sent', 'cancel'))]}"/> 
               </field>
           </field>
       </record>
+      <!--options="{'reload_on_button': true}"-->
     </data>
 </openerp>

@@ -40,6 +40,7 @@
         ],
     'init_xml' : [], 
     'data' : [
+        'sale_view.xml',
         'report/sale_report.xml',
         ],
     'demo_xml' : [],

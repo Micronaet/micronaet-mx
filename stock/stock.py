@@ -663,7 +663,7 @@ class stock_picking(osv.osv):
             * Ready to Transfer: products reserved, simply waiting for confirmation.\n
             * Transferred: has been processed, can't be modified or cancelled anymore\n
             * Cancelled: has been cancelled, can't be confirmed anymore"""
-        ),
+            ),
         'min_date': fields.function(get_min_max_date, fnct_inv=_set_minimum_date, multi="min_max_date",
                  store=True, type='datetime', string='Scheduled Time', select=1, help="Scheduled time for the shipment to be processed"),
         'date': fields.datetime('Creation Date', help="Creation date, usually the time of the order.", select=True, states={'done':[('readonly', True)], 'cancel':[('readonly',True)]}),
@@ -1397,7 +1397,7 @@ class stock_picking(osv.osv):
 class stock_production_lot(osv.osv):
 
     def name_get(self, cr, uid, ids, context=None):
-        if not ids:
+        if not ids or not ids[0]:
             return []
         reads = self.read(cr, uid, ids, ['name', 'prefix', 'ref'], context)
         res = []

@@ -30,6 +30,7 @@
     'depends': [
         'base',
         'stock',        
+        'sale_stock',
         ],
     'init_xml': [],
     'demo': [],

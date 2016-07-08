@@ -61,11 +61,10 @@ class StockPicking(orm.Model):
     def force_assign_ddt(self, cr, uid, ids, context=None):
         ''' Force assign of DDT after change state
         '''
+        assert len(ids), 'Must me only one record!'
         if context is None:
             context = {}
             
-        # TODO assert only one!!        
-        
         for pick in self.browse(cr, uid, ids, context=context):
             if not pick.move_lines:
                 raise osv.except_osv(
@@ -89,6 +88,4 @@ class StockPicking(orm.Model):
         # TODO set current date for delivery ?? 
         return self.pool.get('wizard.assign.ddt').assign_ddt(
             cr, uid, ids, context=ctx)
-            
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
