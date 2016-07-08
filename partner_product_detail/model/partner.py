@@ -58,6 +58,8 @@ class ResPartnerPpricelistProduct(orm.Model):
 
         'date': fields.date('Date'),
         'deadline': fields.date('Deadline'),
+        #'sell': fields.boolean('Sell rule'),
+        #'cost': fields.float('Cost', digits=(16, 2)), # for purchase?
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
         'packaging_id': fields.many2one('product.packaging', 'Packaging', 
@@ -117,7 +119,7 @@ class SaleOrderLine(orm.Model):
                 'alias_id': False,                
                 'price_unit': False,
                 'product_packaging': False,
-                'load_qty': False,
+                'load_qty': False, # XXX remove?
                 # TODO
                 })
             return res
@@ -136,7 +138,7 @@ class SaleOrderLine(orm.Model):
                     'price_unit': item.price,
                     # TODO use first if not present in customization?
                     'product_packaging': item.packaging_id.id, 
-                    'load_qty': item.load_qty,
+                    'load_qty': item.load_qty, #XXX remove?
                     })
         return res
     
