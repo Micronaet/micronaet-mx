@@ -62,11 +62,11 @@ class ResPartnerPpricelistProduct(orm.Model):
         #'cost': fields.float('Cost', digits=(16, 2)), # for purchase?
         'price': fields.float('Price', digits=(16, 2)),
         # TODO Currency
-        'packaging_id': fields.many2one('product.packaging', 'Packaging', 
-            ondelete='set null'),
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
             
+        'packaging_id': fields.many2one('product.packaging', 'Packaging', 
+            ondelete='set null'),
         # ---------------------------------------------------------------------
         # TODO used for calculate packaging? XXX not used for now
         'product_ul': fields.many2one('product.ul', 'Pack', 
