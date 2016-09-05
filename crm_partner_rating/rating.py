@@ -38,6 +38,18 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class ResPartner(orm.Model):
+    """ Model name: ResPartner
+    """
+    
+    _inherit = 'res.partner'
+    
+    _columns = {
+        'rating_ids': fields.one2many(
+            'res.partner.rating', 'partner_id', 
+            'Rating'),     
+        }
+    
 class ResPartnerRating(orm.Model):
     """ Model name: ClassNameCamelCase
     """    
@@ -54,10 +66,7 @@ class ResPartnerRating(orm.Model):
         'service_note': fields.text('Service'),
         'satisfaction_note': fields.text('Satisfaction'),
         'observations_note': fields.text('Observations'),
-        
-        
-        
-        
+        'signature':fields.boolean('Signature'),
         }
     
     _defaults = {
