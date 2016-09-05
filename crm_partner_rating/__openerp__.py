@@ -36,6 +36,7 @@
         ],
     'init_xml': [], 
     'data': [
+        'security/ir.model.access.csv',
         'rating_views.xml',
         'report/relation_report.xml',
        ],
