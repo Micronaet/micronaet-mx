@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page//field[@name='user_id']" position="after">
                     <field name="agent_id" />
-                    <field name="is_agent" />
+                    <field name="is_agent" domain="[('is_agent', '=', True)]"/>
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page//field[@name='ref']" position="after">
                     <field name="sql_agent_code" />
@@ -20,8 +20,8 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//notebook/page//field[@name='user_id']" position="after">                    
-                    <field name="mx_agent_id"/>
+                <xpath expr="//notebook/page//field[@name='user_id']" position="after">
+                    <field name="mx_agent_id" domain="[('is_agent', '=', True)]"/>
                 </xpath>
             </field>
         </record>
