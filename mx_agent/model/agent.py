@@ -53,5 +53,69 @@ class ResPartner(orm.Model):
     _columns = {
         'sql_agent_code': fields.char('Agent code', size=9),
         'is_agent': fields.boolean('Is agent'),
+        'agent_id': fields.many2one(
+            'res.partner', 'Agent', domain=[('is_agent', '=', True)]),
         }
+
+class SaleOrder(orm.Model):
+    """ Model name: Sale Order
+    """    
+    _inherit = 'sale.order'
+    
+    # TODO onchange for setup from partner
+    def onchange_partner_id(self, cr, uid, ids, part, context=None):
+        res = super(SaleOrder, self).onchange_partner_id(
+            cr, uid, ids, part, context=context)
+        
+        if 'value' not in res:
+           res['value'] = {}
+        if part:
+           partner_proxy = self.pool.get('res.partner').browse(
+               cr, uid, part, context=context)
+           res['value'][
+               'mx_agent_id'] = partner_proxy.agent_id.id
+        else:
+           res['value']['mx_agent_id'] = False
+        return res 
+        
+    _columns = {
+        'mx_agent_id': fields.many2one('res.partner', 'Agent', 
+            domain=[('is_agent', '=', True)]),
+        }
+
+'''class AccountInvoice(orm.Model):
+    """ Model name: Account Invoice
+    """    
+    _inherit = 'account.invoice'
+    
+    # TODO onchange for setup from partner
+    
+    _columns = {
+        'mx_agent_id': fields.many2one('res.partner', 'Agent', 
+            domain=[('is_agent', '=', True)]),
+        }
+
+class StockPicking(orm.Model):
+    """ Model name: Stock Picking    
+    """    
+    _inherit = 'stock.picking'
+    
+    # TODO onchange for setup from partner
+    
+    _columns = {
+        'mx_agent_id': fields.many2one('res.partner', 'Agent', 
+            domain=[('is_agent', '=', True)]),
+        }
+
+class StockDdt(orm.Model):
+    """ Model name: Stock DDT
+    """    
+    _inherit = 'stock.ddt'
+    
+    # TODO onchange for setup from partner
+   
+    _columns = {
+        'mx_agent_id': fields.many2one('res.partner', 'Agent', 
+            domain=[('is_agent', '=', True)]),
+        }        '''
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
