@@ -57,10 +57,9 @@ class MrpProduction(orm.Model):
         ''' Test if line has all elements = 0 
             Response according with wizard filter
         '''
+        global table
         if data is None:
             data = {}
-
-        global table
             
         if data.get('active', False):  # only active lines?
             return not any(table[row]) # jump line (True)
@@ -69,9 +68,6 @@ class MrpProduction(orm.Model):
     def _start_up(self, data=None):
         ''' Master function for prepare report
         '''
-        # Utility:
-        #def format_element(product, rows):            
-        
         # Readability:
         cr = self.cr
         uid = self.uid
@@ -148,7 +144,7 @@ class MrpProduction(orm.Model):
                 of_deadline = supplier_order['DTT_SCAD'].strftime('%Y-%m-%d') 
 
                 q = float(supplier_order['NQT_RIGA_O_PLOR'] or 0.0) * (
-                    1.0 / supplier_order['NCF_CONV'] \
+                    1.0 / supplier_order['NCF_CONV']\
                         if supplier_order['NCF_CONV'] else 1.0)
                 if of_deadline not in supplier_orders[ref]: # TODO test UM
                     supplier_orders[ref][of_deadline] = q 
@@ -166,8 +162,8 @@ class MrpProduction(orm.Model):
         with_medium = data.get('with_medium', False)
         month_window = data.get('month_window', 2)
         if with_medium:            
-            from_date = (datetime.now() - timedelta(
-                days=30 * month_window)).strftime(
+            from_date = (
+                datetime.now() - timedelta(days=30 * month_window)).strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT)
             lavoration_material_ids = lavoration_pool.search(cr, uid, [
                 ('real_date_planned', '>=', from_date),
@@ -178,11 +174,9 @@ class MrpProduction(orm.Model):
                 for material in lavoration.bom_material_ids:
                     product = material.product_id # Readability:
                     if product.id in material_mx:
-                        material_mx[product.id] += \
-                            material.quantity or 0.0
+                        material_mx[product.id] += material.quantity or 0.0
                     else:
-                        material_mx[product.id] = \
-                            material.quantity or 0.0
+                        material_mx[product.id] = material.quantity or 0.0
 
         # ---------------------------------------------------------------------
         #                       GENERATE HEADER VALUES
