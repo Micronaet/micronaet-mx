@@ -34,12 +34,13 @@ class product_status_wizard(osv.osv_memory):
     _name = 'product.status.wizard'
     _description = 'Product status wizard'
 
+    # -------------------------------------------------------------------------
     # Button events:
-    def print_report(self, cr, uid, ids, context=None):
-        ''' Redirect to bom report passing parameters
-        ''' 
+    # -------------------------------------------------------------------------
+    def prepare_data(self, cr, uid, ids, context=None):
+        ''' Prepare data dict
+        '''
         wiz_proxy = self.browse(cr, uid, ids)[0]
-
         datas = {}
         if wiz_proxy.days:
             datas['days'] = wiz_proxy.days
@@ -48,12 +49,29 @@ class product_status_wizard(osv.osv_memory):
         datas['negative'] = wiz_proxy.negative
         datas['with_medium'] = wiz_proxy.with_medium
         datas['month_window'] = wiz_proxy.month_window
+        return datas
 
+    # -------------------------------------------------------------------------
+    # Button events:
+    # -------------------------------------------------------------------------
+    def export_excel(self, cr, uid, ids, context=None):
+        ''' Export excel file
+        '''
+        datas = self.prepare_data(cr, uid, ids, context=context)
+        
+        # Generate report for export:
+        
+        return True
+        
+    def print_report(self, cr, uid, ids, context=None):
+        ''' Redirect to bom report passing parameters
+        ''' 
+        datas = self.prepare_data(cr, uid, ids, context=context)
         return {
             'type': 'ir.actions.report.xml',
             'report_name': 'webkitstatus',
             'datas': datas,
-        }
+            }
         
     _columns = {
         'days':fields.integer('Days from today', required=True),
