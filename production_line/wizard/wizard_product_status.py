@@ -24,7 +24,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv, fields
+import os
+import sys
+import logging
+import openerp
+import xlsxwriter
+from openerp.osv import fields, osv, expression
+from datetime import datetime, timedelta
+from openerp.tools.translate import _
+from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
+    DEFAULT_SERVER_DATETIME_FORMAT, 
+    DATETIME_FORMATS_MAP, 
+    float_compare)
+
+
+_logger = logging.getLogger(__name__)
 
 
 # WIZARD PRINT REPORT ########################################################
@@ -57,10 +71,120 @@ class product_status_wizard(osv.osv_memory):
     def export_excel(self, cr, uid, ids, context=None):
         ''' Export excel file
         '''
-        datas = self.prepare_data(cr, uid, ids, context=context)
+        # ---------------------------------------------------------------------
+        # Utility:
+        # ---------------------------------------------------------------------
+        def write_xls_mrp_line(WS, row, line):
+            ''' Write line in excel file
+            '''
+            col = 0
+            for item in line:
+                WS.write(row, col, item)
+                col += 1
+            return True
+            
+        data = self.prepare_data(cr, uid, ids, context=context)
+
+        # ---------------------------------------------------------------------
+        # XLS file:
+        # ---------------------------------------------------------------------
+        filename = '~/production_status.xlsx'
+        filename = os.path.expanduser(filename)
         
+        # Open file and write header
+        WB = xlsxwriter.Workbook(filename)
+        WS = WB.add_worksheet('Material')
+        # WS.write(0, 0, 'Codice')
+
+        # ---------------------------------------------------------------------
+        # Format elements:
+        # ---------------------------------------------------------------------
+        format_header = WB.add_format({
+            'bold': True, 
+            'font_name': 'Arial',
+            'font_size': 11,
+            })
+
+        format_title = WB.add_format({
+            'bold': True, 
+            'font_color': 'black',
+            'font_name': 'Arial',
+            'font_size': 10,
+            'align': 'center',
+            'valign': 'center',
+            'bg_color': 'gray',
+            'border': 1,
+            })
+
+        format_hidden = WB.add_format({
+            'font_color': 'white',
+            'font_name': 'Arial',
+            'font_size': 8,
+            })
+
+        format_data_text = WB.add_format({
+            'font_name': 'Arial',
+            'font_size': 10,
+            })
+
+        format_data_number = WB.add_format({
+            'font_name': 'Arial',
+            'font_size': 10,
+            'align': 'right',
+            })
+
+        # ---------------------------------------------------------------------
+        # Format columns:
+        # ---------------------------------------------------------------------
+        # Column dimension:
+        #WS.set_column ('A:A', 0, None, {'hidden': 1}) # ID column        
+        WS.set_column ('A:A', 30) # Image colums
+            
         # Generate report for export:
+        context['lang'] = 'it_IT'
+        self.start_up(data)
+        start_product = False
         
+        # Start loop for design table for product and material status:
+        # Header: 
+        header = [_('Material')]        
+        for col in self.get_cols():
+            header.append(col)
+        write_xls_mrp_line(WS, 0, header)
+        
+        # Body:
+        i = 1 # row position (before 0)
+        rows = self.get_rows()
+        for row in rows:
+            if not self.jump_is_all_zero(row[1], data):
+                if not start_product and row[0][0] == 'P':
+                    i += 1 # jump one line
+                    start_product = True
+                    header[0] = _('Product')
+                    write_xls_mrp_line(WS, i, header)
+                status_line = 0.0
+                
+                body = [row[0].split(": ")[1]]
+                j = 0
+                for col in self.get_cols():
+                    (q, minimum) = self.get_cel(j, row[1])
+                    j += 1
+                    status_line += q
+                    body.append(status_line)
+                    
+                    # Choose the color setup:
+                    if not status_line: # value = 0
+                        pass # White
+                    elif status_line > minimum: # > minimum value (green)
+                        pass # Green
+                    elif status_line > 0.0: # under minimum (yellow)
+                        pass # Yellow
+                    elif status_line < 0.0: # under 0 (red)
+                        pass# Red
+                    else: # ("=", "<"): # not present!!!
+                        pass # Error!
+                write_xls_mrp_line(WS, i, body)
+                i += 1                
         return True
         
     def print_report(self, cr, uid, ids, context=None):

@@ -18,7 +18,8 @@
                         <field name="month_window" attrs="{'invisible':[('with_medium','=',False)]}"/>
                         <newline />
                         <button string="Cancel" special="cancel" colspan="2" />                   
-                        <button name="print_report" type="object" string="Print" icon="gtk-print" colspan="2" class="oe_highlight"/>
+                        <button name="print_report" type="object" string="Print" icon="gtk-print" colspan="1" class="oe_highlight"/>
+                        <button name="export_excel" type="object" string="Export XLS" icon="terp-go-month" colspan="1" class="oe_highlight"/>
                     </group>
                 </form>
             </field>

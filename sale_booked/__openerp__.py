@@ -18,29 +18,23 @@
 ###############################################################################
 
 {
-    'name': 'MX Sale operation',
+    'name': 'Sale booked field',
     'version': '0.1',
     'category': 'Sale',
     'description': '''        
-        Add extra manage for create sale as Mx does
+        Add extra field to manage Booked operation in order
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'stock',
         'sale',
-        'sale_stock',
-        'sale_address',
-        'l10n_it_sale',
-        'mexal_ddt', # for print button
-        # TODO: 'sale_booked'
         ],
     'init_xml': [],
     'demo': [],
     'data': [
-        'view/sale_view.xml',
+        # TODO '_view.xml',
         ],
     'active': False,
     'installable': True,

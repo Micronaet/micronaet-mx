@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Copyright (C) 2001-2014 Micronaet SRL (<http://www.micronaet.it>).
@@ -16,33 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from . import booked
 
-{
-    'name': 'MX Sale operation',
-    'version': '0.1',
-    'category': 'Sale',
-    'description': '''        
-        Add extra manage for create sale as Mx does
-        ''',
-    'author': 'Micronaet S.r.l. - Nicola Riolini',
-    'website': 'http://www.micronaet.it',
-    'license': 'AGPL-3',
-    'depends': [
-        'base',
-        'stock',
-        'sale',
-        'sale_stock',
-        'sale_address',
-        'l10n_it_sale',
-        'mexal_ddt', # for print button
-        # TODO: 'sale_booked'
-        ],
-    'init_xml': [],
-    'demo': [],
-    'data': [
-        'view/sale_view.xml',
-        ],
-    'active': False,
-    'installable': True,
-    'auto_install': False,
-    }
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

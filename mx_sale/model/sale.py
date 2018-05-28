@@ -124,6 +124,8 @@ class SaleOrder(orm.Model):
         return res
 
     _columns = {
+        # ---------------------------------------------------------------------
+        # TODO sale_booked module:
         # QUOTATION:
         'date_valid': fields.date('Validity date', 
             help='Max date for validity of offer'),
@@ -144,6 +146,8 @@ class SaleOrder(orm.Model):
         'date_delivery_confirmed': fields.boolean('Delivery confirmed',
             help='Delivery confirmed, product available '
                 '(2 cases depend on incoterms)'),
+        # ---------------------------------------------------------------------
+
         # TODO used?    
         #'date_previous_deadline': fields.date(
         #    'Previous deadline', 

@@ -190,6 +190,21 @@ class sale_order_add_extra(osv.osv):
     # -------------------------------------------------------------------------
     #                                 Button function
     # -------------------------------------------------------------------------
+    def print_delivery_report(self, cr, uid, ids, context=None):		
+	        ''' Print report order 		
+	        '''		
+	        ''' Open report		
+	        '''		
+	        context = context or {}        		
+	        data = {}		
+			
+	        return {		
+	            'type': 'ir.actions.report.xml', 		
+	            'report_name': 'delivery_report',        		
+	            'datas': data,		
+	            'context': context		
+	            }
+
     def confirm_delivery(self, cr, uid, ids, context=None):
         ''' Change state for became mandatory the delivery date and block
             production orders
@@ -197,8 +212,9 @@ class sale_order_add_extra(osv.osv):
         order_proxy = self.browse(cr, uid, ids, context=context)[0]
         data = {'accounting_state': 'planned'}
 
-        if not order_proxy.date_booked:
-            data['date_booked'] = order_proxy.date_deadline or datetime.now(
+        # use: date_booked ?
+        if not order_proxy.date_delivery:
+            data['date_delivery'] = order_proxy.date_deadline or datetime.now(
                 ).strftime(DEFAULT_SERVER_DATE_FORMAT)
         self.write(cr, uid, ids, data, context=context)
         return True

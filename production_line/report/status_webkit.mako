@@ -147,15 +147,15 @@
                              <% (q, minimum) = get_cel(j, row[1]) %>
                              <% j += 1 %>
                              <% status_line += q %>
-                              %if not status_line:            # value = 0
+                              %if not status_line: # value = 0
                                   <td class = "data">${status_line|entity}</td>
-                              %elif status_line > minimum:    # > minimum value (green)
+                              %elif status_line > minimum: # > minimum value (green)
                                   <td class = "data green">${status_line|entity}</td>
-                              %elif status_line > 0.0:        # under minimum (yellow)
+                              %elif status_line > 0.0: # under minimum (yellow)
                                   <td class = "data yellow">${status_line|entity}</td>
-                              %elif status_line < 0.0:        # under 0 (red)
+                              %elif status_line < 0.0: # under 0 (red)
                                   <td class = "data red">${status_line|entity}</td>
-                              %else: # ("=", "<"):             # not present!!!
+                              %else: # ("=", "<"): # not present!!!
                                   <td class = "data">${status_line|entity}</td>
                               %endif
                         % endfor
