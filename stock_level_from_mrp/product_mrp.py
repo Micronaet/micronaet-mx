@@ -74,9 +74,8 @@ class MrpProductionWorkcenterLine(osv.osv):
              DEFAULT_SERVER_DATE_FORMAT)
         
         lavoration_ids = self.search(cr, uid, [
-            ('real_date_planned', '>=', now_text),
-            ('real_date_planned', '<', now.strftime(
-                DEFAULT_SERVER_DATE_FORMAT)),
+            ('real_date_planned', '>=', from_text),
+            ('real_date_planned', '<', now_text),
             ], context=context)   
         _logger.warning('Lavoration found: %s Period: [>=%s <%s]' % (
             len(lavoration_ids),
