@@ -95,7 +95,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] = quantity
         
         _logger.warning('Product found: %s' % len(lavoration_ids))
-        for product, total in product_medium:
+        for product in product_medium:
+            total = product_medium[product]
             if product.manual_stock_level:
                 continue
 
