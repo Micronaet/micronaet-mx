@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_product_stock_level_form">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[2]" position="before">
+                    <page string="Stock level">
+                        <group col="4" colspan="4">
+                            <separator string="Stock period:" colspan="4"/>
+                            <field name="day_leadtime" />
+                            <newline/>
+                            <field name="day_min_level" />
+                            <field name="day_max_level" />
+                            <field name="day_max_ready_level" />
+
+                            <separator string="Stock level:" colspan="4"/>
+                            <field name="min_stock_level" />
+                            <field name="max_stock_level" />
+                            <field name="ready_stock_level" />
+                        </group>    
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
