@@ -66,7 +66,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 )
 
         now = datetime.now()
-        from_date = now - timedelta(days=-stock_level_days)
+        from_date = now - timedelta(days=stock_level_days)
         now_text = '%s 00:00:00' % now.strftime(
              DEFAULT_SERVER_DATE_FORMAT)
         from_text = '%s 00:00:00' % from_date.strftime(
