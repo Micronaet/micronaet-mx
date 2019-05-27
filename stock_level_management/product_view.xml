@@ -1,6 +1,47 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+        <!--product.product-->
+        <record model="ir.ui.view" id="view_product_product_stock_level_tree">
+            <field name="name">product.product.tree</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="40" />
+            <field name="arch" type="xml">
+                <tree string="Product stock level" colors="grey:manual_stock_level==True;red:min_stock_level==0">        
+	                <field name="default_code" />
+	                <field name="name" />
+	                <field name="uom_id" string="UM" />
+	                <!--<field name="lst_price" modifiers="{'readonly': true}"/>
+	                <field name="standard_price" invisible="1" modifiers="{'tree_invisible': true}"/>-->
+
+                    <field name="manual_stock_level" />
+                    <field name="day_leadtime" />
+                    <field name="medium_stock_qty" readonly="1"/>
+
+                    <field name="day_min_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
+                    <field name="min_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+
+                    <field name="day_max_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
+                    <field name="max_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+
+                    <field name="day_max_ready_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
+                    <field name="ready_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+
+	                <field name="state" invisible="1"/>
+	                <field name="company_id" invisible="1" modifiers="{'invisible': true, 'tree_invisible': true}"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_product_product_stock_level">
+            <field name="name">Stock level</field>
+            <field name="res_model">product.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_product_product_stock_level_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+
         <record model="ir.ui.view" id="view_product_stock_level_form">
             <field name="name">product.product.form</field>
             <field name="model">product.product</field>
@@ -30,5 +71,12 @@
                 </xpath>
             </field>
         </record>
+        
+        <menuitem 
+            parent="product.menu_products" 
+            id="menu_action_product_product_stock_level" 
+            action="action_product_product_stock_level"
+            />
+        
     </data>
 </openerp>
