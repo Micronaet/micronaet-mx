@@ -43,6 +43,7 @@
         'base_mssql_accounting',
         'partner_addresses',
         'base_log_scheduler',        
+        'stock_level_management', # for Stock level fields
         
         #'mx_sale', # for deadline in order
         ],
