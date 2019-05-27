@@ -42,12 +42,89 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class MrpProductionWorkcenterLine(osv.osv):
+    """ Model name: Lavoration
+    """
+    
+    _inherit = 'mrp.production.workcenter.line'
+    
+    def update_product_level_from_production(self, cr, uid, ids, context=None):
+        ''' Update product level from production
+        '''
+        product_pool = self.pool.get('product.product')
+        company_pool = self.pool.get('res.company')
+        
+        # Get parameters:
+        company_ids = company_pool.search(cr, uid, [], context=context)        
+        company = company_pool.browse(
+            cr, uid, company_ids, context=context)[0]
+        stock_level_days = company.stock_level_days
+        if not stock_level_days:
+            raise osv.except_osv(
+                _('Error stock management'), 
+                _('Setup the parameter in company form'),
+                )
+
+        now = datetime.now()
+        from_date = now - timedelta(days=-stock_level_days)
+        now_text = '%s 00:00:00' % now.strftime(
+             DEFAULT_SERVER_DATE_FORMAT)
+        from_text = '%s 00:00:00' % from_date.strftime(
+             DEFAULT_SERVER_DATE_FORMAT)
+        
+        lavoration_ids = self.search(cr, uid, [
+            ('real_date_planned', '>=', now_text),
+            ('real_date_planned', '<', now.strftime(
+                DEFAULT_SERVER_DATE_FORMAT)),
+            ], context=context)   
+        _logger.warning('Lavoration found: %s Period: [>=%s <%s]' % (
+            len(lavoration_ids),
+            from_text,
+            now_text,
+            ))
+        
+        product_medium = {}    
+        for lavoration in self.browse(
+                cr, uid, lavoration_ids, context=context):
+            for material in lavoration.bom_material_ids:
+                product = material.product_id
+                quantity = material.quantity
+                if product in product_medium:
+                    product_medium[product] += quantity
+                else:    
+                    product_medium[product] = quantity
+        
+        _logger.warning('Product found: %s' % len(lavoration_ids))
+        for product, total in product_medium:
+            if product.manual_stock_level:
+                continue
+
+            if not total:
+                medium_stock_qty = 0.0
+            else:    
+                medium_stock_qty = total / stock_level_days
+
+            # Approx?
+            product_pool.write(cr, uid, [product.id], {
+                'medium_stock_qty': medium_stock_qty,
+                'min_stock_level': day_min_level * medium_stock_qty,
+                'max_stock_level': day_max_level * medium_stock_qty,
+                'ready_stock_level': day_max_ready_level * medium_stock_qty,
+                }, context=context)
+        return True
+
 class ResCompany(osv.osv):
     """ Model name: Parameters
     """
     
     _inherit = 'res.company'
 
+    def update_product_level_from_production(self, cr, uid, ids, context=None):
+        ''' Button from company        
+        '''
+        return self.pool.get('mrp.production.workcenter.line'
+            ).update_product_level_from_production(
+                cr, uid, ids, context=context)
     _columns = {
         'stock_level_days': fields.integer(
             'Stock level days', help='Days for from data till today'),
@@ -55,8 +132,8 @@ class ResCompany(osv.osv):
         # Manage mode?
         'stock_level_mode': fields.selection([
             ('medium', 'Medium'),
-            ('variant', 'Medium + variant'),
-            ('period', 'Month period'),
+            #('variant', 'Medium + variant'),
+            #('period', 'Month period'),
             ], 'Stock level mode', required=True),
         }
         

@@ -9,17 +9,22 @@
                 <xpath expr="//page[2]" position="before">
                     <page string="Stock level">
                         <group col="4" colspan="4">
-                            <separator string="Stock period:" colspan="4"/>
-                            <field name="day_leadtime" />
+                            <field name="manual_stock_level" />
                             <newline/>
-                            <field name="day_min_level" />
-                            <field name="day_max_level" />
-                            <field name="day_max_ready_level" />
 
-                            <separator string="Stock level:" colspan="4"/>
-                            <field name="min_stock_level" />
-                            <field name="max_stock_level" />
-                            <field name="ready_stock_level" />
+                            <field name="day_leadtime" />
+                            <field name="medium_stock_qty" readonly="1"/>
+
+                            <separator string="Stock period:" colspan="2" attrs="{'invisible': [('manual_stock_level','=',True)]}"/>
+                            <separator string="Stock level:" colspan="2" />
+                            <field name="day_min_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
+                            <field name="min_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+
+                            <field name="day_max_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
+                            <field name="max_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+
+                            <field name="day_max_ready_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
+                            <field name="ready_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
                         </group>    
                     </page>
                 </xpath>

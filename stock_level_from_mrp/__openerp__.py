@@ -42,7 +42,7 @@
     'demo': [],
     'data': [
         #'security/ir.model.access.csv',    
-        'product_view.xml',
+        'product_mrp_view.xml',
         ],
     'active': False,
     'installable': True,

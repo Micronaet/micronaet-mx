@@ -90,11 +90,14 @@ class ProductProduct(osv.osv):
         # ---------------------------------------------------------------------
         # Quantity fields:
         # ---------------------------------------------------------------------
+        'medium_stock_qty': fields.float('Calculated medium', digits=(16, 4),
+            help='Min q. level for trigger the purchase order'),
         'min_stock_level': fields.float('Min stock level', digits=(16, 4),
             help='Min q. level for trigger the purchase order'),
         'max_stock_level': fields.float('Max stock level', digits=(16, 4),
             help='Max q. for stock level when trigger the purchase order'),
-        'ready_stock_level': fields.float('Max stock level', digits=(16, 4),
+        'ready_stock_level': fields.float('Max stock level ready', 
+            digits=(16, 4),
             help='Max q. for stock level when trigger the purchase order'),            
         }
         
