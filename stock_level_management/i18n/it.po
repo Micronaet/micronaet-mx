@@ -1,0 +1,137 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* stock_level_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-27 08:33+0000\n"
+"PO-Revision-Date: 2019-05-27 10:45+0100\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: it\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. module: stock_level_management
+#: help:sale.order.line,ready_deadline:0
+msgid "This product has no deadline was order and keep as ready"
+msgstr ""
+"Questo ordine prodotto non ha la scadenza ma viene messo come 'pronto' per "
+"velocizzare la consegna futura"
+
+#. module: stock_level_management
+#: view:product.product:0
+msgid "Stock level"
+msgstr "Livello magazzino"
+
+#. module: stock_level_management
+#: view:product.product:0
+msgid "Stock period:"
+msgstr "Periodi magazzino:"
+
+#. module: stock_level_management
+#: model:ir.model,name:stock_level_management.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Linea d'ordine di vendita"
+
+#. module: stock_level_management
+#: model:ir.model,name:stock_level_management.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: stock_level_management
+#: help:product.product,min_stock_level:0
+msgid "Min q. level for trigger the purchase order"
+msgstr "Livello minimo q. per fare scattare l'ordine di acquisto"
+
+#. module: stock_level_management
+#: field:product.product,max_stock_level:0
+#: field:product.product,ready_stock_level:0
+msgid "Max stock level"
+msgstr "Massimo livello riordino"
+
+#. module: stock_level_management
+#: field:sale.order.line,ready_deadline:0
+msgid "Ready deadline"
+msgstr "Scadenza tipo pronta"
+
+#. module: stock_level_management
+#: field:product.product,day_max_level:0
+msgid "Max day time"
+msgstr "Periodo livello massimo"
+
+#. module: stock_level_management
+#: model:ir.model,name:stock_level_management.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: stock_level_management
+#: field:product.product,manual_stock_level:0
+msgid "Manual stock level"
+msgstr "Gestione manuale"
+
+#. module: stock_level_management
+#: help:product.product,day_min_level:0
+msgid "Secure min time period in days for receive purchase in stock"
+msgstr ""
+"Periodo minimo di sicurezza, in giorni, per ricevere la merce in magazzino"
+
+#. module: stock_level_management
+#: field:product.product,min_stock_level:0
+msgid "Min stock level"
+msgstr "Minimo livello di riordino"
+
+#. module: stock_level_management
+#: help:product.product,day_max_ready_level:0
+msgid "Secure extra order for ready purchase product (for long leadtime)"
+msgstr ""
+"Ordine extra per acquisti 'pronti' così da ridurre il tempo di attesa "
+"consegna"
+
+#. module: stock_level_management
+#: field:product.product,day_max_ready_level:0
+msgid "Ready day time"
+msgstr "Periodo ordine 'pronto'"
+
+#. module: stock_level_management
+#: help:product.product,day_leadtime:0
+msgid "Lead time period in days for receive purchase in stock "
+msgstr "Periodo medio in giorni per ricevere la merce ordinata in magazzino"
+
+#. module: stock_level_management
+#: help:product.product,manual_stock_level:0
+msgid "Manual has fixed q., not manual will be updated automatic"
+msgstr ""
+"Manuale ha la quantità inserita dall'utente, in automatico invece verrà "
+"calcolata con valorizzazione medie dagli scarichi"
+
+#. module: stock_level_management
+#: field:product.product,day_min_level:0
+msgid "Min day time"
+msgstr "Periodo livello minimo"
+
+#. module: stock_level_management
+#: help:product.product,day_max_level:0
+msgid "Secure max time period in days for purchase"
+msgstr "Massimo periodo di sicurezza in giorni per l'acquisto"
+
+#. module: stock_level_management
+#: field:product.product,day_leadtime:0
+msgid "Lead time"
+msgstr "Periodo di consegna"
+
+#. module: stock_level_management
+#: help:product.product,max_stock_level:0
+#: help:product.product,ready_stock_level:0
+msgid "Max q. for stock level when trigger the purchase order"
+msgstr "Quantità massima per l'ordine di acquisto quando viene generato"
+
+#. module: stock_level_management
+#: view:product.product:0
+msgid "Stock level:"
+msgstr "Livello magazzino:"
