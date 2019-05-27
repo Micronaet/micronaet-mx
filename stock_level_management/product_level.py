@@ -53,6 +53,16 @@ class SaleOrderLine(osv.osv):
         help='This product has no deadline was order and keep as ready'),
         }
 
+class ResCompany(osv.osv):
+    """ Model name: Res company
+    """
+    
+    _inherit = 'res.company'
+
+    # TODO Parameters:    
+    _columns = {
+        }
+
 class ProductProduct(osv.osv):
     """ Model name: ProductProduct
     """
