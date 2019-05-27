@@ -138,7 +138,10 @@ class ResCompany(osv.osv):
         # Setup:
         header = [
             'Codice', 'Descrizione', 'UM',
+            'Min Mexal', 'Max Mexal',
+            
             'Manuale', 'Lead time', 'M(x)',
+            
             'Liv. min. gg.', 'Liv. min.',
             'Liv. max. gg.', 'Liv. max.',
             'Liv. pronto gg.', 'Liv. pronto',
@@ -146,10 +149,11 @@ class ResCompany(osv.osv):
             
         width = [
             15, 25, 5,
-            3, 15, 15,
-            15, 15, 
-            15, 15, 
-            15, 15
+            12, 12,
+            3, 12, 12,
+            12, 12, 
+            12, 12, 
+            12, 12,
             ]
 
         # ---------------------------------------------------------------------
@@ -212,6 +216,8 @@ class ResCompany(osv.osv):
                     product.default_code or '',
                     product.name or '',
                     product.uom_id.name or '',
+                    product.minimum_qty,
+                    product.maximum_qty,                    
                     
                     product.manual_stock_level,
                     product.day_leadtime,
