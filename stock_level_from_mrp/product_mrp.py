@@ -155,19 +155,19 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         # Create WS:
         # ---------------------------------------------------------------------
-        ws_list = [
+        ws_list = (
             ('Livelli auto', [
                 ('manual_stock_level', '=', False),
                 ('medium_stock_qty', '>', 0),
-                ],
+                ]),
             ('Livelli manuali', [
                 ('manual_stock_level', '=', True),
                 #('min_stock_level', '>', 0),
-                ],
+                ]),
             ('Non presenti', [
                 ('min_stock_level', '<=', 0),
-                ],
-            ]
+                ]),
+            )
         # Create all pages:    
         excel_format = {}
         for ws_name, product_filter in ws_list:
@@ -191,11 +191,11 @@ class ResCompany(osv.osv):
             # -----------------------------------------------------------------
             row = 0
             excel_pool.write_xls_line(
-                ws_name, row, [ws_name], default_format=f_title)
+                ws_name, row, [ws_name], default_format=excel_format['title'])
 
             row += 1
             excel_pool.write_xls_line(
-                ws_name, row, header, default_format=f_header)
+                ws_name, row, header, default_format=excel_format['header'])
 
             # -----------------------------------------------------------------
             # Product selection:
