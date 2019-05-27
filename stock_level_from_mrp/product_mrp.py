@@ -230,7 +230,9 @@ class ResCompany(osv.osv):
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=excel_format['text'])
                 row += 1        
-        return excel_pool.return_attachment(cr, uid, 'Livelli prodotto')
+        return excel_pool.return_attachment(
+            cr, uid, 'Livelli prodotto', 'livelli_magazzino.xlsx', 
+            version='7.0', php=True, context=context)
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         ''' Button from company        
