@@ -27,6 +27,7 @@ import logging
 import openerp
 import openerp.netsvc as netsvc
 import openerp.addons.decimal_precision as dp
+import xlsxwriter
 from openerp.osv import fields, osv, expression
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -123,6 +124,113 @@ class ResCompany(osv.osv):
     """
     
     _inherit = 'res.company'
+
+    def extract_product_level_xlsx(self, cr, uid, ids, context=None):
+        ''' Extract current report stock level
+        '''
+        # Pool used:
+        excel_pool = self.pool.get('excel.writer')
+        product_pool = self.pool.get('product.product')
+        
+        # ---------------------------------------------------------------------
+        #                          Excel export:
+        # ---------------------------------------------------------------------
+        # Setup:
+        header = [
+            'Codice', 'Descrizione', 'UM',
+            'Manuale', 'Lead time', 'M(x)',
+            'Liv. min. gg.', 'Liv. min.',
+            'Liv. max. gg.', 'Liv. max.',
+            'Liv. pronto gg.', 'Liv. pronto',
+            ]
+            
+        width = [
+            15, 25, 5,
+            3, 15, 15,
+            15, 15, 
+            15, 15, 
+            15, 15
+            ]
+
+        # ---------------------------------------------------------------------
+        # Create WS:
+        # ---------------------------------------------------------------------
+        ws_list = [
+            ('Livelli auto', [
+                ('manual_stock_level', '=', False),
+                ('medium_stock_qty', '>', 0),
+                ],
+            ('Livelli manuali', [
+                ('manual_stock_level', '=', True),
+                #('min_stock_level', '>', 0),
+                ],
+            ('Non presenti', [
+                ('min_stock_level', '<=', 0),
+                ],
+            ]
+        # Create all pages:    
+        excel_format = {}
+        for ws_name, product_filter in ws_list:
+            excel_pool.create_worksheet(name=ws_name)
+        
+            excel_pool.column_width(ws_name, width)
+            #excel_pool.row_height(ws_name, row_list, height=10)
+
+            # -----------------------------------------------------------------
+            # Generate format used (first time only):
+            # -----------------------------------------------------------------
+            if not excel_format:
+                excel_pool.set_format()
+                excel_format['title'] = excel_pool.get_format(key='title')
+                excel_format['header'] = excel_pool.get_format(key='header')
+                excel_format['text'] = excel_pool.get_format(key='text')
+                excel_format['number'] = excel_pool.get_format(key='number')
+        
+            # -----------------------------------------------------------------
+            # Write title / header    
+            # -----------------------------------------------------------------
+            row = 0
+            excel_pool.write_xls_line(
+                ws_name, row, [ws_name], default_format=f_title)
+
+            row += 1
+            excel_pool.write_xls_line(
+                ws_name, row, header, default_format=f_header)
+
+            # -----------------------------------------------------------------
+            # Product selection:
+            # -----------------------------------------------------------------
+            product_ids = product_pool.search(
+                cr, uid, product_filter, context=context)
+
+            product = product_pool.browse(cr, uid, product_ids, 
+                context=context)
+                
+            row += 1
+            for product in sorted(product, key=lambda x: x.default_code):
+                line = [
+                    product.default_code or '',
+                    product.name or '',
+                    product.uom_id.name or '',
+                    
+                    product.manual_stock_level,
+                    product.day_leadtime,
+                    product.medium_stock_qty,
+
+                    product.day_min_level,
+                    product.min_stock_level,
+
+                    product.day_max_level,
+                    product.max_stock_level,
+
+                    product.day_max_ready_level,
+                    product.ready_stock_level,
+                    ]
+                    
+                excel_pool.write_xls_line(
+                    ws_name, row, line, default_format=excel_format['text'])
+                row += 1        
+        return excel_pool.return_attachment(cr, uid, 'Livelli prodotto')
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         ''' Button from company        

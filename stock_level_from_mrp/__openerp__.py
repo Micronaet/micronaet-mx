@@ -37,6 +37,7 @@
         'product',
         'stock_level_management',
         'production_line',
+        'excel_export',
         ],
     'init_xml': [],
     'demo': [],
