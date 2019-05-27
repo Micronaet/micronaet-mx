@@ -107,10 +107,14 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             # Approx?
             product_pool.write(cr, uid, [product.id], {
-                'medium_stock_qty': medium_stock_qty,
-                'min_stock_level': day_min_level * medium_stock_qty,
-                'max_stock_level': day_max_level * medium_stock_qty,
-                'ready_stock_level': day_max_ready_level * medium_stock_qty,
+                'medium_stock_qty': 
+                    medium_stock_qty,
+                'min_stock_level': 
+                    product.day_min_level * medium_stock_qty,
+                'max_stock_level': 
+                    product.day_max_level * medium_stock_qty,
+                'ready_stock_level': 
+                    product.day_max_ready_level * medium_stock_qty,
                 }, context=context)
         return True
 
