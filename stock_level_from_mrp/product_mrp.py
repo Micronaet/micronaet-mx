@@ -106,11 +106,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 medium_stock_qty = total / stock_level_days
 
             product_pool.write(cr, uid, [product.id], {
-                'medium_stock_qty': 
-                    product_pool.round_interger_order(
-                        medium_stock_qty, 
-                        approx=product.approx_integer, 
-                        mode=product.approx_mode),
+                'medium_stock_qty': medium_stock_qty, 
                 'min_stock_level': 
                     product_pool.round_interger_order(
                         product.day_min_level * medium_stock_qty, 
