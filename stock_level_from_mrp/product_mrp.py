@@ -144,6 +144,7 @@ class ResCompany(osv.osv):
         # Setup:
         header = [
             'Codice', 'Descrizione', 'UM',
+            'Appr.', 'Mod.',
             'Min Mexal', 'Max Mexal',
             
             'Manuale', 'Lead time', 'M(x)',
@@ -155,6 +156,7 @@ class ResCompany(osv.osv):
             
         width = [
             15, 25, 5,
+            12, 12,
             12, 12,
             3, 12, 12,
             12, 12, 
@@ -220,8 +222,12 @@ class ResCompany(osv.osv):
             for product in sorted(product, key=lambda x: x.default_code):
                 line = [
                     product.default_code or '',
-                    product.name or '',
+                    product.name or '',                    
                     product.uom_id.name or '',
+                    
+                    product.approx_integer,
+                    product.approx_mode,
+
                     product.minimum_qty,
                     product.maximum_qty,                    
                     
