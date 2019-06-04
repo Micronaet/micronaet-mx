@@ -69,6 +69,22 @@ class ProductProduct(osv.osv):
     
     _inherit = 'product.product'
     
+    def round_interger_order(self, number, approx=1, mode='over'):
+        ''' Approx function for order quantity:
+            Approx number to value approx (integer > 1)
+            Mode = 
+                'normal' (nothing is done)
+                'over' (to the next approx level  exceeded)
+                'under' (to the next approx level  exceeded)            
+        '''
+        if mode == 'over':
+            extra = (approx if number % approx > 0.001 else 0)
+        #elif mode == 'under':
+        #    extra = (approx if number % approx > 0.001 else 0)
+        else:
+            extra = 0.0
+        return round(number / approx , 0) * approx + extra
+    
     _columns = {
         'manual_stock_level': fields.boolean('Manual stock level', 
             help='Manual has fixed q., not manual will be updated automatic'),
