@@ -110,9 +110,11 @@ class ProductProduct(osv.osv):
             'Approx (int)', help='Approx integer value, ex. 50'),
         'approx_mode': fields.selection([
             ('normal', 'Normal (nothing)'),
-            ('under', '145 approx 50 = 100 (not 150)'),
-            ('over', '105 approx 50 = 150 (not 100)'),
-            ], 'Approx mode'),
+            ('under', 'Under approximate'),
+            ('over', 'Over approximate'),
+            ], 'Approx mode', 
+            help='Normal nothing, Under: 145 approx 50 = 100 (not 150)'
+                '105 approx 50 = 150 (not 100)',),
             
         'medium_stock_qty': fields.float('Calculated medium', digits=(16, 4),
             help='Min q. level for trigger the purchase order'),

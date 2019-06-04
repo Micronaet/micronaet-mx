@@ -53,11 +53,13 @@
                             <field name="manual_stock_level" />
                             <newline/>
                             
+                            <field name="day_leadtime" />
+                            <field name="medium_stock_qty" readonly="1"/>
+
+                            <separator string="Approx mode:" colspan="4" />
                             <field name="approx_integer" />
                             <field name="approx_mode" />
 
-                            <field name="day_leadtime" />
-                            <field name="medium_stock_qty" readonly="1"/>
 
                             <separator string="Stock period:" colspan="2" attrs="{'invisible': [('manual_stock_level','=',True)]}"/>
                             <separator string="Stock level:" colspan="2" />
