@@ -106,6 +106,14 @@ class ProductProduct(osv.osv):
         # ---------------------------------------------------------------------
         # Quantity fields:
         # ---------------------------------------------------------------------
+        'approx_integer': fields.integer(
+            'Approx (int)', help='Approx integer value, ex. 50'),
+        'approx_mode': fields.selection([
+            ('normal', 'Normal (nothing)'),
+            ('under', '145 approx 50 = 100 (not 150)'),
+            ('over', '105 approx 50 = 150 (not 100)'),
+            ], 'Approx mode'),
+            
         'medium_stock_qty': fields.float('Calculated medium', digits=(16, 4),
             help='Min q. level for trigger the purchase order'),
         'min_stock_level': fields.float('Min stock level', digits=(16, 4),
@@ -118,6 +126,9 @@ class ProductProduct(osv.osv):
         }
         
     _defaults = {
+        'approx_integer': lambda *x: 50,
+        'approx_mode': lambda *x: 'over',
+
         'day_leadtime': lambda *x: 7,
         'day_min_level': lambda *x: 10,
         'day_max_level': lambda *x: 37,
