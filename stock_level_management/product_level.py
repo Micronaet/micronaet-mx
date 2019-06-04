@@ -77,6 +77,9 @@ class ProductProduct(osv.osv):
                 'over' (to the next approx level  exceeded)
                 'under' (to the next approx level  exceeded)            
         '''
+        if approx <= 1:
+            return number
+
         if mode == 'over':
             extra = (approx if number % approx > 0.001 else 0)
         #elif mode == 'under':
