@@ -90,6 +90,12 @@ class PurchaseOrderProvision(orm.Model):
         sequence = 0
         purchase_id = False
         now = datetime.now()
+        status_mask = _(
+            '''Leadtime %s, Day min: %s (q. %s), Day max: %s (q. %s)<br/>
+               Q. at leadtime period: <b>%s</b><br/>
+               Max %s - Lead q. %s = <b>%s</b><br/>
+               ''')
+        import pdb; pdb.set_trace()
         for row in rows:
             # Only raw material
             if row[0] != 'M':
@@ -113,16 +119,16 @@ class PurchaseOrderProvision(orm.Model):
                     days,
                     ))
                 continue                
-            status_day_min = detail[day_min_level]   
-             
+            status_leadtime = detail[day_leadtime] # day_min_level]   
+
             # -----------------------------------------------------------------
             # Under stock min level qty:
             # -----------------------------------------------------------------
-            if status_day_min < min_stock_level:
-                provision_qty = max_stock_level - status_day_min
+            if status_leadtime < min_stock_level:
+                provision_qty = max_stock_level - status_leadtime
 
             # Negative     
-            urgent = status_day_min < 0
+            urgent = status_leadtime < 0
             
             # Create header if not present:
             if not purchase_id:
@@ -136,6 +142,23 @@ class PurchaseOrderProvision(orm.Model):
             # -----------------------------------------------------------------
             # Line:    
             # -----------------------------------------------------------------
+            note += status_mask % (
+                day_leadtime,
+                
+                day_min_level,
+                min_stock_level,
+                
+                day_max_level
+                max_stock_level,
+                
+                status_leadtime,
+                
+                # Operation:
+                max_stock_level,
+                status_leadtime,
+                provision_qty,
+                )
+
             sequence += 10
             line_pool.create(cr, uid, {
                 'sequence': sequence,
@@ -148,6 +171,7 @@ class PurchaseOrderProvision(orm.Model):
                 'list_price': product.standard_price, # TODO quotation for sup.
                 'deadline': (now + relativedelta(day_leadtime)).strftime(
                     DEFAULT_SERVER_DATE_FORMAT),
+                'note': note,    
                 # 'state'
                 }, context=context)               
         
@@ -202,6 +226,7 @@ class PurchaseOrderProvisionLine(orm.Model):
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
         'deadline': fields.date('Deadline'),
         'list_price': fields.float('List price', digits=(16, 2)),
+        'note': fields.text('Note'),
         # TODO Add provision order managed with this!!!
         }
 
