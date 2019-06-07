@@ -242,7 +242,7 @@ class PurchaseOrderProvisionLine(orm.Model):
             'view_mode': 'form',
             'res_id': current_proxy.product_id.id,
             'res_model': 'product.product',
-            'view_id': False
+            'view_id': False,
             'views': [(False, 'form')],
             'domain': [],
             'context': context,
