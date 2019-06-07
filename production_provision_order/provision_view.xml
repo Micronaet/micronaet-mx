@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+        <record model="ir.ui.view" id="view_product_product_form">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                     <header>
+                         <button name="save_dummy" string="Save" type="object" class="oe_highlight" invisible="not context.get('open_popup', False)"/>
+                     </header>
+                </xpath>
+            </field>
+        </record>
+        
         <!--purchase.order.provision-->
         <record model="ir.ui.view" id="view_purchase_order_provision_tree">
             <field name="name">purchase.order.provision.tree</field>
@@ -13,6 +26,7 @@
                 </tree>
             </field>
         </record>
+        
         <record model="ir.ui.view" id="view_purchase_order_provision_form">
             <field name="name">purchase.order.provision.form</field>
             <field name="model">purchase.order.provision</field>

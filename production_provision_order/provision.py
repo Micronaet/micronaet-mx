@@ -42,6 +42,17 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class ProductProduct(orm.Model):
+    """ Model name: ProductProduct
+    """
+    
+    _inherit = 'product.product'
+
+    def save_dummy(self, cr, uid, ids, context=None):
+        ''' Dummy button for save record
+        '''
+        return True        
+        
 class PurchaseOrderProvision(orm.Model):
     """ Model name: PurchaseOrderProvision
     """
@@ -233,8 +244,11 @@ class PurchaseOrderProvisionLine(orm.Model):
     def open_product_detail(self, cr, uid, ids, context=None):
         ''' Open detail for product
         '''
+        if context is None:
+            context = {}
         current_proxy = self.browse(cr, uid, ids, context=context)[0]
         
+        context['open_popup'] = True
         return {
             'type': 'ir.actions.act_window',
             'name': _('Product detail'),
