@@ -126,6 +126,8 @@ class PurchaseOrderProvision(orm.Model):
             # -----------------------------------------------------------------
             if status_leadtime < min_stock_level:
                 provision_qty = max_stock_level - status_leadtime
+            else:
+                continue # no provision needed    
 
             # Negative     
             urgent = status_leadtime < 0
