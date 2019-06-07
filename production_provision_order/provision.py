@@ -87,8 +87,6 @@ class PurchaseOrderProvision(orm.Model):
     def check_negative_compensed(self, product, detail):
         ''' Check negative in lead time period
         '''
-        if product.default_code == 'A3044':
-            import pdb; pdb.set_trace()
         day_leadtime = product.day_leadtime
         min_stock_level = product.min_stock_level
         mode = False
@@ -175,6 +173,9 @@ class PurchaseOrderProvision(orm.Model):
             product = row[2]
             product_id = row[1]
             detail = table[product_id]
+
+            if product.default_code == 'A3044':
+                import pdb; pdb.set_trace()
             
             # Get stock level management:
             day_leadtime = product.day_leadtime
