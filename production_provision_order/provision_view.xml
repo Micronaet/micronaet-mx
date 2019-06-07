@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
+        <!--purchase.order.provision-->
         <record model="ir.ui.view" id="view_purchase_order_provision_tree">
             <field name="name">purchase.order.provision.tree</field>
             <field name="model">purchase.order.provision</field>
@@ -8,9 +9,57 @@
                 <tree string="Provision order">
                     <field name="name" />
                     <field name="date" />
+                    <field name="state" />
                 </tree>
             </field>
         </record>
+        <record model="ir.ui.view" id="view_purchase_order_provision_form">
+            <field name="name">purchase.order.provision.form</field>
+            <field name="model">purchase.order.provision</field>
+            <field name="arch" type="xml">
+                <form string="Provision order" version="7.0">
+                    <header>
+                        <!--Button for pass to account-->
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <group colspan="4" col="4">
+                            <field name="name" />
+                            <field name="date" />
+                            <separator string="Detail:" colspan="4"/>
+                            <field name="line_ids" colspan="4" nolabel="1">
+                                <tree string="Detail" colors="blue:urgent==True;red:real_qty&lt;=0 or supplier_id==False" editable="bottom">
+                                      <field name="sequence" readonly="1"/>
+                                      <field name="urgent" invisible="1"/>
+                                      <field name="purchase_id" invisible="1"/>
+                                      <field name="product_id" readonly="1"/>
+                                      <field name="provision_qty" readonly="1"/>
+                                      <field name="real_qty" />
+                                      <field name="list_price" />
+                                      <field name="supplier_id" />
+                                </tree>
+                            </field>
+                        </group>    
+                    </sheet>    
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_purchase_order_provision_form">
+            <field name="name">Provision order</field>
+            <field name="res_model">purchase.order.provision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_purchase_order_provision_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+        <menuitem 
+            parent="purchase.menu_procurement_management" 
+            id="menu_action_purchase_order_provision" 
+            action="action_purchase_order_provision_form"
+            sequence="40"
+            />
+                
     </data>
 </openerp>
 

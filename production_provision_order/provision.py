@@ -77,6 +77,7 @@ class PurchaseOrderProvision(orm.Model):
         # ---------------------------------------------------------------------
         # Generate report:    
         # ---------------------------------------------------------------------
+        _logger.info('Extract data simulated days: %s' % days)
         wiz_pool.export_excel(cr, uid, [wiz_id], context=context)    
         
         # ---------------------------------------------------------------------
@@ -85,6 +86,7 @@ class PurchaseOrderProvision(orm.Model):
         table = mrp_pool._get_table()
         rows = mrp_pool._get_rows()
         
+        _logger.info('Generate purchase data')
         sequence = 0
         purchase_id = False
         for row in rows:
@@ -108,17 +110,17 @@ class PurchaseOrderProvision(orm.Model):
                     day_min_level,
                     days,
                     ))
-                continue
-                
-            urgent = False
-            status_day_min = detail[day_min_level]    
-            # Under stock min level:
+                continue                
+            status_day_min = detail[day_min_level]   
+             
+            # -----------------------------------------------------------------
+            # Under stock min level qty:
+            # -----------------------------------------------------------------
             if status_day_min < min_stock_level:
                 provision_qty = max_stock_level - status_day_min
 
             # Negative     
-            if status_day_min < 0:
-                urgent = True
+            urgent = status_day_min < 0
             
             # Create header if not present:
             if not purchase_id:
@@ -127,6 +129,7 @@ class PurchaseOrderProvision(orm.Model):
                     'name': 'Ordine previsionale %s' % now, # TODO number?
                     'date': now,                    
                     }, context=context)
+                _logger.info('Generate purchase order: %s' % now)
             
             # -----------------------------------------------------------------
             # Line:    
@@ -164,7 +167,16 @@ class PurchaseOrderProvision(orm.Model):
         'name': fields.char('Name', size=64, required=True),
         'date': fields.date('Date', required=True),
         # TODO Add provision order managed with this!!!
+        'state': fields.selection([
+            ('draft', 'Draft'),
+            ('done', 'Done'),
+            ], 'State', required=True),
         }
+
+    _defaults = {
+        # Default value:
+        'state': lambda *x: 'draft',
+        }    
 
 class PurchaseOrderProvisionLine(orm.Model):
     """ Model name: PurchaseOrderProvision
@@ -174,8 +186,7 @@ class PurchaseOrderProvisionLine(orm.Model):
     _description = 'Provision order line'
     _rec_name = 'product_id'
     _order = 'sequence,product_id'
-    
-        
+            
     _columns = {
         'sequence': fields.integer('Seq.'),
         'urgent': fields.boolean('Urgent', 
@@ -187,14 +198,17 @@ class PurchaseOrderProvisionLine(orm.Model):
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
         'list_price': fields.float('List price', digits=(16, 2)),
         # TODO Add provision order managed with this!!!
-        'state': fields.selection([
-            ('draft', 'Draft'),
-            ('done', 'Done'),
-            ], 'State', required=True),
         }
-    _defaults = {
-        # Default value:
-        'state': lambda *x: 'draft',
-        }    
+
+class PurchaseOrderProvisionRelation(orm.Model):
+    """ Model name: PurchaseOrderProvision
+    """
+    
+    _inherit = 'purchase.order.provision'
+    
+    _columns = {
+        'line_ids': fields.one2many(
+            'purchase.order.provision.line', 'purchase_id', 'Detail'),
+        }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

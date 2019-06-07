@@ -1,0 +1,111 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* production_provision_order
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-07 09:34+0000\n"
+"PO-Revision-Date: 2019-06-07 11:35+0100\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: it\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. module: production_provision_order
+#: model:ir.model,name:production_provision_order.model_purchase_order_provision_line
+msgid "Provision order line"
+msgstr "Ordine approvvigionamento"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,product_id:0
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,provision_qty:0
+msgid "Provision qty"
+msgstr "Q. richiesta"
+
+#. module: production_provision_order
+#: field:purchase.order.provision,name:0
+msgid "Name"
+msgstr "Nome"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,urgent:0
+msgid "Urgent"
+msgstr "Urgente"
+
+#. module: production_provision_order
+#: model:ir.actions.act_window,name:production_provision_order.action_purchase_order_provision_form
+#: model:ir.model,name:production_provision_order.model_purchase_order_provision
+#: model:ir.ui.menu,name:production_provision_order.menu_action_purchase_order_provision
+#: view:purchase.order.provision:0
+msgid "Provision order"
+msgstr "Ordine di approvvigionamento"
+
+#. module: production_provision_order
+#: view:purchase.order.provision:0 field:purchase.order.provision,line_ids:0
+msgid "Detail"
+msgstr "Dettaglio"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,list_price:0
+msgid "List price"
+msgstr "Prezzo listino"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,real_qty:0
+msgid "Real qty"
+msgstr "Q. ordinata"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,supplier_id:0
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. module: production_provision_order
+#: field:purchase.order.provision,state:0
+msgid "State"
+msgstr "Stato"
+
+#. module: production_provision_order
+#: selection:purchase.order.provision,state:0
+msgid "Done"
+msgstr "Confermato"
+
+#. module: production_provision_order
+#: field:purchase.order.provision,date:0
+msgid "Date"
+msgstr "Data"
+
+#. module: production_provision_order
+#: selection:purchase.order.provision,state:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: production_provision_order
+#: view:purchase.order.provision:0
+msgid "Detail:"
+msgstr "Dettaglio:"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,purchase_id:0
+msgid "Order"
+msgstr "Ordine"
+
+#. module: production_provision_order
+#: help:purchase.order.provision.line,urgent:0
+msgid "Was negative in stock level period"
+msgstr "E' negativo nel periodo di analisi del livello minimo"
+
+#. module: production_provision_order
+#: field:purchase.order.provision.line,sequence:0
+msgid "Seq."
+msgstr "Seq."

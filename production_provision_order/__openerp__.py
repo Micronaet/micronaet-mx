@@ -34,6 +34,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'purchase',
         'production_line',
         'stock_level_from_mrp',
         'stock_level_management',
