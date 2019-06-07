@@ -177,7 +177,7 @@ class PurchaseOrderProvision(orm.Model):
                 'product_id': product_id, 
                 'provision_qty': provision_qty,
                 'real_qty': provision_qty,
-                'supplier_id': False, # TODO!!!
+                'supplier_id': product.first_supplier_id.id,
                 'list_price': product.standard_price, # TODO quotation for sup.
                 'deadline': (now + relativedelta(day_leadtime)).strftime(
                     DEFAULT_SERVER_DATE_FORMAT),

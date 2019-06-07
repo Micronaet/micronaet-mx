@@ -38,6 +38,7 @@
         'production_line',
         'stock_level_from_mrp',
         'stock_level_management',
+        'sql_product_supplier', # default supplier
         ],
     'init_xml': [],
     'demo': [],
