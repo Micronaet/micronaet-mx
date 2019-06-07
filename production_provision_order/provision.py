@@ -91,7 +91,8 @@ class PurchaseOrderProvision(orm.Model):
         purchase_id = False
         now = datetime.now()
         status_mask = _(
-            '''Leadtime %s, Day min: %s (q. %s), Day max: %s (q. %s)<br/>
+            '''Leadtime %s, m(x): %s,
+               Day min: %s (q. %s), Day max: %s (q. %s)<br/>
                Q. at leadtime period: <b>%s</b><br/>
                Max %s - Lead q. %s = <b>%s</b><br/>
                ''')
@@ -111,6 +112,7 @@ class PurchaseOrderProvision(orm.Model):
             day_max_level = product.day_max_level
             min_stock_level = product.min_stock_level
             max_stock_level = product.max_stock_level
+            medium_stock_qty = product.medium_stock_qty
             
             if day_min_level > days:
                 _logger.error('Product %s stock level %s > %s' % (
@@ -146,6 +148,7 @@ class PurchaseOrderProvision(orm.Model):
             # -----------------------------------------------------------------
             note = status_mask % (
                 day_leadtime,
+                medium_stock_qty,
                 
                 day_min_level,
                 min_stock_level,
