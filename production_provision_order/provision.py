@@ -90,8 +90,7 @@ class PurchaseOrderProvision(orm.Model):
         day_leadtime = product.day_leadtime
         min_stock_level = product.min_stock_level
         mode = False
-        if product.default_code == 'A3044':
-            import pdb; pdb.set_trace()
+
         for day in range(0, day_leadtime):
             check = sum(detail[:(day + 1)])
             if check < min_stock_level:
@@ -214,7 +213,7 @@ class PurchaseOrderProvision(orm.Model):
                     if not purchase_id:
                         purchase_id = self.create(
                             cr, uid, purchase_header, context=context)
-                    negetive_pool.create(cr, uid, {
+                    negative_pool.create(cr, uid, {
                         'purchase_id': purchase_id,
                         'product_id': product_id, 
                         'mode': negative_mode,
