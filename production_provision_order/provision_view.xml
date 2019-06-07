@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_purchase_order_provision_tree">
+            <field name="name">purchase.order.provision.tree</field>
+            <field name="model">purchase.order.provision</field>
+            <field name="arch" type="xml">
+                <tree string="Provision order">
+                    <field name="name" />
+                    <field name="date" />
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>
+
