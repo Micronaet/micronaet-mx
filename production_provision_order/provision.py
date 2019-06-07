@@ -42,6 +42,23 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+
+class ResPartner(orm.Model):
+    """ Model name: Res Partner
+    """
+    
+    _inherit = 'res.partner'
+
+    def print_partner_purchase(self, cr, uid, ids, context=None):
+        ''' Print purchase report for partner selected
+        '''
+        if context is None:
+            context = {}
+        purchase_id = context.get('purchase_id', False)
+        
+        # TODO Print report for this partner with purchase_id selected
+        return True        
+
 class ProductProduct(orm.Model):
     """ Model name: ProductProduct
     """
@@ -219,15 +236,17 @@ class PurchaseOrderProvision(orm.Model):
     def _get_supplier_list(self, cr, uid, ids, fields, args, context=None):
         ''' Fields function for calculate 
         '''        
+        res = {}
         if len(ids) > 1:
-            return False
+            return res
         
-        partner_ids = []
+        item_id = ids[0]
+        res[item_id] = []
         for line in self.browse(cr, uid, ids, context=context)[0].line_ids:
             partner_id = line.supplier_id.id
-            if partner_id not in partner_ids:
-                partner_ids[partner_id]
-        return [(6, 0, partner_ids)]
+            if partner_id and partner_id not in res[item_id]:
+                res[item_id].append(partner_id)
+        return res
 
     _columns = {
         'name': fields.char('Name', size=64, required=True),

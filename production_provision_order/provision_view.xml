@@ -64,7 +64,8 @@
                                 </page>
                                 <page string="Supplier">
                                     <group colspan="4" col="4">
-                                        <field name="supplier_ids">
+                                        <separator string="Partner touched:" colspan="4" />
+                                        <field name="supplier_ids" nolabel="1" colspan="4" context="{'purchase_id': active_id}">
                                             <tree string="Partner touched">
                                                 <field name="name" />
                                                 <button name="print_partner_purchase" string="Purchase report" type="object" />
