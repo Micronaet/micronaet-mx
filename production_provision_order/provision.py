@@ -119,7 +119,7 @@ class PurchaseOrderProvision(orm.Model):
                     days,
                     ))
                 continue                
-            status_leadtime = detail[day_leadtime] # day_min_level]   
+            status_leadtime = sum(detail[:(day_leadtime + 1)])
 
             # -----------------------------------------------------------------
             # Under stock min level qty:
