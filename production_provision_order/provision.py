@@ -332,6 +332,8 @@ class PurchaseOrderProvisionNegative(orm.Model):
     def generate_purchase_row(self, cr, uid, ids, context=None):
         ''' Create line for purchase
         '''
+        line_pool = self.pool.get('purchase.order.provision.line')
+
         current_proxy = self.browse(cr, uid, ids, context=context)[0]
         product = current_proxy.product_id
         
