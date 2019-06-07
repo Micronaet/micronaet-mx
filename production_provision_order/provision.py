@@ -91,7 +91,7 @@ class PurchaseOrderProvision(orm.Model):
         purchase_id = False
         now = datetime.now()
         status_mask = _(
-            '''Leadtime %s, m(x): %s,
+            '''Leadtime %s, m(x): %s,<br/>
                Day min: %s (q. %s), Day max: %s (q. %s)<br/>
                Q. at leadtime period: <b>%s</b><br/>
                Max %s - Lead q. %s = <b>%s</b><br/>
