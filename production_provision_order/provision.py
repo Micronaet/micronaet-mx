@@ -95,6 +95,7 @@ class PurchaseOrderProvision(orm.Model):
         wiz_pool = self.pool.get('product.status.wizard')
         line_pool = self.pool.get('purchase.order.provision.line')
         product_pool = self.pool.get('product.product')
+        previsional_pool = self.pool.get('mrp.production.previsional')
                 
         # ---------------------------------------------------------------------
         # Create wizard record:
@@ -111,12 +112,19 @@ class PurchaseOrderProvision(orm.Model):
         wizard = wiz_pool.browse(cr, uid, wiz_id, context=context)
         fake_detail = ''
 
+        fake_ids = []
         for fake in wizard.fake_ids:
+            fake_ids.append(fake.id)
             fake_detail += '%s. Produzione ipotetica %s Q. %s\n' % (
                 fake.production_date,
                 fake.product_id.default_code or fake.product_id.name,
                 fake.qty,
                 )
+        if fake_ids:         
+            _logger.info('Mark as used all previsional order')
+            previsional_pool.wkf_draft_2_used(
+                cr, uid, fake_ids, context=context)       
+        
         # ---------------------------------------------------------------------
         # Generate report:    
         # ---------------------------------------------------------------------
@@ -140,6 +148,7 @@ class PurchaseOrderProvision(orm.Model):
                Max %s - Lead q. %s = %s
                ''')
 
+        # TODO manage negative in period! (and under level)
         for row in rows:
             # Only raw material
             if row[0] != 'M':

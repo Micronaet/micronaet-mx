@@ -22,7 +22,7 @@
                 <tree string="Provision order (blue has previsional order)" colors="blue:fake_detail!=False">
                     <field name="name" />
                     <field name="date" />
-                    <field name="fake_detail" invisible="1"/>
+                    <field name="fake_detail" />
                     <field name="state" />
                 </tree>
             </field>
