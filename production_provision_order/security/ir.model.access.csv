@@ -1,4 +1,5 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 access_purchase_order_provision_user,purchase.order.provision,model_purchase_order_provision,base.group_user,1,1,1,1
 access_purchase_order_provision_line_user,purchase.order.provision.line,model_purchase_order_provision_line,base.group_user,1,1,1,1
+access_purchase_order_provision_negative_user,purchase.order.provision.line,model_purchase_order_provision_line,base.group_user,1,1,1,1
 

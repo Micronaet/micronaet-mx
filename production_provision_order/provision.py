@@ -84,6 +84,21 @@ class PurchaseOrderProvision(orm.Model):
         '''
         return True
         
+    def check_negative_compensed(self, product, detail):
+        ''' Check negative in lead time period
+        '''
+        day_leadtime = product.day_leadtime
+        min_stock_level = product.min_stock_level
+        mode = False
+        for day in range(0, day_leadtime):
+            check = sum(detail[:(day_leadtime + 1)])
+            if check < min_stock_level:
+                mode = 'min'
+            elif check < 0:
+                mode = 'negative'
+                break
+        return mode        
+        
     # Scheduled operation:
     def scheduled_generate_provision_order(self, cr, uid, days=31, 
             context=None):    
@@ -94,6 +109,7 @@ class PurchaseOrderProvision(orm.Model):
         mrp_pool = self.pool.get('mrp.production')
         wiz_pool = self.pool.get('product.status.wizard')
         line_pool = self.pool.get('purchase.order.provision.line')
+        negative_pool = self.pool.get('purchase.order.provision.negative')
         product_pool = self.pool.get('product.product')
         previsional_pool = self.pool.get('mrp.production.previsional')
                 
@@ -172,7 +188,16 @@ class PurchaseOrderProvision(orm.Model):
                     day_min_level,
                     days,
                     ))
-                continue                
+                continue
+
+            # Purchase data:
+            now_text = now.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            purchase_header = {
+                    'name': _('Ordine approvvigionamento %s') % now, # TODO number?
+                    'date': now_text,     
+                    'fake_detail': fake_detail,               
+                    }
+
             status_leadtime = sum(detail[:(day_leadtime + 1)])
 
             # -----------------------------------------------------------------
@@ -181,20 +206,26 @@ class PurchaseOrderProvision(orm.Model):
             if status_leadtime < min_stock_level:
                 provision_qty = max_stock_level - status_leadtime
             else:
+                # Check if the element bo in negative state:
+                negetive_mode = self.check_negative_compensed(product, detail)
+                if negative_mode:
+                    if not purchase_id:
+                        purchase_id = self.create(
+                            cr, uid, purchase_header, context=context)
+                    negetive_pool.create(cr, uid, {
+                        'purchase_id': purchase_id,
+                        'product_id': product_id, 
+                        'mode': negative_mode,
+                        }                    )
                 continue # no provision needed    
 
-            # Negative     
+            # Negative means urgent:
             urgent = status_leadtime < 0
             
             # Create header if not present:
             if not purchase_id:
-                now_text = now.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                purchase_id = self.create(cr, uid, {
-                    'name': _('Ordine approvvigionamento %s') % now, # TODO number?
-                    'date': now_text,     
-                    'fake_detail': fake_detail,               
-                    }, context=context)
-                _logger.info('Generate purchase order: %s' % now)
+                purchase_id = self.create(
+                    cr, uid, purchase_header, context=context)
             
             # -----------------------------------------------------------------
             # Line:    
@@ -287,6 +318,29 @@ class PurchaseOrderProvision(orm.Model):
         'state': lambda *x: 'draft',
         }    
 
+class PurchaseOrderProvisionNegative(orm.Model):
+    """ Model name: PurchaseOrderNegative
+    """
+    
+    _name = 'purchase.order.provision.negative'
+    _description = 'Provision negative product'
+    _rec_name = 'product_id'
+    _order = 'product_id'
+    
+    _columns = {
+        'purchase_id': fields.many2one('purchase.order.provision', 'Order'),
+        'product_id': fields.many2one('product.product', 'Product'),         
+        'mode': fields.selection([
+            ('negative', 'Negative'),
+            ('min', 'Under min level'),
+            ], 'Mode'),
+        }
+        
+    _defaults = {
+        # Default value:
+        'mode': lambda *x: 'negative',
+        }    
+
 class PurchaseOrderProvisionLine(orm.Model):
     """ Model name: PurchaseOrderProvision
     """
@@ -295,7 +349,7 @@ class PurchaseOrderProvisionLine(orm.Model):
     _description = 'Provision order line'
     _rec_name = 'product_id'
     _order = 'sequence,product_id'
-            
+
     # Button event:
     def open_product_detail(self, cr, uid, ids, context=None):
         ''' Open detail for product
@@ -344,6 +398,8 @@ class PurchaseOrderProvisionRelation(orm.Model):
     _columns = {
         'line_ids': fields.one2many(
             'purchase.order.provision.line', 'purchase_id', 'Detail'),
+        'negative_ids': fields.one2many(
+            'purchase.order.provision.negative', 'purchase_id', 'Negative'),
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

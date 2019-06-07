@@ -24,6 +24,8 @@
                     <field name="date" />
                     <field name="fake_detail" />
                     <field name="state" />
+                    <field name="negative_ids" invisible="1"/>
+                    <button name="dummy" string="Negative present!" type="object" icon="gtk-dialog-error" attrs="{'invisible': [('negative_ids','=',[]), ]}"/>
                 </tree>
             </field>
         </record>
@@ -63,6 +65,23 @@
                                         </field>
                                     </group>                                    
                                 </page>
+                                <page string="Negative" attrs="{'invisible': [('negative_ids','=',[])]}">
+                                    <group colspan="4" col="4">
+                                        <separator string="Negative status:" colspan="4"/>
+                                        <field name="negative_ids" colspan="4" nolabel="1">
+                                            <tree string="Negative product" colors="red:mode=='negative'">
+                                                <field name="product_id" />
+                                                <field name="mode" />
+                                            </tree>
+                                        </field>
+                                    </group>                                    
+                                </page>
+                                <page string="Fake order" attrs="{'invisible': [('fake_detail','=',False)]}">
+                                    <group colspan="4" col="4">
+                                        <separator string="Fake order detail:" colspan="4"/>
+                                        <field name="fake_detail" colspan="4" nolabel="1"/>
+                                    </group>                                    
+                                </page>
                                 <page string="Supplier">
                                     <group colspan="4" col="4">
                                         <separator string="Partner touched:" colspan="4" />
@@ -75,12 +94,6 @@
                                                 <button name="print_partner_purchase" string="Purchase report" type="object" icon="gtk-print" class="oh_highlight"/>
                                             </tree>
                                         </field>
-                                    </group>                                    
-                                </page>
-                                <page string="Fake order" attrs="{'invisible': [('fake_detail','=',False)]}">
-                                    <group colspan="4" col="4">
-                                        <separator string="Fake order detail:" colspan="4"/>
-                                        <field name="fake_detail" colspan="4" nolabel="1"/>
                                     </group>                                    
                                 </page>
                             </notebook>
