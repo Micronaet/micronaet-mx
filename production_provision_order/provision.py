@@ -328,6 +328,33 @@ class PurchaseOrderProvisionNegative(orm.Model):
     _rec_name = 'product_id'
     _order = 'product_id'
     
+    # Button
+    def generate_purchase_row(self, cr, uid, ids, context=None):
+        ''' Create line for purchase
+        '''
+        current_proxy = self.browse(cr, uid, ids, context=context)[0]
+        product = current_proxy.product_id
+        
+        now = datetime.now()
+        line_id = line_pool.create(cr, uid, {
+            'sequence': 1000,
+            'urgent': True,
+            'purchase_id': current_proxy.purchase_id.id,
+            'product_id': product.id, 
+            'provision_qty': 0.0,
+            'real_qty': 0.0,
+            'supplier_id': product.first_supplier_id.id,
+            'list_price': product.standard_price, # TODO quotation for sup.
+            'deadline': (now + relativedelta(day_leadtime)).strftime(
+                DEFAULT_SERVER_DATE_FORMAT),
+            'note': 'Generato dai negativi',
+            }, context=context) 
+        
+        # Update for hide button                  
+        return self.write(cr, uid, ids, {
+            'line_id': line_id, 
+            }, context=context)
+
     _columns = {
         'purchase_id': fields.many2one('purchase.order.provision', 'Order'),
         'product_id': fields.many2one('product.product', 'Product'),         
@@ -335,7 +362,9 @@ class PurchaseOrderProvisionNegative(orm.Model):
             ('negative', 'Negative'),
             ('min', 'Under min level'),
             ], 'Mode'),
-        }
+        'line_id': fields.many2one(
+            'purchase.order.provision.line', 'Line'),    
+        }        
         
     _defaults = {
         # Default value:

@@ -72,6 +72,8 @@
                                             <tree string="Negative product" colors="red:mode=='negative'">
                                                 <field name="product_id" />
                                                 <field name="mode" />
+                                                <field name="line_id" invisible="1" />
+                                                <button name="generate_purchase_row" string="Add in purchase" type="object" attrs="{'invisible': [('line_id','!=',False)]}"/>
                                             </tree>
                                         </field>
                                     </group>                                    
