@@ -66,6 +66,7 @@ class PurchaseOrderProvision(orm.Model):
         mrp_pool = self.pool.get('mrp.production')
         wiz_pool = self.pool.get('product.status.wizard')
         line_pool = self.pool.get('purchase.order.provision.line')
+        product_pool = self.pool.get('product.product')
                 
         # ---------------------------------------------------------------------
         # Create wizard record:
@@ -176,7 +177,10 @@ class PurchaseOrderProvision(orm.Model):
                 'purchase_id': purchase_id,
                 'product_id': product_id, 
                 'provision_qty': provision_qty,
-                'real_qty': provision_qty,
+                'real_qty': product_pool.round_interger_order(
+                    provision_qty,
+                    approx=product.approx_integer, 
+                    mode=product.approx_mode),
                 'supplier_id': product.first_supplier_id.id,
                 'list_price': product.standard_price, # TODO quotation for sup.
                 'deadline': (now + relativedelta(day_leadtime)).strftime(
