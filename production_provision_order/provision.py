@@ -229,6 +229,27 @@ class PurchaseOrderProvisionLine(orm.Model):
     _rec_name = 'product_id'
     _order = 'sequence,product_id'
             
+    # Button event:
+    def open_product_detail(self, cr, uid, ids, context=None):
+        ''' Open detail for product
+        '''
+        current_proxy = self.browse(cr, uid, ids, context=context)[0]
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Product detail'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_id': current_proxy.product_id.id,
+            'res_model': 'product.product',
+            'view_id': False
+            'views': [(False, 'form')],
+            'domain': [],
+            'context': context,
+            'target': 'new'
+            'nodestroy': False,
+            }
+
     _columns = {
         'sequence': fields.integer('Seq.'),
         'urgent': fields.boolean('Urgent', 

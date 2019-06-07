@@ -33,6 +33,7 @@
                                       <field name="urgent" invisible="1"/>
                                       <field name="purchase_id" invisible="1"/>
                                       <field name="note" readonly="1" widget="html"/>
+                                      <button name="open_product_detail" string="Product detail" type="object" icon="gtk-goto-last" />
                                       <field name="product_id" readonly="1"/>
                                       <field name="provision_qty" readonly="1"/>
                                       <field name="real_qty" />
