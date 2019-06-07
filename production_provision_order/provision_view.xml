@@ -37,6 +37,7 @@
                                       <field name="real_qty" />
                                       <field name="list_price" />
                                       <field name="supplier_id" />
+                                      <field name="deadline" />
                                 </tree>
                             </field>
                         </group>    

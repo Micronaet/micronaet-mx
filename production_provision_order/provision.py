@@ -89,6 +89,7 @@ class PurchaseOrderProvision(orm.Model):
         _logger.info('Generate purchase data')
         sequence = 0
         purchase_id = False
+        now = datetime.now()
         for row in rows:
             # Only raw material
             if row[0] != 'M':
@@ -99,6 +100,7 @@ class PurchaseOrderProvision(orm.Model):
             detail = table[product_id]
             
             # Get stock level management:
+            day_leadtime = product.day_leadtime
             day_min_level = product.day_min_level
             day_max_level = product.day_max_level
             min_stock_level = product.min_stock_level
@@ -124,10 +126,10 @@ class PurchaseOrderProvision(orm.Model):
             
             # Create header if not present:
             if not purchase_id:
-                now = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+                now_text = now.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 purchase_id = self.create(cr, uid, {
                     'name': 'Ordine previsionale %s' % now, # TODO number?
-                    'date': now,                    
+                    'date': now_text,                    
                     }, context=context)
                 _logger.info('Generate purchase order: %s' % now)
             
@@ -144,6 +146,8 @@ class PurchaseOrderProvision(orm.Model):
                 'real_qty': provision_qty,
                 'supplier_id': False, # TODO!!!
                 'list_price': product.standard_price, # TODO quotation for sup.
+                'deadline': (now + relativedelta(day_leadtime)).strftime(
+                    DEFAULT_SERVER_DATE_FORMAT),
                 # 'state'
                 }, context=context)               
         
@@ -196,6 +200,7 @@ class PurchaseOrderProvisionLine(orm.Model):
         'provision_qty': fields.float('Provision qty', digits=(16, 2)),
         'real_qty': fields.float('Real qty', digits=(16, 2)),
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
+        'deadline': fields.date('Deadline'),
         'list_price': fields.float('List price', digits=(16, 2)),
         # TODO Add provision order managed with this!!!
         }

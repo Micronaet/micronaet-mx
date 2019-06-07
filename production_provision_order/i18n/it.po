@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-07 09:34+0000\n"
-"PO-Revision-Date: 2019-06-07 11:35+0100\n"
+"POT-Creation-Date: 2019-06-07 09:42+0000\n"
+"PO-Revision-Date: 2019-06-07 11:42+0100\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -81,14 +81,19 @@ msgid "Done"
 msgstr "Confermato"
 
 #. module: production_provision_order
+#: selection:purchase.order.provision,state:0
+msgid "Draft"
+msgstr "Bozza"
+
+#. module: production_provision_order
 #: field:purchase.order.provision,date:0
 msgid "Date"
 msgstr "Data"
 
 #. module: production_provision_order
-#: selection:purchase.order.provision,state:0
-msgid "Draft"
-msgstr "Bozza"
+#: field:purchase.order.provision.line,deadline:0
+msgid "Deadline"
+msgstr "Scadenza"
 
 #. module: production_provision_order
 #: view:purchase.order.provision:0
