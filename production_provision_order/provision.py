@@ -91,7 +91,7 @@ class PurchaseOrderProvision(orm.Model):
         min_stock_level = product.min_stock_level
         mode = False
         for day in range(0, day_leadtime):
-            check = sum(detail[:(day_leadtime + 1)])
+            check = sum(detail[:(day + 1)])
             if check < min_stock_level:
                 mode = 'min'
             elif check < 0:
@@ -174,9 +174,6 @@ class PurchaseOrderProvision(orm.Model):
             product_id = row[1]
             detail = table[product_id]
 
-            if product.default_code == 'A3044':
-                import pdb; pdb.set_trace()
-            
             # Get stock level management:
             day_leadtime = product.day_leadtime
             day_min_level = product.day_min_level
