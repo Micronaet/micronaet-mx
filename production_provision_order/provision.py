@@ -148,7 +148,7 @@ class PurchaseOrderProvision(orm.Model):
                 day_min_level,
                 min_stock_level,
                 
-                day_max_level
+                day_max_level,
                 max_stock_level,
                 
                 status_leadtime,
