@@ -49,7 +49,7 @@ class PurchaseOrderProvision(orm.Model):
     _name = 'purchase.order.provision'
     _description = 'Provision order'
     _rec_name = 'name'
-    _order = 'date desc'
+    _order = 'name desc'
     
     def dummy(self, cr, uid, ids, context=None):
         ''' Dummy button
@@ -143,7 +143,7 @@ class PurchaseOrderProvision(orm.Model):
             if not purchase_id:
                 now_text = now.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 purchase_id = self.create(cr, uid, {
-                    'name': 'Ordine previsionale %s' % now, # TODO number?
+                    'name': _('Ordine approvvigionamento %s') % now, # TODO number?
                     'date': now_text,                    
                     }, context=context)
                 _logger.info('Generate purchase order: %s' % now)
