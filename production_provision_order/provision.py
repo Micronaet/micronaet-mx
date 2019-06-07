@@ -95,7 +95,7 @@ class PurchaseOrderProvision(orm.Model):
                Q. at leadtime period: <b>%s</b><br/>
                Max %s - Lead q. %s = <b>%s</b><br/>
                ''')
-        import pdb; pdb.set_trace()
+
         for row in rows:
             # Only raw material
             if row[0] != 'M':
