@@ -210,7 +210,7 @@ class PurchaseOrderProvision(orm.Model):
                 provision_qty = max_stock_level - status_leadtime
             else:
                 # Check if the element bo in negative state:
-                negetive_mode = self.check_negative_compensed(product, detail)
+                negative_mode = self.check_negative_compensed(product, detail)
                 if negative_mode:
                     if not purchase_id:
                         purchase_id = self.create(
