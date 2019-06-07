@@ -49,7 +49,7 @@ class PurchaseOrderProvision(orm.Model):
     _name = 'purchase.order.provision'
     _description = 'Provision order'
     _rec_name = 'name'
-    _order = 'name'
+    _order = 'date desc'
     
     def dummy(self, cr, uid, ids, context=None):
         ''' Dummy button
