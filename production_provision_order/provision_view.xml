@@ -19,9 +19,10 @@
             <field name="name">purchase.order.provision.tree</field>
             <field name="model">purchase.order.provision</field>
             <field name="arch" type="xml">
-                <tree string="Provision order">
+                <tree string="Provision order (blue has previsional order)" colors="blue:fake_detail!=False">
                     <field name="name" />
                     <field name="date" />
+                    <field name="fake_detail" invisible="1"/>
                     <field name="state" />
                 </tree>
             </field>
@@ -41,7 +42,7 @@
                             <field name="name" />
                             <field name="date" />
                             <notebook colspan="4">
-                                <page string="Detail">
+                                <page string="Detail (red not complete)" >
                                     <group colspan="4" col="4">
                                         <separator string="Detail:" colspan="4"/>
                                         <field name="line_ids" colspan="4" nolabel="1">
