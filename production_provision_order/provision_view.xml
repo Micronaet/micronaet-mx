@@ -28,7 +28,7 @@
                             <field name="date" />
                             <separator string="Detail:" colspan="4"/>
                             <field name="line_ids" colspan="4" nolabel="1">
-                                <tree string="Detail" colors="blue:urgent==True;red:real_qty&lt;=0 or supplier_id==False" editable="bottom">
+                                <tree string="Detail" colors="red:real_qty&lt;=0 or supplier_id==False" editable="bottom">
                                       <field name="sequence" readonly="1"/>
                                       <field name="urgent" invisible="1"/>
                                       <field name="purchase_id" invisible="1"/>
@@ -39,6 +39,7 @@
                                       <field name="list_price" />
                                       <field name="supplier_id" />
                                       <field name="deadline" />
+                                      <button name="dummy" string="Urgent" type="object" attrs="{'invisible': [('urgent','=',False)]}" icon="gtk-dialog-warning"/>
                                 </tree>
                             </field>
                         </group>    

@@ -51,6 +51,11 @@ class PurchaseOrderProvision(orm.Model):
     _rec_name = 'name'
     _order = 'name'
     
+    def dummy(self, cr, uid, ids, context=None):
+        ''' Dummy button
+        '''
+        return True
+        
     # Scheduled operation:
     def scheduled_generate_provision_order(self, cr, uid, days=31, 
             context=None):    
