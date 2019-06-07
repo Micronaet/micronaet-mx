@@ -246,7 +246,7 @@ class PurchaseOrderProvisionLine(orm.Model):
             'views': [(False, 'form')],
             'domain': [],
             'context': context,
-            'target': 'new'
+            'target': 'new',
             'nodestroy': False,
             }
 
