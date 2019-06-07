@@ -142,7 +142,7 @@ class PurchaseOrderProvision(orm.Model):
             # -----------------------------------------------------------------
             # Line:    
             # -----------------------------------------------------------------
-            note += status_mask % (
+            note = status_mask % (
                 day_leadtime,
                 
                 day_min_level,
