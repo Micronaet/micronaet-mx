@@ -216,9 +216,27 @@ class PurchaseOrderProvision(orm.Model):
             'nodestroy': False,
             }
 
+    def _get_supplier_list(self, cr, uid, ids, fields, args, context=None):
+        ''' Fields function for calculate 
+        '''        
+        if len(ids) > 1:
+            return False
+        
+        partner_ids = []
+        for line in self.browse(cr, uid, ids, context=context)[0].line_ids:
+            partner_id = line.supplier_id.id
+            if partner_id not in partner_ids:
+                partner_ids[partner_id]
+        return [(6, 0, partner_ids)]
+
     _columns = {
         'name': fields.char('Name', size=64, required=True),
         'date': fields.date('Date', required=True),
+        'fake_detail': fields.text('Fake detail'),
+        'supplier_ids': fields.function(
+            _get_supplier_list, method=True, relation='res.partner',
+            type='many2many', string='Supplier'), 
+                        
         # TODO Add provision order managed with this!!!
         'state': fields.selection([
             ('draft', 'Draft'),

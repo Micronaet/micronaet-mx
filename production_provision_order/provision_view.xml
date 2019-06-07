@@ -40,23 +40,45 @@
                         <group colspan="4" col="4">
                             <field name="name" />
                             <field name="date" />
-                            <separator string="Detail:" colspan="4"/>
-                            <field name="line_ids" colspan="4" nolabel="1">
-                                <tree string="Detail" colors="red:real_qty&lt;=0 or supplier_id==False" editable="bottom">
-                                      <field name="sequence" readonly="1"/>
-                                      <field name="urgent" invisible="1"/>
-                                      <field name="purchase_id" invisible="1"/>
-                                      <field name="note" readonly="1" widget="html"/>
-                                      <button name="open_product_detail" string="Product detail" type="object" icon="gtk-goto-last" />
-                                      <field name="product_id" readonly="1"/>
-                                      <field name="provision_qty" readonly="1"/>
-                                      <field name="real_qty" />
-                                      <field name="list_price" />
-                                      <field name="supplier_id" />
-                                      <field name="deadline" />
-                                      <button name="dummy" string="Urgent" type="object" attrs="{'invisible': [('urgent','=',False)]}" icon="gtk-dialog-warning"/>
-                                </tree>
-                            </field>
+                            <notebook colspan="4">
+                                <page string="Detail">
+                                    <group colspan="4" col="4">
+                                        <separator string="Detail:" colspan="4"/>
+                                        <field name="line_ids" colspan="4" nolabel="1">
+                                            <tree string="Detail" colors="red:real_qty&lt;=0 or supplier_id==False" editable="bottom">
+                                                  <field name="sequence" readonly="1"/>
+                                                  <field name="urgent" invisible="1"/>
+                                                  <field name="purchase_id" invisible="1"/>
+                                                  <field name="note" readonly="1" widget="html"/>
+                                                  <button name="open_product_detail" string="Product detail" type="object" icon="gtk-goto-last" />
+                                                  <field name="product_id" readonly="1"/>
+                                                  <field name="provision_qty" readonly="1"/>
+                                                  <field name="real_qty" />
+                                                  <field name="list_price" />
+                                                  <field name="supplier_id" />
+                                                  <field name="deadline" />
+                                                  <button name="dummy" string="Urgent" type="object" attrs="{'invisible': [('urgent','=',False)]}" icon="gtk-dialog-warning"/>
+                                            </tree>
+                                        </field>
+                                    </group>                                    
+                                </page>
+                                <page string="Supplier">
+                                    <group colspan="4" col="4">
+                                        <field name="supplier_ids">
+                                            <tree string="Partner touched">
+                                                <field name="name" />
+                                                <button name="print_partner_purchase" string="Purchase report" type="object" />
+                                            </tree>
+                                        </field>
+                                    </group>                                    
+                                </page>
+                                <page string="Fake order" attrs="{'invisible': [('fake_detail','=',False)]}">
+                                    <group colspan="4" col="4">
+                                        <separator string="Fake order detail:" colspan="4"/>
+                                        <field name="fake_detail" colspan="4" nolabel="1"/>
+                                    </group>                                    
+                                </page>
+                            </notebook>
                         </group>    
                     </sheet>    
                 </form>
