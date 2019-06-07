@@ -108,6 +108,15 @@ class PurchaseOrderProvision(orm.Model):
             #'fake_ids': 
             }, context=context)
         
+        wizard = wiz_pool.browse(cr, uid, wiz_id, context=context)
+        fake_detail = ''
+
+        for fake in wizard.fake_ids:
+            fake_detail += '%s. Produzione ipotetica %s Q. %s\n' % (
+                fake.production_date,
+                fake.product_id.default_code or fake.product_id.name,
+                fake.qty,
+                )
         # ---------------------------------------------------------------------
         # Generate report:    
         # ---------------------------------------------------------------------
@@ -173,7 +182,8 @@ class PurchaseOrderProvision(orm.Model):
                 now_text = now.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 purchase_id = self.create(cr, uid, {
                     'name': _('Ordine approvvigionamento %s') % now, # TODO number?
-                    'date': now_text,                    
+                    'date': now_text,     
+                    'fake_detail': fake_detail,               
                     }, context=context)
                 _logger.info('Generate purchase order: %s' % now)
             
