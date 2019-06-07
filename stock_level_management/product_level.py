@@ -82,10 +82,10 @@ class ProductProduct(osv.osv):
 
         if mode == 'over':
             extra = (approx if number % approx > 0.001 else 0)
-            return number // approx + extra
+            return (number // approx) * approx + extra
             
         elif mode == 'under':
-            return number // approx
+            return (number // approx) * approx
             
         elif mode == 'normal':
             return round(number / approx , 0) * approx
