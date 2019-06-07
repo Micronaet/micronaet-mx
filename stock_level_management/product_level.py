@@ -82,11 +82,15 @@ class ProductProduct(osv.osv):
 
         if mode == 'over':
             extra = (approx if number % approx > 0.001 else 0)
-        #elif mode == 'under':
-        #    extra = (approx if number % approx > 0.001 else 0)
+            return number // approx + extra
+            
+        elif mode == 'under':
+            return number // approx
+            
+        elif mode == 'normal':
+            return round(number / approx , 0) * approx
         else:
-            extra = 0.0
-        return round(number / approx , 0) * approx + extra
+             return number    
     
     _columns = {
         'manual_stock_level': fields.boolean('Manual stock level', 
