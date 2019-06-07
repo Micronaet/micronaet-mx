@@ -347,7 +347,7 @@ class PurchaseOrderProvisionNegative(orm.Model):
             'real_qty': 0.0,
             'supplier_id': product.first_supplier_id.id,
             'list_price': product.standard_price, # TODO quotation for sup.
-            'deadline': (now + relativedelta(day_leadtime)).strftime(
+            'deadline': (now + relativedelta(product.day_leadtime)).strftime(
                 DEFAULT_SERVER_DATE_FORMAT),
             'note': 'Generato dai negativi',
             }, context=context) 
