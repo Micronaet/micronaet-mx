@@ -84,7 +84,7 @@
                                                 <field name="product_id" />
                                                 <field name="mode" />
                                                 <field name="line_id" invisible="1" />
-                                                <button name="generate_purchase_row" string="Add in purchase" type="object" attrs="{'invisible': ['|', ('state','!=', 'draft'), ('line_id','!=',False)]}" class="oe_highlight" icon="gtk-add"/>
+                                                <button name="generate_purchase_row" string="Add in purchase" type="object" attrs="{'invisible': [('line_id','!=',False)]}" class="oe_highlight" icon="gtk-add"/>
                                             </tree>
                                         </field>
                                     </group>                                    
