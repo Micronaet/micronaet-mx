@@ -538,7 +538,8 @@ class PurchaseOrderAccounting(orm.Model):
         'supplier_id': fields.many2one('res.partner', 'Supplier', 
             required=True),
         'purchase_id': fields.many2one(
-            'purchase.order.provision', 'Provision', required=True),
+            'purchase.order.provision', 'Provision', required=True, 
+            ondelete='set null'),
         # TODO extra footer data
         'line_ids': fields.one2many(
             'purchase.order.provision.line', 
