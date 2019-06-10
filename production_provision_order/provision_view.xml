@@ -37,7 +37,7 @@
                 <form string="Provision order" version="7.0">
                     <header>
                         <!--Button for pass to account-->
-                        <button name="wkf_draft_done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight"/>
+                        <button name="wkf_draft_done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight" confirm="If setup is done order will be create also in account after lock this provision, confirm?"/>
                         <field name="state" widget="statusbar" />
                     </header>
                     <sheet>

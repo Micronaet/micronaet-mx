@@ -473,6 +473,8 @@ class PurchaseOrderProvisionLine(orm.Model):
         'urgent': fields.boolean('Urgent', 
             help='Was negative in stock level period'),
         'purchase_id': fields.many2one('purchase.order.provision', 'Order'),
+        'accounting_id': fields.many2one(
+            'purchase.order.accounting', 'Accounting order'),
         'product_id': fields.many2one('product.product', 'Product'),
         'provision_qty': fields.float('Provision qty', digits=(16, 2)),
         'real_qty': fields.float('Real qty', digits=(16, 2)),
