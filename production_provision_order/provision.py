@@ -87,16 +87,23 @@ class PurchaseOrderProvision(orm.Model):
         '''
         # Pool used:
         account_pool = self.pool.get('purchase.order.accounting')
-        line_pool = self.pool.get('purchase.order.accounting.line')
+        line_pool = self.pool.get('purchase.order.provision.line')
         
         account_order = {} # ID and deadline        
-        now = datetime.now().strftime()
-        for line in self.browse(cr, uid, ids, context=context)[0]:
+        now = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
+
+        for line in self.browse(cr, uid, ids, context=context)[0].line_ids:
+            partner = line.supplier_id
+            deadline = line.deadline
+            
             if line.real_qty <= 0.0: # only positive will linked to the order
                 continue
 
-            partner = line.supplier_id
-            deadline = line.deadline
+            if not partner:
+                raise osv.except_osv(
+                    _('Supplier missed'), 
+                    _('For create order supplier is mandatory!'),
+                    )
 
             # -----------------------------------------------------------------
             # Header creation:
@@ -106,26 +113,31 @@ class PurchaseOrderProvision(orm.Model):
                 if deadline < account_order[partner][1]:
                     account_order[partner][1] = deadline
             else:
-                account_order[partner] = [account_pool.create(cr, uid, {
-                    'name': '', # From sync operation
-                    'date': now,
-                    'deadline': deadline,
-                    'purchase_id': line.purchase_id.id,
-                    }, context=context), deadline]
+                account_order[partner] = [
+                    account_pool.create(cr, uid, {
+                        'name': '', # From sync operation
+                        'date': now,
+                        'deadline': deadline,
+                        'purchase_id': line.purchase_id.id,
+                        'supplier_id': partner.id,
+                        }, context=context), 
+                        deadline,
+                        [],
+                        ]
                     
             # -----------------------------------------------------------------
             # Link provision to account order:        
             # -----------------------------------------------------------------
-            line_pool.write(cr, uid, [line.id], {
-                'accounting_id': account_order[partner][0],
-                }, context=context)
+            account_order[partner][2].append(line.id) # to link after
             
         # ---------------------------------------------------------------------
         # Update deadline    
         # ---------------------------------------------------------------------
-        for accounting_id, deadline in account_order:
+        for partner in account_order:
+            accounting_id, deadline, line_ids = account_order[partner]
             account_pool.write(cr, uid, [accounting_id], {
                 'deadline': deadline,
+                'line_ids': [(6, 0, line_ids)],
                 }, context=context)
         
         # ---------------------------------------------------------------------
@@ -133,6 +145,14 @@ class PurchaseOrderProvision(orm.Model):
         # ---------------------------------------------------------------------
         return self.write(cr, uid, ids, {
             'state': 'done',
+            }, context=context)
+
+    def wkf_done_account(self, cr, uid, ids, context=None):
+        ''' Sync the provisioning order to account
+        '''
+        # Overridable!
+        return self.write(cr, uid, ids, {
+            'state': 'account',
             }, context=context)
     
     # -------------------------------------------------------------------------    

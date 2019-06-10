@@ -37,7 +37,8 @@
                 <form string="Provision order" version="7.0">
                     <header>
                         <!--Button for pass to account-->
-                        <button name="wkf_draft_done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight" confirm="If setup is done order will be create also in account after lock this provision, confirm?"/>
+                        <button name="wkf_draft_done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight" confirm="If setup is done order will be created for pass to account, confirm?"/>
+                        <button name="wkf_done_account" string="Account sync" type="object" attrs="{'invisible': [('state','!=','done')]}" class="oe_highlight" confirm="Sync all order in acccount, confirm?"/>
                         <field name="state" widget="statusbar" />
                     </header>
                     <sheet>
@@ -50,7 +51,7 @@
                                     <group colspan="4" col="4">
                                         <separator string="Detail (red not complete):" colspan="4"/>
                                         <field name="line_ids" colspan="4" nolabel="1">
-                                            <tree string="Detail" colors="red:real_qty&lt;=0 or supplier_id==False" editable="bottom">
+                                            <tree string="Detail" colors="grey:real_qty==0;red:real_qty&lt;0 or supplier_id==False" editable="bottom">
                                                   <field name="sequence" readonly="1"/>
                                                   <field name="urgent" invisible="1"/>
                                                   <field name="purchase_id" invisible="1"/>
@@ -68,10 +69,10 @@
                                     </group>                                    
                                 </page>
 
-                                <page string="Accounting order">
+                                <page string="Accounting order" attrs="{'invisible': [('state','=','draft')]}">
                                     <group colspan="4" col="4">
                                         <separator string="Accounting order:" colspan="4" />
-                                        <field name="accounting_ids" nolabel="1" colspan="4" />
+                                        <field name="accounting_ids" nolabel="1" colspan="4" readonly="1"/>
                                     </group>                                    
                                 </page>
                                 
