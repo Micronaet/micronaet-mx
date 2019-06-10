@@ -152,9 +152,12 @@
                             
                             <separator string="Detail:" colspan="4"/>
                             <field name="line_ids" colspan="4" nolabel="1">
-                                <field name="product_id" />
-                                <field name="real_qty" />
-                                <field name="list_price" />
+                                <tree string="Detail" editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="real_qty" />
+                                    <field name="list_price" />
+                                    <field name="deadline" />
+                                </tree>    
                             </field>
                         </group>    
                     </sheet>    
