@@ -75,6 +75,20 @@
                                         <field name="accounting_ids" nolabel="1" colspan="4" readonly="1"/>
                                     </group>                                    
                                 </page>
+
+                                <page string="Supplier" attrs="{'invisible': [('state','!=','draft')]}">
+                                    <group colspan="4" col="4">
+                                        <separator string="Partner touched:" colspan="4" />
+                                        <field name="supplier_ids" nolabel="1" colspan="4" context="{'purchase_id': active_id}">
+                                            <tree string="Partner touched">
+                                                <field name="name" />
+                                                <field name="city" />
+                                                <field name="email" />
+                                                <field name="phone" />
+                                            </tree>
+                                        </field>
+                                    </group>                                    
+                                </page>
                                 
                                 <page string="Negative" attrs="{'invisible': [('negative_ids','=',[])]}">
                                     <group colspan="4" col="4">
@@ -97,20 +111,6 @@
                                     </group>                                    
                                 </page>
                                 
-                                <page string="Supplier">
-                                    <group colspan="4" col="4">
-                                        <separator string="Partner touched:" colspan="4" />
-                                        <field name="supplier_ids" nolabel="1" colspan="4" context="{'purchase_id': active_id}">
-                                            <tree string="Partner touched">
-                                                <field name="name" />
-                                                <field name="city" />
-                                                <field name="email" />
-                                                <field name="phone" />
-                                                <button name="print_partner_purchase" string="Purchase report" type="object" icon="gtk-print" class="oh_highlight"/>
-                                            </tree>
-                                        </field>
-                                    </group>                                    
-                                </page>
                             </notebook>
                         </group>    
                     </sheet>    
@@ -130,6 +130,7 @@
                     <field name="deadline" />
                     <field name="xmlrpc_sync" />
                     <field name="purchase_id" invisible="1"/>
+                    <button name="print_partner_purchase" string="Purchase report" type="object" icon="gtk-print" class="oh_highlight"/>
                     <button name="xmlrpc_sync_request" string="Accounting sync" type="object" icon="gtk-refresh" class="oe_highlight" attrs="{'invisible': [('xmlrpc_sync','=',True)]}"/>
                 </tree>
             </field>
@@ -139,6 +140,9 @@
             <field name="model">purchase.order.accounting</field>
             <field name="arch" type="xml">
                 <form string="Purchase order accounting" version="7.0">
+                    <header>
+                        <button name="print_partner_purchase" string="Purchase report" type="object" icon="gtk-print" class="oh_highlight"/>
+                    </header>
                     <sheet>
                         <group colspan="4" col="4">
                             <field name="name" />

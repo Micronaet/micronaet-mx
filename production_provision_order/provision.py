@@ -43,22 +43,6 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 
-class ResPartner(orm.Model):
-    """ Model name: Res Partner
-    """
-    
-    _inherit = 'res.partner'
-
-    def print_partner_purchase(self, cr, uid, ids, context=None):
-        ''' Print purchase report for partner selected
-        '''
-        if context is None:
-            context = {}
-        purchase_id = context.get('purchase_id', False)
-        
-        # TODO Print report for this partner with purchase_id selected
-        return True        
-
 class ProductProduct(orm.Model):
     """ Model name: ProductProduct
     """
@@ -530,6 +514,27 @@ class PurchaseOrderAccounting(orm.Model):
         ''' Override with sync operation
         '''
         return True
+
+    # -------------------------------------------------------------------------
+    # Button event:
+    # -------------------------------------------------------------------------
+    def print_partner_purchase(self, cr, uid, ids, context=None):
+        ''' Print purchase report for partner selected
+        '''
+        if context is None:
+            context = {}
+        purchase_id = context.get('purchase_id', False)
+        
+        # Print report for this partner with purchase_id selected
+        datas = {} # XXX not used for now
+        report_name = 'exploded_purchase_report'
+
+        return {
+            'model': 'fashion.form',
+            'type': 'ir.actions.report.xml',
+            'report_name': report_name,
+            'datas': datas,
+            }
         
     _columns = {
         'name': fields.char('Ref.', size=15, help='Account ref. when created'),
