@@ -150,7 +150,12 @@ class PurchaseOrderProvision(orm.Model):
     def wkf_done_account(self, cr, uid, ids, context=None):
         ''' Sync the provisioning order to account
         '''
-        # Overridable!
+        for order in self.browse(cr, uid, ids, context=context
+                )[0].accounting_ids:
+            if order.xmlrpc_sync:
+                continue
+            order.xmlrpc_sync_request(cr, uid, order.id, context=context)    
+
         return self.write(cr, uid, ids, {
             'state': 'account',
             }, context=context)
@@ -514,6 +519,12 @@ class PurchaseOrderAccounting(orm.Model):
     _rec_name = 'name'
     _order = 'date desc'
 
+    # Override action:
+    def xmlrpc_sync_request(self, cr, uid, ids, context=None):
+        ''' Override with sync operation
+        '''
+        return True
+        
     _columns = {
         'name': fields.char('Ref.', size=15, help='Account ref. when created'),
         'date': fields.date('Date', required=True),

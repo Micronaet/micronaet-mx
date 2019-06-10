@@ -130,6 +130,7 @@
                     <field name="deadline" />
                     <field name="xmlrpc_sync" />
                     <field name="purchase_id" invisible="1"/>
+                    <button name="xmlrpc_sync_request" string="Accounting sync" type="object" icon="gtk-refresh" class="oe_highlight" attrs="{'invisible': [('xmlrpc_sync','=',True)]}"/>
                 </tree>
             </field>
         </record>        
