@@ -364,6 +364,9 @@ class PurchaseOrderProvision(orm.Model):
         item_id = ids[0]
         res[item_id] = []
         for line in self.browse(cr, uid, ids, context=context)[0].line_ids:
+            if line.real_qty <= 0.0:
+                continue
+
             partner_id = line.supplier_id.id
             if partner_id and partner_id not in res[item_id]:
                 res[item_id].append(partner_id)
