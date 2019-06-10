@@ -469,7 +469,13 @@ class PurchaseOrderProvisionLine(orm.Model):
     _rec_name = 'product_id'
     _order = 'sequence,product_id'
 
+    # -------------------------------------------------------------------------
     # Button event:
+    # -------------------------------------------------------------------------
+    def dummy(self, cr, uid, ids, context=None):
+        ''' Dummy button
+        '''
+        return True
     def open_product_detail(self, cr, uid, ids, context=None):
         ''' Open detail for product
         '''
