@@ -79,6 +79,65 @@ class PurchaseOrderProvision(orm.Model):
     _rec_name = 'name'
     _order = 'name desc'
     
+    # -------------------------------------------------------------------------    
+    # Fake workflov event:
+    # -------------------------------------------------------------------------
+    def wkf_draft_done(self, cr, uid, ids, context=None):
+        ''' Confirm the provisioning order
+        '''
+        # Pool used:
+        account_pool = self.pool.get('purchase.order.accounting')
+        line_pool = self.pool.get('purchase.order.accounting.line')
+        
+        account_order = {} # ID and deadline        
+        now = datetime.now().strftime()
+        for line in self.browse(cr, uid, ids, context=context)[0]:
+            if line.real_qty <= 0.0: # only positive will linked to the order
+                continue
+
+            partner = line.supplier_id
+            deadline = line.deadline
+
+            # -----------------------------------------------------------------
+            # Header creation:
+            # -----------------------------------------------------------------
+            if partner in account_order:
+                # Save minimum deadline:
+                if deadline < account_order[partner][1]:
+                    account_order[partner][1] = deadline
+            else:
+                account_order[partner] = [account_pool.create(cr, uid, {
+                    'name': '', # From sync operation
+                    'date': now,
+                    'deadline': deadline,
+                    'purchase_id': line.purchase_id.id,
+                    }, context=context), deadline]
+                    
+            # -----------------------------------------------------------------
+            # Link provision to account order:        
+            # -----------------------------------------------------------------
+            line_pool.write(cr, uid, [line.id], {
+                'accounting_id': account_order[partner][0],
+                }, context=context)
+            
+        # ---------------------------------------------------------------------
+        # Update deadline    
+        # ---------------------------------------------------------------------
+        for accounting_id, deadline in account_order:
+            account_pool.write(cr, uid, [accounting_id], {
+                'deadline': deadline,
+                }, context=context)
+        
+        # ---------------------------------------------------------------------
+        # Provision now is done:
+        # ---------------------------------------------------------------------
+        return self.write(cr, uid, ids, {
+            'state': 'done',
+            }, context=context)
+    
+    # -------------------------------------------------------------------------    
+    # Button event:
+    # -------------------------------------------------------------------------
     def dummy(self, cr, uid, ids, context=None):
         ''' Dummy button
         '''
@@ -100,7 +159,9 @@ class PurchaseOrderProvision(orm.Model):
                 break
         return mode        
         
+    # -------------------------------------------------------------------------    
     # Scheduled operation:
+    # -------------------------------------------------------------------------    
     def scheduled_generate_provision_order(self, cr, uid, days=31, 
             context=None):    
         ''' Generate report to test after the stock level
@@ -194,10 +255,10 @@ class PurchaseOrderProvision(orm.Model):
             # Purchase data:
             now_text = now.strftime(DEFAULT_SERVER_DATE_FORMAT)
             purchase_header = {
-                    'name': _('Ordine approvvigionamento %s') % now, # TODO number?
-                    'date': now_text,     
-                    'fake_detail': fake_detail,               
-                    }
+                'name': _('Ordine approvvigionamento %s') % now, # TODO number?
+                'date': now_text,     
+                'fake_detail': fake_detail,
+                }
 
             status_leadtime = sum(detail[:(day_leadtime + 1)])
 
@@ -286,7 +347,7 @@ class PurchaseOrderProvision(orm.Model):
 
     def _get_supplier_list(self, cr, uid, ids, fields, args, context=None):
         ''' Fields function for calculate 
-        '''        
+        '''
         res = {}
         if len(ids) > 1:
             return res
@@ -311,6 +372,7 @@ class PurchaseOrderProvision(orm.Model):
         'state': fields.selection([
             ('draft', 'Draft'),
             ('done', 'Done'),
+            ('account', 'Account (sync)'),
             ], 'State', required=True),
         }
 
@@ -421,6 +483,32 @@ class PurchaseOrderProvisionLine(orm.Model):
         # TODO Add provision order managed with this!!!
         }
 
+class PurchaseOrderAccounting(orm.Model):
+    """ Model name: PurchaseOrderProvision
+    """
+    
+    _name = 'purchase.order.accounting'
+    _description = 'Accounting order'
+    _rec_name = 'name'
+    _order = 'date desc'
+
+    _columns = {
+        'name': fields.char('Ref.', size=15, help='Account ref. when created'),
+        'date': fields.date('Date', required=True),
+        'deadline': fields.date('Deadline'),
+        'supplier_id': fields.many2one('res.partner', 'Supplier', 
+            required=True),
+        'purchase_id': fields.many2one(
+            'purchase.order.provision', 'Provision', required=True),
+        # TODO extra footer data
+        'line_ids': fields.one2many(
+            'purchase.order.provision.line', 
+            'accounting_id', 'Detail'),
+
+        # Will be sync with XML RPC call:
+        'xmlrpc_sync': fields.boolean('XMLRPC syncronized'),        
+        }    
+
 class PurchaseOrderProvisionRelation(orm.Model):
     """ Model name: PurchaseOrderProvision
     """
@@ -432,6 +520,8 @@ class PurchaseOrderProvisionRelation(orm.Model):
             'purchase.order.provision.line', 'purchase_id', 'Detail'),
         'negative_ids': fields.one2many(
             'purchase.order.provision.negative', 'purchase_id', 'Negative'),
+        'accounting_ids': fields.one2many(
+            'purchase.order.accounting', 'purchase_id', 'Accounting order'),
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -37,6 +37,7 @@
                 <form string="Provision order" version="7.0">
                     <header>
                         <!--Button for pass to account-->
+                        <button name="wkf_draft_done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight"/>
                         <field name="state" widget="statusbar" />
                     </header>
                     <sheet>
@@ -44,6 +45,7 @@
                             <field name="name" />
                             <field name="date" />
                             <notebook colspan="4">
+
                                 <page string="Detail" >
                                     <group colspan="4" col="4">
                                         <separator string="Detail (red not complete):" colspan="4"/>
@@ -65,6 +67,14 @@
                                         </field>
                                     </group>                                    
                                 </page>
+
+                                <page string="Accounting order">
+                                    <group colspan="4" col="4">
+                                        <separator string="Accounting order:" colspan="4" />
+                                        <field name="accounting_ids" nolabel="1" colspan="4" />
+                                    </group>                                    
+                                </page>
+                                
                                 <page string="Negative" attrs="{'invisible': [('negative_ids','=',[])]}">
                                     <group colspan="4" col="4">
                                         <separator string="Negative status:" colspan="4"/>
@@ -73,17 +83,19 @@
                                                 <field name="product_id" />
                                                 <field name="mode" />
                                                 <field name="line_id" invisible="1" />
-                                                <button name="generate_purchase_row" string="Add in purchase" type="object" attrs="{'invisible': [('line_id','!=',False)]}" class="oe_highlight" icon="gtk-add"/>
+                                                <button name="generate_purchase_row" string="Add in purchase" type="object" attrs="{'invisible': ['|', ('state','!=', 'draft'), ('line_id','!=',False)]}" class="oe_highlight" icon="gtk-add"/>
                                             </tree>
                                         </field>
                                     </group>                                    
                                 </page>
+                                
                                 <page string="Fake order" attrs="{'invisible': [('fake_detail','=',False)]}">
                                     <group colspan="4" col="4">
                                         <separator string="Fake order detail:" colspan="4"/>
                                         <field name="fake_detail" colspan="4" nolabel="1"/>
                                     </group>                                    
                                 </page>
+                                
                                 <page string="Supplier">
                                     <group colspan="4" col="4">
                                         <separator string="Partner touched:" colspan="4" />
@@ -104,6 +116,50 @@
                 </form>
             </field>
         </record>
+
+        <!--purchase.order.accounting-->
+        <record model="ir.ui.view" id="view_purchase_order_accounting_tree">
+            <field name="name">purchase.order.accounting.tree</field>
+            <field name="model">purchase.order.accounting</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase order accounting" colors="red:xmlrpc_sync==False">        
+                    <field name="name" />
+                    <field name="supplier_id" />
+                    <field name="date" />
+                    <field name="deadline" />
+                    <field name="xmlrpc_sync" />
+                    <field name="purchase_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>        
+        <record model="ir.ui.view" id="view_purchase_order_accounting_form">
+            <field name="name">purchase.order.accounting.form</field>
+            <field name="model">purchase.order.accounting</field>
+            <field name="arch" type="xml">
+                <form string="Purchase order accounting" version="7.0">
+                    <sheet>
+                        <group colspan="4" col="4">
+                            <field name="name" />
+                            <field name="supplier_id" />
+                            
+                            <field name="date" />
+                            <field name="deadline" />
+
+                            <field name="purchase_id"/>
+                            <field name="xmlrpc_sync" />
+                            
+                            <separator string="Detail:" colspan="4"/>
+                            <field name="line_ids" colspan="4" nolabel="1">
+                                <field name="product_id" />
+                                <field name="real_qty" />
+                                <field name="list_price" />
+                            </field>
+                        </group>    
+                    </sheet>    
+                </form>
+            </field>
+        </record>        
+        
         <record model="ir.actions.act_window" id="action_purchase_order_provision_form">
             <field name="name">Provision order</field>
             <field name="res_model">purchase.order.provision</field>
