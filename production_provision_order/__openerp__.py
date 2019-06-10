@@ -47,6 +47,8 @@
         
         'provision_view.xml',
         'scheduler.xml',
+        
+        'report/delivery_report.xml',
         ],
     'active': False,
     'installable': True,
