@@ -2,10 +2,10 @@
 <openerp>
     <data noupdate="1">
         <!--TODO Purchase-->
-        <record id="aeroo_mx_purchase_report_id" model="ir.actions.report.xml">
+        <record id="aeroo_accounting_purchase_report_id" model="ir.actions.report.xml">
             <field name="name">Purchase exploded</field>
             <field name="type">ir.actions.report.xml</field>
-            <field name="model">purchase.order.provision</field>
+            <field name="model">purchase.order.accounting</field>
             <field name="report_name">exploded_purchase_report</field>
             <field name="report_type">aeroo</field>
             <field name="in_format">oo-odt</field>
@@ -17,9 +17,9 @@
         <ir_set>
             <field eval="'action'" name="key"/>
             <field eval="'client_print_multi'" name="key2"/>
-            <field eval="['purchase.order']" name="models"/>
+            <field eval="['purchase.order.accounting']" name="models"/>
             <field name="name">action_exploded_provision_purchase</field>
-            <field eval="'ir.actions.report.xml,'+str(aeroo_mx_purchase_report_id)" name="value"/>
+            <field eval="'ir.actions.report.xml,'+str(aeroo_accounting_purchase_report_id)" name="value"/>
             <field eval="True" name="isobject"/>
             <field eval="True" name="replace"/>
         </ir_set>
