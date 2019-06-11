@@ -2,4 +2,4 @@
 access_purchase_order_provision_user,purchase.order.provision,model_purchase_order_provision,base.group_user,1,1,1,1
 access_purchase_order_accounting_user,purchase.order.accounting,model_purchase_order_accounting,base.group_user,1,1,1,1
 access_purchase_order_provision_line_user,purchase.order.provision.line,model_purchase_order_provision_line,base.group_user,1,1,1,1
-access_purchase_order_provision_negative_user,purchase.order.provision.line,model_purchase_order_provision_line,base.group_user,1,1,1,1
+access_purchase_order_provision_negative_user,purchase.order.provision.negative,model_purchase_order_provision_line,base.group_user,1,1,1,1
