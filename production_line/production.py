@@ -1110,6 +1110,7 @@ class mrp_production_workcenter_line_extra(osv.osv):
                         'quantity': element.quantity / lavoration_browse.production_id.product_qty * lavoration_browse.product_qty if lavoration_browse.production_id.product_qty else 0.0,
                         'uom_id': element.product_id.uom_id.id,
                         'workcenter_production_id': lavoration_id,
+                        'pedimento_id': element.pedimento_id.id, # also pedim.
                     }, context=context)
             else:
                 for element in lavoration_browse.production_id.bom_id.bom_lines:
