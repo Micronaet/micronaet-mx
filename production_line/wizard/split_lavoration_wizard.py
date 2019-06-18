@@ -52,6 +52,11 @@ class mrp_production_split_wizard(osv.osv_memory):
         if lavoration_proxy and split_daily:        
             current_start = datetime.strptime(lavoration_proxy.real_date_planned[:10], "%Y-%m-%d")
             daily_cycle = int(working_hour_day // lavoration_proxy.single_cycle_duration)
+            if not daily_cycle:
+                raise osv.except_osv(
+                    _('Error'), 
+                    _('No Working hour for line or single cycle duration!'),
+                    )
             remain = int(lavoration_proxy.cycle % daily_cycle)
             split_days = int(lavoration_proxy.cycle // daily_cycle + (1 if remain > 0 else 0))
             #split_days = daily_cycle + (1 if remain > 0 else 0)
