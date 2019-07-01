@@ -456,6 +456,33 @@ class PurchaseOrderProvisionLine(orm.Model):
     _rec_name = 'product_id'
     _order = 'sequence,product_id'
 
+    
+    # -------------------------------------------------------------------------
+    # On change event:
+    # -------------------------------------------------------------------------
+    def onchange_product_all(self, cr, uid, ids, product_id, all_supplier, 
+            supplier_id, context=None):
+        ''' On change for supplier list
+        '''
+        res = {
+            'domain': {'seller_ids': []}, 
+            }
+
+        # Pool used:
+        product_pool = self.pool.get('product.product')
+        
+        if not product_id:
+            return res
+
+        if all_supplier:
+            return res
+        
+        product = product_pool.browse(cr, uid, product_id, context=context)
+        res['domain']['seller_ids'] = [
+            ('id', 'in', [item.name.id for item in product.seller_ids]),
+            ]
+        return res
+
     # -------------------------------------------------------------------------
     # Button event:
     # -------------------------------------------------------------------------
@@ -463,6 +490,7 @@ class PurchaseOrderProvisionLine(orm.Model):
         ''' Dummy button
         '''
         return True
+
     def open_product_detail(self, cr, uid, ids, context=None):
         ''' Open detail for product
         '''
@@ -496,6 +524,8 @@ class PurchaseOrderProvisionLine(orm.Model):
         'product_id': fields.many2one('product.product', 'Product'),
         'provision_qty': fields.float('Provision qty', digits=(16, 2)),
         'real_qty': fields.float('Real qty', digits=(16, 2)),
+        'all_supplier': fields.boolean(
+            'All', help='See all supplier instead of product used'),
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
         'deadline': fields.date('Deadline'),
         'list_price': fields.float('List price', digits=(16, 2)),
