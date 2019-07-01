@@ -69,6 +69,11 @@ class PurchaseOrderProvision(orm.Model):
     def wkf_draft_done(self, cr, uid, ids, context=None):
         ''' Confirm the provisioning order
         '''
+        if context is None:
+            context = {}
+            
+        only_selected = context.get('only_selected', False)
+
         # Pool used:
         account_pool = self.pool.get('purchase.order.accounting')
         line_pool = self.pool.get('purchase.order.provision.line')
@@ -76,12 +81,27 @@ class PurchaseOrderProvision(orm.Model):
         account_order = {} # ID and deadline        
         now = datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT)
 
+        all_done = True
         for line in self.browse(cr, uid, ids, context=context)[0].line_ids:
+            # -----------------------------------------------------------------
+            # Test if line must go in purchase:
+            # -----------------------------------------------------------------
+            if only_selected and not line.selected:
+                all_done = False
+                continue # jump line not selected (in select mode)
+
+            if line.accounting_id: 
+                continue # Jump yet order line
+
+            if line.real_qty <= 0.0: # only positive will linked to the order
+                all_done = False # XXX correct?
+                continue
+
+            # -----------------------------------------------------------------
+            # Readability:
+            # -----------------------------------------------------------------
             partner = line.supplier_id
             deadline = line.deadline
-            
-            if line.real_qty <= 0.0: # only positive will linked to the order
-                continue
 
             if not partner:
                 raise osv.except_osv(
@@ -115,7 +135,7 @@ class PurchaseOrderProvision(orm.Model):
             account_order[partner][2].append(line.id) # to link after
             
         # ---------------------------------------------------------------------
-        # Update deadline    
+        # Update header deadline and link line to purchase
         # ---------------------------------------------------------------------
         for partner in account_order:
             accounting_id, deadline, line_ids = account_order[partner]
@@ -127,9 +147,21 @@ class PurchaseOrderProvision(orm.Model):
         # ---------------------------------------------------------------------
         # Provision now is done:
         # ---------------------------------------------------------------------
-        return self.write(cr, uid, ids, {
-            'state': 'done',
-            }, context=context)
+        if all_done:
+            return self.write(cr, uid, ids, {
+                'state': 'done',
+                }, context=context)
+        else:
+            return True
+
+    def wkf_draft_selected(self, cr, uid, ids, context=None):
+        ''' Confirm the provisioning order for selected line
+        '''
+        if context is None:
+            context = {}
+            
+        context['only_selected'] = True
+        return self.wkf_draft_done(cr, uid, ids, context=context)
 
     def wkf_done_account(self, cr, uid, ids, context=None):
         ''' Sync the provisioning order to account
@@ -549,7 +581,8 @@ class PurchaseOrderProvisionLine(orm.Model):
             help='For partial order creation'),
         'purchase_id': fields.many2one('purchase.order.provision', 'Order'),
         'accounting_id': fields.many2one(
-            'purchase.order.accounting', 'Accounting order'),
+            'purchase.order.accounting', 
+            'Accounting order Link'),
         'product_id': fields.many2one('product.product', 'Product'),
         'provision_qty': fields.float('Provision qty', digits=(16, 2)),
         'real_qty': fields.float('Real qty', digits=(16, 2)),

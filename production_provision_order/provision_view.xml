@@ -37,6 +37,7 @@
                 <form string="Provision order" version="7.0">
                     <header>
                         <!--Button for pass to account-->
+                        <button name="wkf_draft_selected" string="Only selected" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight" confirm="Generate purchase order only for selected line, confirm?"/>
                         <button name="wkf_draft_done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight" confirm="If setup is done order will be created for pass to account, confirm?"/>
                         <button name="wkf_done_account" string="Account sync" type="object" attrs="{'invisible': [('state','!=','done')]}" class="oe_highlight" confirm="Sync all order in acccount, confirm?"/>
                         <field name="state" widget="statusbar" />
@@ -46,14 +47,13 @@
                             <field name="name" />
                             <field name="date" />
                             <notebook colspan="4">
-
                                 <page string="Detail" >
                                     <group colspan="4" col="4">
-                                        <separator string="Detail (red not complete):" colspan="4"/>
+                                        <separator string="Detail (red: not complete, blue: selected for partial order):" colspan="4"/>
                                         <field name="line_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state','!=','draft')]}">
-                                            <tree string="Detail" colors="grey:real_qty==0;red:real_qty&lt;0 or supplier_id==False" editable="bottom">
-                                                  <button name="order_selected_on" string="Select for order" type="object" attrs="{'invisible': [('selected','=',False)]}" icon="gtk-star-on"/>
-                                                  <button name="order_selected_off" string="Unselect for order" type="object" attrs="{'invisible': [('selected','=',True)]}" icon="gtk-star-off"/>
+                                            <tree string="Detail" colors="grey:real_qty==0;red:real_qty&lt;0 or supplier_id==False;blue:selected==True" editable="bottom">
+                                                  <button name="order_selected_on" string="Select for order" type="object" attrs="{'invisible': [('selected','=',True)]}" icon="star-on"/>
+                                                  <button name="order_selected_off" string="Unselect for order" type="object" attrs="{'invisible': [('selected','=',False)]}" icon="star-off"/>
                                                   <field name="selected" invisible="1"/>
                                                   
                                                   <field name="sequence" readonly="1"/>
@@ -67,7 +67,7 @@
                                                   <field name="list_price" />
                                                   <!--<field name="domain_supplier_ids"/>-->
                                                   <!--<field name="all_supplier" />on_change="onchange_product_all(product_id, all_supplier, supplier_id)"/>-->
-                                                  <field name="supplier_id" domain="[('is_company', '=', False), ('is_address', '=', False), ('supplier', '=', True)]"/><!--domain="[('id', 'in', domain_supplier_ids)]"-->
+                                                  <field name="supplier_id" domain="[('supplier', '=', True)]"/><!--domain="[('id', 'in', domain_supplier_ids)]"('is_company', '=', False), ('is_address', '=', False), -->
                                                   <field name="deadline" />
                                                   <button name="dummy" string="Urgent" type="object" attrs="{'invisible': [('urgent','=',False)]}" icon="gtk-dialog-warning"/>
                                             </tree>
@@ -75,7 +75,7 @@
                                     </group>                                    
                                 </page>
 
-                                <page string="Accounting order" attrs="{'invisible': [('state','=','draft')]}">
+                                <page string="Accounting order" attrs="{'invisible': [('accounting_ids','=',False)]}">
                                     <group colspan="4" col="4">
                                         <separator string="Accounting order:" colspan="4" />
                                         <field name="accounting_ids" nolabel="1" colspan="4" readonly="1"/>
