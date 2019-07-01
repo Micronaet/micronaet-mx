@@ -52,17 +52,22 @@
                                         <separator string="Detail (red not complete):" colspan="4"/>
                                         <field name="line_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state','!=','draft')]}">
                                             <tree string="Detail" colors="grey:real_qty==0;red:real_qty&lt;0 or supplier_id==False" editable="bottom">
+                                                  <button name="order_selected_on" string="Select for order" type="object" attrs="{'invisible': [('selected','=',False)]}" icon="gtk-star-on"/>
+                                                  <button name="order_selected_off" string="Unselect for order" type="object" attrs="{'invisible': [('selected','=',True)]}" icon="gtk-star-off"/>
+                                                  <field name="selected" invisible="1"/>
+                                                  
                                                   <field name="sequence" readonly="1"/>
                                                   <field name="urgent" invisible="1"/>
                                                   <field name="purchase_id" invisible="1"/>
                                                   <field name="note" readonly="1" widget="html" groups="stock_level_management.group_stock_level_manager"/>
                                                   <button name="open_product_detail" string="Product detail" type="object" icon="gtk-goto-last" />
-                                                  <field name="product_id" readonly="1" />
+                                                  <field name="product_id" on_change="onchange_product_all(product_id, all_supplier, supplier_id)"/>
                                                   <field name="provision_qty" readonly="1" groups="stock_level_management.group_stock_level_manager"/>
                                                   <field name="real_qty" />
                                                   <field name="list_price" />
-                                                  <field name="all_supplier" on_change="onchange_product_all(product_id, all_supplier, supplier_id)"/>
-                                                  <field name="supplier_id" domain="[('id', 'in', [item.name.id for item in product_id.seller_ids])]"/>
+                                                  <!--<field name="domain_supplier_ids"/>-->
+                                                  <!--<field name="all_supplier" />on_change="onchange_product_all(product_id, all_supplier, supplier_id)"/>-->
+                                                  <field name="supplier_id" domain="[('is_company', '=', False), ('is_address', '=', False), ('supplier', '=', True)]"/><!--domain="[('id', 'in', domain_supplier_ids)]"-->
                                                   <field name="deadline" />
                                                   <button name="dummy" string="Urgent" type="object" attrs="{'invisible': [('urgent','=',False)]}" icon="gtk-dialog-warning"/>
                                             </tree>

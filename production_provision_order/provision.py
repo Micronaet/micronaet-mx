@@ -217,7 +217,7 @@ class PurchaseOrderProvision(orm.Model):
         # ---------------------------------------------------------------------
         _logger.info('Extract data simulated days: %s' % days)
         wiz_pool.export_excel(cr, uid, [wiz_id], context=context)    
-        
+
         # ---------------------------------------------------------------------
         # Get collected data:
         # ---------------------------------------------------------------------
@@ -287,7 +287,7 @@ class PurchaseOrderProvision(orm.Model):
                         'purchase_id': purchase_id,
                         'product_id': product_id, 
                         'mode': negative_mode,
-                        }                    )
+                        }, context=context)
                 continue # no provision needed    
 
             # Negative means urgent:
@@ -454,7 +454,7 @@ class PurchaseOrderProvisionLine(orm.Model):
     _name = 'purchase.order.provision.line'
     _description = 'Provision order line'
     _rec_name = 'product_id'
-    _order = 'sequence,product_id'
+    _order = 'urgent desc,sequence,product_id'
 
     
     # -------------------------------------------------------------------------
@@ -465,7 +465,7 @@ class PurchaseOrderProvisionLine(orm.Model):
         ''' On change for supplier list
         '''
         res = {
-            'domain': {'seller_ids': []}, 
+            'domain': {'seller_id': []}, 
             }
 
         # Pool used:
@@ -478,7 +478,7 @@ class PurchaseOrderProvisionLine(orm.Model):
             return res
         
         product = product_pool.browse(cr, uid, product_id, context=context)
-        res['domain']['seller_ids'] = [
+        res['domain']['seller_id'] = [
             ('id', 'in', [item.name.id for item in product.seller_ids]),
             ]
         return res
@@ -486,6 +486,20 @@ class PurchaseOrderProvisionLine(orm.Model):
     # -------------------------------------------------------------------------
     # Button event:
     # -------------------------------------------------------------------------
+    def order_selected_on(self, cr, uid, ids, context=None):
+        ''' Order selection on
+        '''        
+        return self.write(cr, uid, ids, {
+            'selected': True,
+            }, context=context)
+
+    def order_selected_off(self, cr, uid, ids, context=None):
+        ''' Order selection off
+        '''
+        return self.write(cr, uid, ids, {
+            'selected': False,
+            }, context=context)
+
     def dummy(self, cr, uid, ids, context=None):
         ''' Dummy button
         '''
@@ -514,10 +528,25 @@ class PurchaseOrderProvisionLine(orm.Model):
             'nodestroy': False,
             }
 
+    # -------------------------------------------------------------------------
+    # Field function
+    # -------------------------------------------------------------------------
+    def _get_domain_supplier_ids(self, cr, uid, ids, fields, args, 
+            context=None):
+        ''' Fields function for calculate 
+        '''
+        res = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = [
+                item.name.id for item in line.product_id.seller_ids]
+        return res
+            
     _columns = {
         'sequence': fields.integer('Seq.'),
         'urgent': fields.boolean('Urgent', 
             help='Was negative in stock level period'),
+        'selected': fields.boolean('Selected', 
+            help='For partial order creation'),
         'purchase_id': fields.many2one('purchase.order.provision', 'Order'),
         'accounting_id': fields.many2one(
             'purchase.order.accounting', 'Accounting order'),
@@ -526,6 +555,9 @@ class PurchaseOrderProvisionLine(orm.Model):
         'real_qty': fields.float('Real qty', digits=(16, 2)),
         'all_supplier': fields.boolean(
             'All', help='See all supplier instead of product used'),
+        'domain_supplier_ids': fields.function(
+            _get_domain_supplier_ids, method=True, relation='res.partner',
+            type='one2many', string='Domain supplier'), 
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
         'deadline': fields.date('Deadline'),
         'list_price': fields.float('List price', digits=(16, 2)),
