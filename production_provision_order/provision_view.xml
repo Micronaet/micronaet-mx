@@ -55,10 +55,10 @@
                                                   <field name="sequence" readonly="1"/>
                                                   <field name="urgent" invisible="1"/>
                                                   <field name="purchase_id" invisible="1"/>
-                                                  <field name="note" readonly="1" widget="html"/>
+                                                  <field name="note" readonly="1" widget="html" groups="stock_level_management.group_stock_level_manager"/>
                                                   <button name="open_product_detail" string="Product detail" type="object" icon="gtk-goto-last" />
                                                   <field name="product_id" readonly="1"/>
-                                                  <field name="provision_qty" readonly="1"/>
+                                                  <field name="provision_qty" readonly="1" groups="stock_level_management.group_stock_level_manager"/>
                                                   <field name="real_qty" />
                                                   <field name="list_price" />
                                                   <field name="supplier_id" />

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+   <data>
+        <record id="group_stock_level_manager" model="res.groups">
+            <field name="name">Stock Level: Manager</field>
+        </record>
+        <record id="group_stock_level_debug" model="res.groups">
+            <field name="name">Stock Level: Debug</field>
+        </record>
+        <record id="group_stock_level_user" model="res.groups">
+            <field name="name">Stock Level: User</field>
+        </record>
+   </data>
+</openerp>

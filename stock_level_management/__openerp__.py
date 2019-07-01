@@ -39,6 +39,7 @@
     'init_xml': [],
     'demo': [],
     'data': [
+        'security/level_group.xml',
         #'security/ir.model.access.csv',    
         'product_view.xml',
         ],
