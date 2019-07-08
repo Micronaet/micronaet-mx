@@ -364,7 +364,7 @@ class PurchaseOrderProvision(orm.Model):
                     mode=product.approx_mode),
                 'supplier_id': product.first_supplier_id.id,
                 'list_price': product.standard_price, # TODO quotation for sup.
-                'deadline': (now + relativedelta(day_leadtime)).strftime(
+                'deadline': (now + relativedelta(days=day_leadtime)).strftime(
                     DEFAULT_SERVER_DATE_FORMAT),
                 'note': note,    
                 # 'state'
@@ -464,7 +464,8 @@ class PurchaseOrderProvisionNegative(orm.Model):
             }, context=context)
 
     _columns = {
-        'purchase_id': fields.many2one('purchase.order.provision', 'Order'),
+        'purchase_id': fields.many2one(
+            'purchase.order.provision', 'Order', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product'),         
         'mode': fields.selection([
             ('negative', 'Negative'),
