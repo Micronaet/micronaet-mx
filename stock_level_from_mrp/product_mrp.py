@@ -149,7 +149,7 @@ class ResCompany(osv.osv):
         header = [
             'Codice', 'Descrizione', 'UM',
             'Appr.', 'Mod.',
-            'Min Mexal', 'Max Mexal',
+            'Min Gest.', 'Max Gest.',
 
             'Manuale', 'Lead time', 'M(x)',
 
@@ -178,7 +178,7 @@ class ResCompany(osv.osv):
                 ]),
             ('Livelli manuali', [
                 ('manual_stock_level', '=', True),
-                #('min_stock_level', '>', 0),
+                # ('min_stock_level', '>', 0),
                 ]),
             ('Non presenti', [
                 ('min_stock_level', '<=', 0),
@@ -219,7 +219,8 @@ class ResCompany(osv.osv):
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
-            product = product_pool.browse(cr, uid, product_ids,
+            product = product_pool.browse(
+                cr, uid, product_ids,
                 context=context)
 
             row += 1
