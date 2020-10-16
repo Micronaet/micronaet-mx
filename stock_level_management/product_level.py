@@ -24,17 +24,13 @@
 import os
 import sys
 import logging
-import openerp
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID#, api
-from openerp import tools
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round as round
-from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
+from openerp.tools import (
+    DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
     DATETIME_FORMATS_MAP,
     float_compare)
@@ -70,7 +66,6 @@ class ResCompany(osv.osv):
 class ProductProduct(osv.osv):
     """ Model name: ProductProduct
     """
-
     _inherit = 'product.product'
 
     def round_interger_order(self, number, approx=1, mode='over'):
@@ -94,7 +89,7 @@ class ProductProduct(osv.osv):
         elif mode == 'normal':
             return round(number / approx, 0) * approx
         else:
-             return number
+            return number
 
     _columns = {
         'manual_stock_level': fields.boolean(
