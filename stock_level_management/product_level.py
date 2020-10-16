@@ -35,7 +35,6 @@ from openerp.tools import (
     DATETIME_FORMATS_MAP,
     float_compare)
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -73,8 +72,8 @@ class ProductProduct(osv.osv):
             Approx number to value approx (integer > 1)
             Mode =
                 'normal' (nothing is done)
-                'over' (to the next approx level  exceeded)
-                'under' (to the next approx level  exceeded)
+                'over' (to the next approx level exceeded)
+                'under' (to the next approx level exceeded)
         """
         if approx <= 1:
             return number
