@@ -42,10 +42,7 @@
         ],
     'init_xml': [],
     'demo': [],
-    'data': [
-        #'security/ir.model.access.csv',    
-        'product_mrp_view.xml',
-        ],
+    'data': [],
     'active': False,
     'installable': True,
     'auto_install': False,

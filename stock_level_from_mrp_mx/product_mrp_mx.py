@@ -250,35 +250,15 @@ class ResCompany(osv.osv):
                     ws_name, row, line, default_format=excel_format['text'])
                 row += 1
         return excel_pool.return_attachment(
-            cr, uid, 'Livelli prodotto', 'livelli_magazzino.xlsx',
+            cr, uid, 'Livelli prodotto MX', 'stock_level_MX.xlsx',
             version='7.0', php=True, context=context)
 
+    '''
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Button from company
         """
         return self.pool.get('mrp.production.workcenter.line'
             ).update_product_level_from_production(
                 cr, uid, ids, context=context)
-    _columns = {
-        'stock_level_days': fields.integer(
-            'Stock level days', help='Days for from data till today'),
+                '''
 
-        # Manage mode?
-        'stock_level_mode': fields.selection([
-            ('medium', 'Medium'),
-            # ('variant', 'Medium + variant'),
-            # ('period', 'Month period'),
-            ], 'Stock level mode', required=True),
-        }
-
-    _defaults = {
-        'stock_level_days': lambda *x: 180,
-        'stock_level_mode': lambda *x: 'medium',
-        }
-
-
-class ProductProduct(osv.osv):
-    """ Model name: ProductProduct
-    """
-
-    _inherit = 'product.product'
