@@ -232,18 +232,18 @@ class ResCompany(osv.osv):
                     product.name or '',
                     product.uom_id.name or '',
 
-                    product.approx_integer,
+                    (product.approx_integer, excel_format['number']),
                     product.approx_mode,
 
-                    product.manual_stock_level,
+                    product.manual_stock_level, excel_format['number']),
                     product.day_leadtime,
-                    int(product.medium_stock_qty),
+                    (int(product.medium_stock_qty), excel_format['number']),
 
-                    product.day_min_level,
-                    int(product.min_stock_level),
+                    (product.day_min_level, excel_format['number']),
+                    (int(product.min_stock_level), excel_format['number']),
 
-                    product.day_max_level,
-                    int(product.max_stock_level),
+                    (product.day_max_level, excel_format['number']),
+                    (int(product.max_stock_level), excel_format['number']),
                     ]
 
                 excel_pool.write_xls_line(
