@@ -198,6 +198,7 @@ class ResCompany(osv.osv):
                 excel_format['title'] = excel_pool.get_format(key='title')
                 excel_format['header'] = excel_pool.get_format(key='header')
                 excel_format['text'] = excel_pool.get_format(key='text')
+                excel_format['right'] = excel_pool.get_format(key='text_right')
                 excel_format['number'] = excel_pool.get_format(key='number')
 
             # -----------------------------------------------------------------
@@ -232,18 +233,18 @@ class ResCompany(osv.osv):
                     product.name or '',
                     product.uom_id.name or '',
 
-                    (product.approx_integer, excel_format['number']),
+                    (product.approx_integer, excel_format['right']),
                     product.approx_mode or '',
 
-                    (product.manual_stock_level or '', excel_format['number']),
+                    (product.manual_stock_level or '', excel_format['right']),
                     product.day_leadtime or '',
-                    (int(product.medium_stock_qty), excel_format['number']),
+                    (int(product.medium_stock_qty), excel_format['right']),
 
-                    (product.day_min_level, excel_format['number']),
-                    (int(product.min_stock_level), excel_format['number']),
+                    (product.day_min_level, excel_format['right']),
+                    (int(product.min_stock_level), excel_format['right']),
 
-                    (product.day_max_level, excel_format['number']),
-                    (int(product.max_stock_level), excel_format['number']),
+                    (product.day_max_level, excel_format['right']),
+                    (int(product.max_stock_level), excel_format['right']),
                     ]
 
                 excel_pool.write_xls_line(
