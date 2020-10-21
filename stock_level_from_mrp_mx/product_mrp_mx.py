@@ -233,10 +233,10 @@ class ResCompany(osv.osv):
                     product.uom_id.name or '',
 
                     (product.approx_integer, excel_format['number']),
-                    product.approx_mode,
+                    product.approx_mode or '',
 
                     (product.manual_stock_level, excel_format['number']),
-                    product.day_leadtime,
+                    product.day_leadtime or '',
                     (int(product.medium_stock_qty), excel_format['number']),
 
                     (product.day_min_level, excel_format['number']),
