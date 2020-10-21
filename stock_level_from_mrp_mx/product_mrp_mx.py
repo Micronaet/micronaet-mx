@@ -206,7 +206,7 @@ class ResCompany(osv.osv):
             row = 0
             excel_pool.write_xls_line(
                 ws_name, row, header, default_format=excel_format['header'])
-            excel_pool.autofilter(ws_name, row, row, 0, len(header))
+            excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
 
             # -----------------------------------------------------------------
             # Product selection:
