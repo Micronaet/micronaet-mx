@@ -235,7 +235,7 @@ class ResCompany(osv.osv):
                     (product.approx_integer, excel_format['number']),
                     product.approx_mode,
 
-                    product.manual_stock_level, excel_format['number']),
+                    (product.manual_stock_level, excel_format['number']),
                     product.day_leadtime,
                     (int(product.medium_stock_qty), excel_format['number']),
 
