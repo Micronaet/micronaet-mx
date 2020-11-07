@@ -73,7 +73,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         stock_level_external_excel = os.path.expanduser(
             company.stock_level_external_excel or '~/VTA PCA 2011A.xlsx')
-        stock_level_days = company.stock_level_days
+        # stock_level_days = company.stock_level_days
+        stock_level_days = 365  # TODO manage different from MRP stock level?
         if not stock_level_external_excel:
             raise osv.except_osv(
                 _('Error stock management'),
@@ -108,7 +109,10 @@ class MrpProductionWorkcenterLine(osv.osv):
             default_code = product.default_code
             if default_code.endswith('X'):
                 continue
-            product_medium[default_code] = 0.0
+            if default_code in product_medium:
+                _logger.error('Product double: %s' % default_code)
+            else:
+                product_medium[default_code] = [0.0, product]
 
         # A3. Load data from Excel:
         try:
@@ -122,30 +126,30 @@ class MrpProductionWorkcenterLine(osv.osv):
         ws = wb.sheet_by_name(sheet_name)
         _logger.info('Read XLS file: %s' % stock_level_external_excel)
         start = False
-        pdb.set_trace()
         for row in range(ws.nrows):
             date = ws.cell(row, columns_position['date']).value
             if not start and date == start_test:
-                _logger.info('%s. Line not used pre start' % (row + 1))
+                _logger.info('%s. Line not used: Start line' % (row + 1))
                 start = True
                 continue
 
-            if from_text > date > now_text:  # Out of period range:
+            if date < from_text or date > now_text:  # Out of period range:
                 _logger.info('%s. Line not used out of range %s' % (
                     row + 1, date))
                 continue
-
+            pdb.set_trace()
             default_code = ws.cell(row, columns_position['default_code']).value
             if not(start and date and default_code in product_medium):
-                _logger.info('%s. Line not used no imported product: %s' % (
-                    row + 1,
-                    default_code,
-                ))
+                _logger.info(
+                    '%s. Line not used (no start or no product watched: %s' % (
+                        row + 1,
+                        default_code,
+                    ))
                 continue
 
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
-            product_medium[default_code] += qty
+            product_medium[default_code][0] += qty
             _logger.info('%s. Line used %s - %s' % (
                 row + 1,
                 default_code,
@@ -154,8 +158,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A4. Update product medium
         _logger.warning('Product found: %s' % len(product_medium))
-        for product in product_medium:
-            total = product_medium[product]
+        for default_code in product_medium:
+            total, product = product_medium[default_code]
             if product.manual_stock_level:
                 continue
 
