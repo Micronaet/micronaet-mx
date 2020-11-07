@@ -46,6 +46,21 @@ class MrpProductionWorkcenterLine(osv.osv):
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production
         """
+        def get_excel_date(value):
+            """ Exxtract ISO date
+            """
+            value_item = value.split('/')
+            if len(value_item) == 3:
+                res = '%s-%s-%s' % (
+                    value_item[2],
+                    value_item[1],
+                    value_item[0],
+                )
+            else:
+                res = value  # Nothing
+            _logger.warning('From %s to %s' % (value, res))
+            return res
+
         _logger.info('Update marketed product medium')
         product_pool = self.pool.get('product.product')
         company_pool = self.pool.get('res.company')
