@@ -43,93 +43,6 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 
-class MrpProductionWorkcenterLine(osv.osv):
-    """ Model name: Lavoration
-    """
-
-    _inherit = 'mrp.production.workcenter.line'
-
-    '''
-    def update_product_level_from_production(self, cr, uid, ids, context=None):
-        """ Update product level from production
-        """
-        product_pool = self.pool.get('product.product')
-        company_pool = self.pool.get('res.company')
-
-        # Get parameters:
-        company_ids = company_pool.search(cr, uid, [], context=context)
-        company = company_pool.browse(
-            cr, uid, company_ids, context=context)[0]
-        stock_level_days = company.stock_level_days
-        if not stock_level_days:
-            raise osv.except_osv(
-                _('Error stock management'),
-                _('Setup the parameter in company form'),
-                )
-
-        now = datetime.now()
-        from_date = now - timedelta(days=stock_level_days)
-        now_text = '%s 00:00:00' % now.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
-        from_text = '%s 00:00:00' % from_date.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
-
-        lavoration_ids = self.search(cr, uid, [
-            ('real_date_planned', '>=', from_text),
-            ('real_date_planned', '<', now_text),
-            ], context=context)
-        _logger.warning('Lavoration found: %s Period: [>=%s <%s]' % (
-            len(lavoration_ids),
-            from_text,
-            now_text,
-            ))
-
-        product_medium = {}
-        for lavoration in self.browse(
-                cr, uid, lavoration_ids, context=context):
-            for material in lavoration.bom_material_ids:
-                product = material.product_id
-                quantity = material.quantity
-                if product in product_medium:
-                    product_medium[product] += quantity
-                else:
-                    product_medium[product] = quantity
-
-        _logger.warning('Product found: %s' % len(product_medium))
-        for product in product_medium:
-            total = product_medium[product]
-            if product.manual_stock_level:
-                continue
-
-            if not total:
-                medium_stock_qty = 0.0
-            else:
-                medium_stock_qty = total / stock_level_days
-
-            product_pool.write(cr, uid, [product.id], {
-                'medium_stock_qty': medium_stock_qty,
-                'min_stock_level':
-                    product.day_min_level * medium_stock_qty,
-                    # product_pool.round_interger_order(
-                    #    product.day_min_level * medium_stock_qty,
-                    #    approx=product.approx_integer,
-                    #    mode=product.approx_mode),
-                'max_stock_level':
-                    product.day_max_level * medium_stock_qty,
-                    # product_pool.round_interger_order(
-                    #    product.day_max_level * medium_stock_qty,
-                    #    approx=product.approx_integer,
-                    #    mode=product.approx_mode),
-                'ready_stock_level':
-                    product.day_max_ready_level * medium_stock_qty,
-                    # product_pool.round_interger_order(
-                    #    product.day_max_ready_level * medium_stock_qty,
-                    #    approx=product.approx_integer,
-                    #    mode=product.approx_mode),
-                }, context=context)
-        return True
-    '''
-    
 class ResCompany(osv.osv):
     """ Model name: Parameters
     """
@@ -151,7 +64,7 @@ class ResCompany(osv.osv):
         header = [
             u'Codigo', u'Descripcion', u'UM',
             u'Appr.', u'Mod.',
-            
+
             u'Manual', u'Tiempo de Entrega', u'Promedio Kg/Dia',
 
             u'Nivel Minimo Dias', u'Nivel Minimo Mes',
@@ -224,10 +137,10 @@ class ResCompany(osv.osv):
             for product in sorted(product, key=lambda x: x.default_code):
                 # Filter code:
                 default_code = product.default_code
-                if default_code not in ('S2711V', 'S2712T') and \
-                        default_code[0:1] in 'RS':
-                    continue
-                    
+                # if default_code not in ('S2711V', 'S2712T') and \
+                #        default_code[0:1] in 'RS':
+                #    continue
+
                 line = [
                     default_code or '',
                     product.name or '',
