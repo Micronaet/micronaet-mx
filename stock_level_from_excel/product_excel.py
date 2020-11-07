@@ -22,24 +22,16 @@
 ###############################################################################
 
 import os
-import sys
 import logging
-import openerp
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
-import xlsxwriter
 from openerp.osv import fields, osv, expression
 from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID
-from openerp import tools
 from openerp.tools.translate import _
-from openerp.tools.float_utils import float_round as round
 from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
     DATETIME_FORMATS_MAP,
     float_compare)
 import xlrd
+import pdb
 
 _logger = logging.getLogger(__name__)
 
@@ -54,6 +46,7 @@ class MrpProductionWorkcenterLine(osv.osv):
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production
         """
+        _logger.info('Update marketed product medium')
         product_pool = self.pool.get('product.product')
         company_pool = self.pool.get('res.company')
 
@@ -77,6 +70,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         company = company_pool.browse(
             cr, uid, company_ids, context=context)[0]
 
+        pdb.set_trace()
         stock_level_external_excel = os.path.expanduser(
             company.stock_level_external_excel or '~/VTA PCA 2011A.xlsx')
         stock_level_days = company.stock_level_days
@@ -164,8 +158,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         # ---------------------------------------------------------------------
         # B. Update original procedure from MRP:
         # ---------------------------------------------------------------------
-        return super(ResCompany, self).update_product_level_from_production(
-            cr, uid, ids, context=context)
+        return super(MrpProductionWorkcenterLine, self).\
+            update_product_level_from_production(cr, uid, ids, context=context)
 
 
 class ResCompany(osv.osv):
