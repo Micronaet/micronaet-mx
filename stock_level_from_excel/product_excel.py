@@ -46,7 +46,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         """ Extract from Dropbox
         """
         import requests
-
+        _logger.info('Downloading file %s from Dropbox' % fullname)
         reply = requests.get(url)
         attachment_data = reply.content
         with open(fullname, 'wb') as f:
