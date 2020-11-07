@@ -238,16 +238,18 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             if not total:
                 medium_stock_qty = 0.0
+                _logger.info(
+                    'Update product without level: %s' % product.default_code)
             else:
                 medium_stock_qty = total / stock_level_days
                 _logger.info(
-                    'Update product status: %s' % product.default_code)
+                    'Update product with level: %s' % product.default_code)
 
             product_pool.write(cr, uid, [product.id], {
                 'medium_stock_qty': medium_stock_qty,
                 # TODO Force different values?
-                'day_min_level': 30,
-                'day_max_level': 67,
+                'day_min_level': 60,
+                'day_max_level': 37,
                 'product_imported': True,
 
                 'min_stock_level':
@@ -257,7 +259,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'ready_stock_level':
                     product.day_max_ready_level * medium_stock_qty,
                 }, context=context)
-            _logger.info('Update medium: %s' % product.default_code)
         _logger.info('Update marketed product: %s' % len(product_medium))
         # ---------------------------------------------------------------------
         # B. Update original procedure from MRP:
