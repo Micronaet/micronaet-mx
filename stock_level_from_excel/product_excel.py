@@ -168,6 +168,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 medium_stock_qty = 0.0
             else:
                 medium_stock_qty = total / stock_level_days
+                _logger.info(
+                    'Update product status: %s' % product.default_code)
 
             product_pool.write(cr, uid, [product.id], {
                 'medium_stock_qty': medium_stock_qty,
