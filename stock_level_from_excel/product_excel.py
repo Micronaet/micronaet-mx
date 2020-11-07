@@ -91,7 +91,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_ids = self.search(cr, uid, [
             ('default_code', '=ilike', 'R%'),
             ('default_code', '=ilike', 'S%'),
-            ('default_code', 'not =ilike', '%X'),
+            # ('default_code', 'not =ilike', '%X'),
             ], context=context)
 
         _logger.warning('Imported product #%s [%s - %s]' % (
@@ -105,6 +105,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         for product in product_pool.browse(
                 cr, uid, product_ids, context=context):
             default_code = product.default_code
+            if default_code.endswith('X'):
+                continue
             product_medium[default_code] = 0.0
 
         # A3. Load data from Excel:
