@@ -37,7 +37,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MrpProductionWorkcenterLine(osv.osv):
-    """ Model name: Lavoration
+    """ Model name: Job
     """
 
     _inherit = 'mrp.production.workcenter.line'
@@ -74,7 +74,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         stock_level_external_excel = os.path.expanduser(
             company.stock_level_external_excel or '~/VTA PCA 2011A.xlsx')
         # stock_level_days = company.stock_level_days
-        stock_level_days = 365  # TODO manage different from MRP stock level?
+        stock_level_days = 730  # TODO manage different from MRP stock level?
         if not stock_level_external_excel:
             raise osv.except_osv(
                 _('Error stock management'),
