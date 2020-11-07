@@ -137,7 +137,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 _logger.info('%s. Line not used out of range %s' % (
                     row + 1, date))
                 continue
-            pdb.set_trace()
+
             default_code = ws.cell(row, columns_position['default_code']).value
             if not(start and date and default_code in product_medium):
                 _logger.info(
@@ -158,7 +158,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A4. Update product medium
         _logger.warning('Product found: %s' % len(product_medium))
-        pdb.set_trace()
+
         for default_code in product_medium:
             total, product = product_medium[default_code]
             if product.manual_stock_level:
