@@ -64,13 +64,13 @@ class MrpProductionWorkcenterLine(osv.osv):
             # 'price': 24,
         }
         start_test = 'INVOICE DATE'
+        sheet_name = 'BASE'
 
         # Dynamic parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
         company = company_pool.browse(
             cr, uid, company_ids, context=context)[0]
 
-        pdb.set_trace()
         stock_level_external_excel = os.path.expanduser(
             company.stock_level_external_excel or '~/VTA PCA 2011A.xlsx')
         stock_level_days = company.stock_level_days
@@ -88,7 +88,7 @@ class MrpProductionWorkcenterLine(osv.osv):
              DEFAULT_SERVER_DATE_FORMAT)
 
         # A1. Search product marketed:
-        product_ids = self.search(cr, uid, [
+        product_ids = product_pool.search(cr, uid, [
             ('default_code', '=ilike', 'R%'),
             ('default_code', '=ilike', 'S%'),
             # ('default_code', 'not =ilike', '%X'),
@@ -99,6 +99,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             from_text,
             now_text,
             ))
+        pdb.set_trace()
 
         # A2. Prepare dict for medium
         product_medium = {}
@@ -118,7 +119,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             )
             return False
 
-        ws = wb.sheet_by_index(0)
+        ws = wb.sheet_by_name(sheet_name)
         _logger.info('Read XLS file: %s' % stock_level_external_excel)
         start = False
         for row in range(ws.nrows):
