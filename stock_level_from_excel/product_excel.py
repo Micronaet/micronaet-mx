@@ -89,6 +89,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A1. Search product marketed:
         product_ids = product_pool.search(cr, uid, [
+            '|',
             ('default_code', '=ilike', 'R%'),
             ('default_code', '=ilike', 'S%'),
             # ('default_code', 'not =ilike', '%X'),
@@ -99,7 +100,6 @@ class MrpProductionWorkcenterLine(osv.osv):
             from_text,
             now_text,
             ))
-        pdb.set_trace()
 
         # A2. Prepare dict for medium
         product_medium = {}
@@ -122,19 +122,35 @@ class MrpProductionWorkcenterLine(osv.osv):
         ws = wb.sheet_by_name(sheet_name)
         _logger.info('Read XLS file: %s' % stock_level_external_excel)
         start = False
+        pdb.set_trace()
         for row in range(ws.nrows):
             date = ws.cell(row, columns_position['date']).value
             if not start and date == start_test:
+                _logger.info('%s. Line not used pre start' % (row + 1))
                 start = True
+                continue
+
+            if from_text > date > now_text:  # Out of period range:
+                _logger.info('%s. Line not used out of range %s' % (
+                    row + 1, date))
                 continue
 
             default_code = ws.cell(row, columns_position['default_code']).value
             if not(start and date and default_code in product_medium):
+                _logger.info('%s. Line not used no imported product: %s' % (
+                    row + 1,
+                    default_code,
+                ))
                 continue
 
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
             product_medium[default_code] += qty
+            _logger.info('%s. Line used %s - %s' % (
+                row + 1,
+                default_code,
+                qty,
+            ))
 
         # A4. Update product medium
         _logger.warning('Product found: %s' % len(product_medium))
