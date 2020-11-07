@@ -158,6 +158,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A4. Update product medium
         _logger.warning('Product found: %s' % len(product_medium))
+        pdb.set_trace()
         for default_code in product_medium:
             total, product = product_medium[default_code]
             if product.manual_stock_level:
@@ -170,6 +171,10 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             product_pool.write(cr, uid, [product.id], {
                 'medium_stock_qty': medium_stock_qty,
+                # TODO Force different values?
+                'day_min_level': 30,
+                'day_max_level': 67,
+
                 'min_stock_level':
                     product.day_min_level * medium_stock_qty,
                 'max_stock_level':
@@ -177,7 +182,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'ready_stock_level':
                     product.day_max_ready_level * medium_stock_qty,
                 }, context=context)
-
+            _logger.info('Update medium: %s' % product.default_code)
+        _logger.info('Update marketed product: %s' % len(product_medium))
         # ---------------------------------------------------------------------
         # B. Update original procedure from MRP:
         # ---------------------------------------------------------------------
