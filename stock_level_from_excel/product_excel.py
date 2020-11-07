@@ -54,15 +54,20 @@ class MrpProductionWorkcenterLine(osv.osv):
             else:
                 value_item = value.split('/')
                 if len(value_item) == 3:
+                    if len(value_item[2]) == 2:
+                        value_item[2] = '20%s' % value_item[2]
+                    elif value_item == '209':
+                        value_item[2] = '2019'
+                    else:
+                        _logger.error('Unmanaged error:')
                     res = '%s-%s-%s' % (
-                        value_item[2] if len(value_item[2]) == 4 else
-                        '20%s' % value_item[2],
+                        value_item[2],
                         value_item[1],
                         value_item[0],
                     )
                 else:
                     res = value  # Nothing
-            _logger.warning('From %s to %s' % (value, res))
+            _logger.warning('>>>>>>>>>>>>>>>>>>> From %s to %s' % (value, res))
             return res
 
         _logger.info('Update marketed product medium')
