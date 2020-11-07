@@ -231,6 +231,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # TODO Force different values?
                 'day_min_level': 30,
                 'day_max_level': 67,
+                'product_imported': True,
 
                 'min_stock_level':
                     product.day_min_level * medium_stock_qty,
@@ -260,3 +261,15 @@ class ResCompany(osv.osv):
             help='Path for external XLSX file for stock movement',
         )
     }
+
+
+class ProductProduct(osv.osv):
+    """ Model name: Parameters
+    """
+
+    _inherit = 'product.product'
+
+    _columns = {
+        'product_imported': fields.char('Imported product'),
+    }
+
