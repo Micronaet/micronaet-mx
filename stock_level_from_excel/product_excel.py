@@ -42,6 +42,16 @@ class MrpProductionWorkcenterLine(osv.osv):
 
     _inherit = 'mrp.production.workcenter.line'
 
+    def get_file(self, url, fullname):
+        """ Extract from Dropbox
+        """
+        import requests
+
+        reply = requests.get(url)
+        attachment_data = reply.content
+        with open(fullname, 'wb') as f:
+            f.write(attachment_data)
+
     # Override so update after update MRP:
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production
@@ -114,15 +124,22 @@ class MrpProductionWorkcenterLine(osv.osv):
         sheet_name = 'BASE'
 
         # Dynamic parameters:
-        company_ids = company_pool.search(cr, uid, [], context=context)
-        company = company_pool.browse(
-            cr, uid, company_ids, context=context)[0]
-
-        stock_level_external_excel = os.path.expanduser(
-            company.stock_level_external_excel or '~/VTA PCA 2011A.xlsx')
+        # company_ids = company_pool.search(cr, uid, [], context=context)
+        # company = company_pool.browse(
+        #    cr, uid, company_ids, context=context)[0]
+        # stock_level_external_excel = os.path.expanduser(
+        #     company.stock_level_external_excel or '')
         # stock_level_days = company.stock_level_days
         stock_level_days = 730  # TODO manage different from MRP stock level?
-        if not stock_level_external_excel:
+
+        # Generate file:
+        dropbox_link = context.get('dropbox_link')
+        if not dropbox_link:
+            _logger.error(
+                'Setup the scheduled command with dropbox_link parameter')
+        filename = '/tmp/account_status.xlsx'
+        self.get_file(dropbox_link, filename)
+        if not filename:
             raise osv.except_osv(
                 _('Error stock management'),
                 _('Setup the parameter in company form (input file)'),
@@ -163,15 +180,15 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A3. Load data from Excel:
         try:
-            wb = xlrd.open_workbook(stock_level_external_excel)
+            wb = xlrd.open_workbook(filename)
         except:
             _logger.error(
-                '[ERROR] Cannot read XLS file: %s' % stock_level_external_excel
+                '[ERROR] Cannot read XLS file: %s' % filename
             )
             return False
 
         ws = wb.sheet_by_name(sheet_name)
-        _logger.info('Read XLS file: %s' % stock_level_external_excel)
+        _logger.info('Read XLS file: %s' % filename)
         start = False
         for row in range(ws.nrows):
             date = get_excel_date(ws.cell(row, columns_position['date']).value)
@@ -272,4 +289,3 @@ class ProductProduct(osv.osv):
     _columns = {
         'product_imported': fields.char('Imported product'),
     }
-
