@@ -44,6 +44,7 @@
     'data': [
         #'security/ir.model.access.csv',    
         'product_mrp_view.xml',
+        'update_scheduler.xml',
         ],
     'active': False,
     'installable': True,
