@@ -100,7 +100,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     )
                 else:
                     res = value  # Nothing
-            _logger.warning(' ' * 70 + '>>>>>>>> From %s to %s' % (value, res))
+            # _logger.warning(' ' * 70 + '>>>>>> From %s to %s' % (value, res))
             return res
 
         _logger.info('Update marketed product medium')
