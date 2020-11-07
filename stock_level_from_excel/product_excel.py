@@ -47,27 +47,50 @@ class MrpProductionWorkcenterLine(osv.osv):
         """ Update product level from production
         """
         def get_excel_date(value):
-            """ Exxtract ISO date
+            """ Extract ISO date
             """
+            months = {
+                'GEN': '01',
+                'FEB': '02',
+                'MAR': '03',
+                'APR': '04',
+                'MAG': '05',
+                'GIU': '06',
+                'LUG': '07',
+                'AGO': '08',
+                'SET': '09',
+                'OCT': '10',
+                'NOV': '11',
+                'DEC': '12',
+
+                'DIC': '12',
+            }
             if not value or type(value) in (float, ):
                 res = ''
             else:
+                value = value.strip()
                 value_item = value.split('/')
                 if len(value_item) == 3:
-                    if len(value_item[2]) == 2:
+                    if len(value_item[2]) == 4:
+                        pass  # correct
+                    elif len(value_item[2]) == 2:
                         value_item[2] = '20%s' % value_item[2]
                     elif value_item == '209':
                         value_item[2] = '2019'
                     else:
                         _logger.error('Unmanaged error:')
-                    res = '%s-%s-%s' % (
+
+                    if value_item[1].upper() in months:
+                        value_item[1] = months[value_item[1].upper()]
+
+                    res = '%s-%02d-%02d' % (
                         value_item[2],
-                        value_item[1],
-                        value_item[0],
+                        int(value_item[1]),
+                        int(value_item[0]),
                     )
                 else:
                     res = value  # Nothing
-            _logger.warning('>>>>>>>>>>>>>>>>>>> From %s to %s' % (value, res))
+            _logger.warning(' ' * 70 + '>>>>>>>> From %s to %s' % (value, res))
             return res
 
         _logger.info('Update marketed product medium')
@@ -173,6 +196,14 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
+            if type(qty) not in (float, int):
+                _logger.error(
+                    '%s. Line not used (qty not float: %s' % (
+                        row + 1,
+                        qty,
+                    ))
+                continue
+
             product_medium[default_code][0] += qty
             _logger.info('%s. Line used %s - %s' % (
                 row + 1,
