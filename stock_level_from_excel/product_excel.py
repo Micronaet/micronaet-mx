@@ -49,13 +49,14 @@ class MrpProductionWorkcenterLine(osv.osv):
         def get_excel_date(value):
             """ Exxtract ISO date
             """
-            if not value:
+            if not value or type(value) in (float, ):
                 res = ''
             else:
                 value_item = value.split('/')
                 if len(value_item) == 3:
                     res = '%s-%s-%s' % (
-                        value_item[2],
+                        value_item[2] if len(value_item[2]) == 4 else
+                        '20%s' % value_item[2],
                         value_item[1],
                         value_item[0],
                     )
