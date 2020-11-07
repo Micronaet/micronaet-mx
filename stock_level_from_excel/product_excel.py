@@ -58,7 +58,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         company_pool = self.pool.get('res.company')
 
         # ---------------------------------------------------------------------
-        # A. Update commercialized product:
+        # A. Update marketed product:
         # ---------------------------------------------------------------------
         # Fixed parameters:
         columns_position = {
@@ -77,7 +77,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         company = company_pool.browse(
             cr, uid, company_ids, context=context)[0]
 
-        stock_level_external_excel = company.stock_level_external_excel
+        stock_level_external_excel = os.path.expanduser(
+            company.stock_level_external_excel or '~/VTA PCA 2011A.xlsx')
         stock_level_days = company.stock_level_days
         if not stock_level_external_excel:
             raise osv.except_osv(
@@ -92,7 +93,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         from_text = '%s 00:00:00' % from_date.strftime(
              DEFAULT_SERVER_DATE_FORMAT)
 
-        # A1. Search product commercialized:
+        # A1. Search product marketed:
         product_ids = self.search(cr, uid, [
             ('default_code', '=ilike', 'R%'),
             ('default_code', '=ilike', 'S%'),
