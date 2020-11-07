@@ -49,15 +49,18 @@ class MrpProductionWorkcenterLine(osv.osv):
         def get_excel_date(value):
             """ Exxtract ISO date
             """
-            value_item = value.split('/')
-            if len(value_item) == 3:
-                res = '%s-%s-%s' % (
-                    value_item[2],
-                    value_item[1],
-                    value_item[0],
-                )
+            if not value:
+                res = ''
             else:
-                res = value  # Nothing
+                value_item = value.split('/')
+                if len(value_item) == 3:
+                    res = '%s-%s-%s' % (
+                        value_item[2],
+                        value_item[1],
+                        value_item[0],
+                    )
+                else:
+                    res = value  # Nothing
             _logger.warning('From %s to %s' % (value, res))
             return res
 
@@ -142,7 +145,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.info('Read XLS file: %s' % stock_level_external_excel)
         start = False
         for row in range(ws.nrows):
-            date = ws.cell(row, columns_position['date']).value
+            date = get_excel_date(ws.cell(row, columns_position['date']).value)
             if not start and date == start_test:
                 _logger.info('%s. Line not used: Start line' % (row + 1))
                 start = True
