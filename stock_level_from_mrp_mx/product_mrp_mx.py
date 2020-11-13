@@ -98,6 +98,7 @@ class ResCompany(osv.osv):
             ]
 
         width = [
+            15,
             15, 25, 5,
             6, 9,
             5, 15, 15,
