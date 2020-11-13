@@ -71,7 +71,7 @@ class ResCompany(osv.osv):
             return _('Raw material')
         if end == 'X':
             return _('MX production')
-        return _('IT production')
+        return _('IT imported')
 
     # Override for MX report (was different)
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
