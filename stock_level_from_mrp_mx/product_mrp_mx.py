@@ -98,7 +98,7 @@ class ResCompany(osv.osv):
             ]
 
         width = [
-            15,
+            18,
             15, 25, 5,
             6, 9,
             5, 15, 15,
@@ -155,18 +155,19 @@ class ResCompany(osv.osv):
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
-            product = product_pool.browse(
+            products = product_pool.browse(
                 cr, uid, product_ids,
                 context=context)
 
             # TODO add also package data!!!
             row += 1
-            for product in sorted(product, key=lambda x: x.default_code):
+            for product in sorted(products, key=lambda x: x.default_code):
                 # Filter code:
                 default_code = product.default_code
-                # if default_code not in ('S2711V', 'S2712T') and \
-                #        default_code[0:1] in 'RS':
-                #    continue
+
+                # Clean some code:
+                if default_code.startswith('SER'):
+                    continue
 
                 line = [
                     self.get_type(product.default_code, product.uom_id.name),
