@@ -130,6 +130,7 @@ class ResCompany(osv.osv):
             excel_pool.column_width(ws_name, width)
             # excel_pool.row_height(ws_name, row_list, height=10)
             excel_pool.freeze_panes(ws_name, 1, 2)
+            excel_pool.column_hidden(ws_name, [4, 5])
 
             # -----------------------------------------------------------------
             # Generate format used (first time only):
