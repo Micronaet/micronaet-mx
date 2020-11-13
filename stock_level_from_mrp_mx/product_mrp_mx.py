@@ -197,9 +197,9 @@ class ResCompany(osv.osv):
                     (min_stock_level, excel_format['right']),
 
                     (product.day_max_level, excel_format['right']),
-                    (product.max_stock_level, excel_format['right']),
-
                     (int(product.max_stock_level), excel_format['right']),
+
+                    (account_qty, excel_format['right']),
                     state,
                     ]
 
