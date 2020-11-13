@@ -61,17 +61,15 @@ class ResCompany(osv.osv):
         start = code[0]
         end = code[-1]
 
-        if uom == 'PCE':
-            return _('Component / Machinery')
-        if start in 'PR':
-            return _('Waste')
-        if start in 'AB':
-            return _('Raw material')
-        if start in 'AB':
-            return _('Raw material')
-        if end == 'X':
-            return _('MX production')
-        return _('IT imported')
+        if uom == 'PCE':  # Machinery and Component
+            return _('COMP')
+        if start in 'PR':  # Waste
+            return _('REC')
+        if start in 'AB':  # Raw materials
+            return _('MP')
+        if end == 'X':  # Production (MX)
+            return _('PT')
+        return _('IT')  # Reselled (IT)
 
     # Override for MX report (was different)
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
@@ -93,8 +91,9 @@ class ResCompany(osv.osv):
 
             u'Manual', u'Tiempo de Entrega', u'Promedio Kg/Dia',
 
-            u'Nivel Minimo Dias', u'Nivel Minimo Mes',
-            u'Nivel Maximo Dia', u'Nivel Maximo Mes',
+            u'Nivel Minimo Dias', u'Nivel Minimo Kg.',
+            u'Nivel Maximo Dia', u'Nivel Maximo Kg.',
+            u'Contipaq', u'Status',
             ]
 
         width = [
@@ -104,6 +103,7 @@ class ResCompany(osv.osv):
             5, 15, 15,
             15, 15,
             15, 15,
+            15, 10,
             ]
 
         # ---------------------------------------------------------------------
@@ -171,6 +171,15 @@ class ResCompany(osv.osv):
                 if default_code.startswith('SER'):
                     continue
 
+                account_qty = int(product.accounting_qty)
+                min_stock_level = int(product.min_stock_level)
+                if account_qty < min_stock_level:
+                    state = _('Under level')
+                elif account_qty < 0:
+                    state = _('Negative')
+                else:
+                    state = _('OK')
+
                 line = [
                     self.get_type(product.default_code, product.uom_id.name),
                     default_code or '',
@@ -185,10 +194,12 @@ class ResCompany(osv.osv):
                     (int(product.medium_stock_qty), excel_format['right']),
 
                     (product.day_min_level, excel_format['right']),
-                    (int(product.min_stock_level), excel_format['right']),
+                    (min_stock_level, excel_format['right']),
 
                     (product.day_max_level, excel_format['right']),
+
                     (int(product.max_stock_level), excel_format['right']),
+                    state,
                     ]
 
                 excel_pool.write_xls_line(
@@ -197,13 +208,3 @@ class ResCompany(osv.osv):
         return excel_pool.return_attachment(
             cr, uid, 'Livelli prodotto MX', 'stock_level_MX.xlsx',
             version='7.0', php=True, context=context)
-
-    '''
-    def update_product_level_from_production(self, cr, uid, ids, context=None):
-        """ Button from company
-        """
-        return self.pool.get('mrp.production.workcenter.line'
-            ).update_product_level_from_production(
-                cr, uid, ids, context=context)
-                '''
-

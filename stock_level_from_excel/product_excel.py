@@ -162,14 +162,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                   SUBSTRING (default_code, 1, 3) NOT IN ('OLD', 'SER');
         ''')
         product_ids = [record[0] for record in cr.fetchall()]
-        """
-        product_ids = product_pool.search(cr, uid, [
-            '|', '|', '|'
-            ('default_code', '=ilike', 'R%'),
-            ('default_code', '=ilike', 'H%'),
-            ('default_code', '=ilike', 'X%'),
-            # ('default_code', 'not =ilike', '%X'),
-            ], context=context)"""
 
         _logger.warning('Imported product #%s [%s - %s]' % (
             len(product_ids),
@@ -256,18 +248,21 @@ class MrpProductionWorkcenterLine(osv.osv):
                 _logger.info(
                     'Update product with level: %s' % product.default_code)
 
+            """
             if default_code[0] in 'RP':
                 day_min_level = 30
                 day_max_level = 37
             else:
                 day_min_level = 60
                 day_max_level = 67
+                """
 
             product_pool.write(cr, uid, [product.id], {
                 'medium_stock_qty': medium_stock_qty,
+
                 # TODO Force different values?
-                'day_min_level': day_min_level,
-                'day_max_level': day_max_level,
+                # 'day_min_level': day_min_level,
+                # 'day_max_level': day_max_level,
                 'product_imported': True,
 
                 'min_stock_level':

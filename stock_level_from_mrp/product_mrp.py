@@ -109,19 +109,19 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'medium_stock_qty': medium_stock_qty,
                 'min_stock_level':
                     product.day_min_level * medium_stock_qty,
-                    # product_pool.round_interger_order(
+                    # product_pool.round_integer_order(
                     #    product.day_min_level * medium_stock_qty,
                     #    approx=product.approx_integer,
                     #    mode=product.approx_mode),
                 'max_stock_level':
                     product.day_max_level * medium_stock_qty,
-                    # product_pool.round_interger_order(
+                    # product_pool.round_integer_order(
                     #    product.day_max_level * medium_stock_qty,
                     #    approx=product.approx_integer,
                     #    mode=product.approx_mode),
                 'ready_stock_level':
                     product.day_max_ready_level * medium_stock_qty,
-                    # product_pool.round_interger_order(
+                    # product_pool.round_integer_order(
                     #    product.day_max_ready_level * medium_stock_qty,
                     #    approx=product.approx_integer,
                     #    mode=product.approx_mode),
