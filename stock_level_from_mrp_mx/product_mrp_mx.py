@@ -162,7 +162,7 @@ class ResCompany(osv.osv):
             # TODO add also package data!!!
             row += 1
             for product in sorted(products, key=lambda x: (
-                    self.get_type(x.default_code),
+                    self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
                 # Filter code:
                 default_code = product.default_code
