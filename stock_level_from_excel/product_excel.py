@@ -161,7 +161,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                       'O', 'P', 'R', 'S', 'X') AND 
                   SUBSTRING (default_code, 1, 3) NOT IN ('OLD', 'SER');
         ''')
-        product_ids = [record['id'] for record in cr.fetchall()]
+        product_ids = [record[0] for record in cr.fetchall()]
         """
         product_ids = product_pool.search(cr, uid, [
             '|', '|', '|'
