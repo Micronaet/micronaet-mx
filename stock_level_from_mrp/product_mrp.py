@@ -138,30 +138,6 @@ class ResCompany(osv.osv):
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
         """ Extract current report stock level
         """
-        def get_type(code, uom):
-            """ Extract type from code
-            """
-            code = (code or '').strip().upper()
-            uom = (uom or '').upper()
-
-            if not code:
-                return _('Not assigned')
-
-            start = code[0]
-            end = code[-1]
-
-            if uom == 'PCE':
-                return _('Component / Machinery')
-            if start in 'PR':
-                return _('Waste')
-            if start in 'AB':
-                return _('Raw material')
-            if start in 'AB':
-                return _('Raw material')
-            if end == 'X':
-                return _('MX production')
-            return _('IT production')
-
         # Pool used:
         excel_pool = self.pool.get('excel.writer')
         product_pool = self.pool.get('product.product')
@@ -171,7 +147,6 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         # Setup:
         header = [
-            'Tipo',
             'Codice', 'Descrizione', 'UM',
             'Appr.', 'Mod.',
             'Min Gest.', 'Max Gest.',
@@ -184,7 +159,6 @@ class ResCompany(osv.osv):
             ]
 
         width = [
-            20,
             15, 25, 5,
             6, 6,
             12, 12,
@@ -252,7 +226,6 @@ class ResCompany(osv.osv):
             row += 1
             for product in sorted(product, key=lambda x: x.default_code):
                 line = [
-                    get_type(product.default_code, product.uom_id.name),
                     product.default_code or '',
                     product.name or '',
                     product.uom_id.name or '',

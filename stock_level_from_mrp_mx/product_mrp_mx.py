@@ -49,6 +49,30 @@ class ResCompany(osv.osv):
 
     _inherit = 'res.company'
 
+    def get_type(self, code, uom):
+        """ Extract type from code
+        """
+        code = (code or '').strip().upper()
+        uom = (uom or '').upper()
+
+        if not code:
+            return _('Not assigned')
+
+        start = code[0]
+        end = code[-1]
+
+        if uom == 'PCE':
+            return _('Component / Machinery')
+        if start in 'PR':
+            return _('Waste')
+        if start in 'AB':
+            return _('Raw material')
+        if start in 'AB':
+            return _('Raw material')
+        if end == 'X':
+            return _('MX production')
+        return _('IT production')
+
     # Override for MX report (was different)
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
         """ Extract current report stock level
@@ -62,6 +86,8 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         # Setup:
         header = [
+            u'Tipo',
+
             u'Codigo', u'Descripcion', u'UM',
             u'Appr.', u'Mod.',
 
@@ -142,6 +168,7 @@ class ResCompany(osv.osv):
                 #    continue
 
                 line = [
+                    self.get_type(product.default_code, product.uom_id.name),
                     default_code or '',
                     product.name or '',
                     product.uom_id.name or '',
