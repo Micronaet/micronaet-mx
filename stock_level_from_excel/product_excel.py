@@ -154,9 +154,10 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A1. Search product marketed:
         product_ids = product_pool.search(cr, uid, [
-            '|',
+            '|', '|',
             ('default_code', '=ilike', 'R%'),
             ('default_code', '=ilike', 'S%'),
+            ('default_code', '=ilike', 'H%'),
             # ('default_code', 'not =ilike', '%X'),
             ], context=context)
 
