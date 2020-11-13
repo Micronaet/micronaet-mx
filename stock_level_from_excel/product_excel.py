@@ -245,11 +245,18 @@ class MrpProductionWorkcenterLine(osv.osv):
                 _logger.info(
                     'Update product with level: %s' % product.default_code)
 
+            if default_code[0] in 'RP':
+                day_min_level = 30
+                day_max_level = 37
+            else:
+                day_min_level = 60
+                day_max_level = 67
+
             product_pool.write(cr, uid, [product.id], {
                 'medium_stock_qty': medium_stock_qty,
                 # TODO Force different values?
-                'day_min_level': 60,
-                'day_max_level': 37,
+                'day_min_level': day_min_level,
+                'day_max_level': day_max_level,
                 'product_imported': True,
 
                 'min_stock_level':
