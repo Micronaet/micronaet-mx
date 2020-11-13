@@ -153,13 +153,23 @@ class MrpProductionWorkcenterLine(osv.osv):
              DEFAULT_SERVER_DATE_FORMAT)
 
         # A1. Search product marketed:
+        cr.execute('''
+            SELECT id from product_product 
+            WHERE default_code is not null AND
+                  SUBSTRING (default_code, 1, 1) IN (
+                      'D', 'E', 'F', 'G', 'H', 'L', 'M', 
+                      'O', 'P', 'R', 'S', 'X') AND 
+                  SUBSTRING (default_code, 1, 3) NOT IN ('OLD', 'SER');
+        ''')
+        product_ids = [record['id'] for record in cr.fetchall()]
+        """
         product_ids = product_pool.search(cr, uid, [
-            '|', '|',
+            '|', '|', '|'
             ('default_code', '=ilike', 'R%'),
-            ('default_code', '=ilike', 'S%'),
             ('default_code', '=ilike', 'H%'),
+            ('default_code', '=ilike', 'X%'),
             # ('default_code', 'not =ilike', '%X'),
-            ], context=context)
+            ], context=context)"""
 
         _logger.warning('Imported product #%s [%s - %s]' % (
             len(product_ids),
