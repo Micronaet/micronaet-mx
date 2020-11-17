@@ -124,13 +124,12 @@ class MrpProductionWorkcenterLine(osv.osv):
         sheet_name = 'BASE'
 
         # Dynamic parameters:
-        # company_ids = company_pool.search(cr, uid, [], context=context)
-        # company = company_pool.browse(
-        #    cr, uid, company_ids, context=context)[0]
-        # stock_level_external_excel = os.path.expanduser(
-        #     company.stock_level_external_excel or '')
-        # stock_level_days = company.stock_level_days
-        stock_level_days = 730  # TODO manage different from MRP stock level?
+        company_ids = company_pool.search(cr, uid, [], context=context)
+        company = company_pool.browse(
+           cr, uid, company_ids, context=context)[0]
+        stock_level_days = company.stock_level_mm_days
+        # TODO use it:
+        stock_level_obsolete_days = company.stock_level_obsolete_days
 
         # Generate file:
         dropbox_link = context.get('dropbox_link')
@@ -147,9 +146,12 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         now = datetime.now()
         from_date = now - timedelta(days=stock_level_days)
+        from_obsolete_date = now - timedelta(days=stock_level_days)
         now_text = '%s 00:00:00' % now.strftime(
              DEFAULT_SERVER_DATE_FORMAT)
         from_text = '%s 00:00:00' % from_date.strftime(
+             DEFAULT_SERVER_DATE_FORMAT)
+        from_obsolete_text = '%s 00:00:00' % from_obsolete_date.strftime(
              DEFAULT_SERVER_DATE_FORMAT)
 
         # A1. Search product marketed:
@@ -171,9 +173,14 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A2. Prepare dict for medium
         product_medium = {}
+        product_obsolete = {}
         for product in product_pool.browse(
                 cr, uid, product_ids, context=context):
+
             default_code = product.default_code
+            if default_code not in product_obsolete:
+                product_obsolete[default_code] = True
+
             if default_code.endswith('X'):
                 continue
             if default_code in product_medium:
@@ -224,6 +231,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                     ))
                 continue
 
+            if date > from_obsolete_text:  # Not obsolete:
+                product_obsolete[default_code] = False
+
             product_medium[default_code][0] += qty
             _logger.info('%s. Line used %s - %s' % (
                 row + 1,
@@ -259,6 +269,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             product_pool.write(cr, uid, [product.id], {
                 'medium_stock_qty': medium_stock_qty,
+                'stock_obsolete':  product_obsolete[default_code],
 
                 # TODO Force different values?
                 # 'day_min_level': day_min_level,
