@@ -62,14 +62,14 @@ class ResCompany(osv.osv):
         end = code[-1]
 
         if uom == 'PCE':  # Machinery and Component
-            return _('COMP')
+            return 'COMP'
         if start in 'PR':  # Waste
-            return _('REC')
+            return 'REC'
         if start in 'AB':  # Raw materials
-            return _('MP')
+            return 'MP'
         if end == 'X':  # Production (MX)
-            return _('PT')
-        return _('IT')  # Re-sold (IT)
+            return 'PT'
+        return 'IT'  # Re-sold (IT)
 
     # Override for MX report (was different)
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
@@ -118,12 +118,13 @@ class ResCompany(osv.osv):
                 ('manual_stock_level', '=', True),
                 # ('min_stock_level', '>', 0),
                 ]),
-            ('Non presenti', [
+            ('Non presenti', [  # Not change the ws_name
                 ('min_stock_level', '<=', 0),
                 ]),
             )
         # Create all pages:
         excel_format = {}
+        removed_ids = []
         for ws_name, product_filter in ws_list:
             excel_pool.create_worksheet(name=ws_name)
 
@@ -157,6 +158,10 @@ class ResCompany(osv.osv):
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
+            if ws_name == 'Non presenti' and removed_ids:
+                # Add also removed from other loop
+                product_ids = tuple(set(product_ids).union(set(removed_ids)))
+
             products = product_pool.browse(
                 cr, uid, product_ids,
                 context=context)
@@ -168,9 +173,12 @@ class ResCompany(osv.osv):
                     x.default_code)):
                 # Filter code:
                 default_code = product.default_code
+                product_type = self.get_type(
+                    product.default_code, product.uom_id.name)
 
-                # Clean some code:
-                if default_code.startswith('SER'):
+                # Remove REC and SER product (go in last page):
+                if product_type == 'REC' or default_code.startswith('SER'):
+                    removed_ids.append(product.id)
                     continue
 
                 account_qty = int(product.accounting_qty)
@@ -183,7 +191,7 @@ class ResCompany(osv.osv):
                     state = _('OK')
 
                 line = [
-                    self.get_type(product.default_code, product.uom_id.name),
+                    product_type,
                     default_code or '',
                     product.name or '',
                     product.uom_id.name or '',
@@ -193,10 +201,10 @@ class ResCompany(osv.osv):
 
                     (product.manual_stock_level or '', excel_format['right']),
                     product.day_leadtime or '',
-                    (int(product.medium_stock_qty), excel_format['right']),
+                    (product.medium_stock_qty, excel_format['number']),
 
                     (product.day_min_level, excel_format['right']),
-                    (min_stock_level, excel_format['right']),
+                    (int(min_stock_level), excel_format['right']),
 
                     (product.day_max_level, excel_format['right']),
                     (int(product.max_stock_level), excel_format['right']),

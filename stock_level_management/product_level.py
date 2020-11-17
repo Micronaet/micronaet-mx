@@ -72,7 +72,7 @@ class ProductProduct(osv.osv):
             manual_stock_level, day_max_level, medium_stock_qty, context=None):
         """ Onchange recalculate medium data for max
         """
-        res = {}
+        res = {'value': {}}
         if manual_stock_level:
             return res  # Nothing todo
         res['value']['max_stock_level'] = day_max_level * medium_stock_qty
@@ -83,7 +83,7 @@ class ProductProduct(osv.osv):
             manual_stock_level, day_min_level, medium_stock_qty, context=None):
         """ Onchange recalculate medium data for min
         """
-        res = {}
+        res = {'value': {}}
         if manual_stock_level:
             return res  # Nothing todo
         res['value']['min_stock_level'] = day_min_level * medium_stock_qty

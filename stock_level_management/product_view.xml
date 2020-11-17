@@ -64,10 +64,10 @@
                             <separator string="Stock period:" colspan="2" attrs="{'invisible': [('manual_stock_level','=',True)]}"/>
                             <separator string="Stock level:" colspan="2" />
                             <field name="day_min_level" on_change="onchange_min_level(manual_stock_level, day_min_level, medium_stock_qty)" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
-                            <field name="min_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+                            <field name="min_stock_level" /> <!--attrs="{'readonly': [('manual_stock_level','=',False)]}"-->
 
                             <field name="day_max_level" on_change="onchange_max_level(manual_stock_level, day_max_level, medium_stock_qty)" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
-                            <field name="max_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+                            <field name="max_stock_level" /> <!--attrs="{'readonly': [('manual_stock_level','=',False)]}"-->
 
                             <field name="day_max_ready_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" groups="stock_level_management.group_stock_level_max_ready"/>
                             <field name="ready_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}" groups="stock_level_management.group_stock_level_max_ready"/>
