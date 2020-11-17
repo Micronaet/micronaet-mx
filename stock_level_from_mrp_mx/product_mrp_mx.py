@@ -69,7 +69,7 @@ class ResCompany(osv.osv):
             return _('MP')
         if end == 'X':  # Production (MX)
             return _('PT')
-        return _('IT')  # Reselled (IT)
+        return _('IT')  # Re-sold (IT)
 
     # Override for MX report (was different)
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):

@@ -7,7 +7,7 @@
             <field name="model">product.product</field>
             <field name="priority" eval="40" />
             <field name="arch" type="xml">
-                <tree string="Product stock level" colors="grey:manual_stock_level==True;red:min_stock_level==0">        
+                <tree string="Product stock level" colors="grey:manual_stock_level==True;red:min_stock_level==0">
 	                <field name="default_code" />
 	                <field name="name" />
 	                <field name="uom_id" string="UM" />
@@ -24,8 +24,8 @@
                     <field name="day_max_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
                     <field name="max_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
 
-                    <field name="day_max_ready_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
-                    <field name="ready_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
+                    <field name="day_max_ready_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" groups="stock_level_management.group_stock_level_max_ready"/>
+                    <field name="ready_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}" groups="stock_level_management.group_stock_level_max_ready"/>
 
 	                <field name="state" invisible="1"/>
 	                <field name="company_id" invisible="1" modifiers="{'invisible': true, 'tree_invisible': true}"/>
@@ -52,7 +52,7 @@
                         <group col="4" colspan="4">
                             <field name="manual_stock_level" />
                             <newline/>
-                            
+
                             <field name="day_leadtime" />
                             <field name="medium_stock_qty" readonly="1"/>
 
@@ -71,17 +71,17 @@
 
                             <field name="day_max_ready_level" attrs="{'invisible': [('manual_stock_level','=',True)]}" />
                             <field name="ready_stock_level" attrs="{'readonly': [('manual_stock_level','=',False)]}"/>
-                        </group>    
+                        </group>
                     </page>
                 </xpath>
             </field>
         </record>
-        
-        <menuitem 
-            parent="product.menu_products" 
-            id="menu_action_product_product_stock_level" 
+
+        <menuitem
+            parent="product.menu_products"
+            id="menu_action_product_product_stock_level"
             action="action_product_product_stock_level"
             />
-        
+
     </data>
 </openerp>
