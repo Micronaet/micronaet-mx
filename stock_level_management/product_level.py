@@ -67,6 +67,28 @@ class ProductProduct(osv.osv):
     """
     _inherit = 'product.product'
 
+    def onchange_max_level(
+            self, cr, uid, ids,
+            manual_stock_level, day_max_level, medium_stock_qty, context=None):
+        """ Onchange recalculate medium data for max
+        """
+        res = {}
+        if manual_stock_level:
+            return res  # Nothing todo
+        res['value']['max_stock_level'] = day_max_level * medium_stock_qty
+        return res
+
+    def onchange_min_level(
+            self, cr, uid, ids,
+            manual_stock_level, day_min_level, medium_stock_qty, context=None):
+        """ Onchange recalculate medium data for min
+        """
+        res = {}
+        if manual_stock_level:
+            return res  # Nothing todo
+        res['value']['min_stock_level'] = day_min_level * medium_stock_qty
+        return res
+
     def round_interger_order(self, number, approx=1, mode='over'):
         """ Approx function for order quantity:
             Approx number to value approx (integer > 1)
