@@ -113,6 +113,11 @@ class ProductProduct(osv.osv):
             return number
 
     _columns = {
+        'stock_obsolete': fields.boolean(
+            'Stock obsolete',
+            help='Product that has no stock movement from X month '
+                 '(see parameter), or not produced from X month'),
+
         'manual_stock_level': fields.boolean(
             'Manual stock level',
             help='Manual has fixed q., not manual will be updated automatic'),

@@ -51,7 +51,7 @@
                     <page string="Stock level">
                         <group col="4" colspan="4">
                             <field name="manual_stock_level" />
-                            <newline/>
+                            <field name="stock_obsolete" />
 
                             <field name="day_leadtime" />
                             <field name="medium_stock_qty" readonly="1"/>

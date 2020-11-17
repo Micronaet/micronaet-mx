@@ -39,6 +39,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
     DATETIME_FORMATS_MAP,
     float_compare)
+import pdb
 
 _logger = logging.getLogger(__name__)
 
@@ -131,7 +132,7 @@ class ResCompany(osv.osv):
             excel_pool.column_width(ws_name, width)
             # excel_pool.row_height(ws_name, row_list, height=10)
             excel_pool.freeze_panes(ws_name, 1, 2)
-            excel_pool.column_hidden(ws_name, [4, 5])
+            excel_pool.column_hidden(ws_name, [4, 5, 8])
 
             # -----------------------------------------------------------------
             # Generate format used (first time only):
@@ -160,7 +161,7 @@ class ResCompany(osv.osv):
 
             if ws_name == 'Non presenti' and removed_ids:
                 # Add also removed from other loop
-                product_ids = tuple(set(product_ids).union(set(removed_ids)))
+                product_ids = list(set(product_ids).union(set(removed_ids)))
 
             products = product_pool.browse(
                 cr, uid, product_ids,
@@ -177,7 +178,8 @@ class ResCompany(osv.osv):
                     product.default_code, product.uom_id.name)
 
                 # Remove REC and SER product (go in last page):
-                if product_type == 'REC' or default_code.startswith('SER'):
+                if ws_name != 'Non presenti' and product_type == 'REC' or \
+                        default_code.startswith('SER'):
                     removed_ids.append(product.id)
                     continue
 
