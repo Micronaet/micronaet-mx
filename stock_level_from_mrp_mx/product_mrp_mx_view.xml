@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_res_company_level_params_form">
+            <field name="name">res.company.mx.extra.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="stock_level_from_mrp.view_res_company_level_params_form"/>
+            <field name="arch" type="xml">
+                 <field name="stock_level_mode" position="after">
+                    <field name="stock_level_mm_days" />
+                    <field name="stock_level_obsolete_days" />
+                 </field>
+            </field>
+        </record>
+    </data>
+</openerp>

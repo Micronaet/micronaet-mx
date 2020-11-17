@@ -263,6 +263,7 @@ class ResCompany(osv.osv):
         return self.pool.get('mrp.production.workcenter.line'
             ).update_product_level_from_production(
                 cr, uid, ids, context=context)
+
     _columns = {
         'stock_level_days': fields.integer(
             'Stock level days', help='Days for from data till today'),

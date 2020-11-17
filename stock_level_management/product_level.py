@@ -172,6 +172,6 @@ class ProductProduct(osv.osv):
         'approx_mode': lambda *x: 'over',
 
         'day_leadtime': lambda *x: 7,
-        'day_min_level': lambda *x: 10,
-        'day_max_level': lambda *x: 37,
+        'day_min_level': lambda *x: 30,
+        'day_max_level': lambda *x: 60,
         }
