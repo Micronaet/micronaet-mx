@@ -41,7 +41,6 @@
         'stock_level_from_mrp',
         ],
     'init_xml': [
-        'product_mrp_mx_view.xml',
     ],
     'demo': [],
     'data': [],

@@ -290,7 +290,20 @@ class ResCompany(osv.osv):
         'stock_level_external_excel': fields.char(
             'Stock movement file', size=100,
             help='Path for external XLSX file for stock movement',
-        )
+        ),
+
+        # Days management for stats:
+        'stock_level_mm_days': fields.integer(
+            'Stock level MM days', required=True,
+            help='Days for from data till today (period for stock movement'),
+        'stock_level_obsolete_days': fields.integer(
+            'Stock level obsolete days', required=True,
+            help='Days for from data till today (> consider product obsolete'),
+    }
+
+    _defaults = {
+        'stock_level_mm_days': lambda *x: 180,
+        'stock_level_obsolete_days': lambda *x: 90,
     }
 
 

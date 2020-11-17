@@ -41,7 +41,9 @@
         # 'excel_export',
         'stock_level_from_mrp_mx',
         ],
-    'init_xml': [],
+    'init_xml': [
+        'product_mrp_mx_view.xml',
+        ],
     'demo': [],
     'data': [],
     'active': False,

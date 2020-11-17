@@ -51,17 +51,6 @@ class ResCompany(osv.osv):
     _inherit = 'res.company'
 
     _columns = {
-        'stock_level_mm_days': fields.integer(
-            'Stock level MM days',
-            help='Days for from data till today (period for stock movement'),
-        'stock_level_obsolete_days': fields.integer(
-            'Stock level obsolete days',
-            help='Days for from data till today (> consider product obsolete'),
-    }
-
-    _defaults = {
-        'stock_level_mm_days': lambda *x: 180,
-        'stock_level_obsolete_days': lambda *x: 90,
     }
 
     def get_type(self, code, uom):
