@@ -97,7 +97,7 @@ class ResCompany(osv.osv):
 
             u'Nivel Minimo Dias', u'Nivel Minimo Kg.',
             u'Nivel Maximo Dia', u'Nivel Maximo Kg.',
-            u'Contipaq', u'Status',
+            u'Contipaq', u'Status', u'Obsolete',
             ]
 
         width = [
@@ -107,7 +107,7 @@ class ResCompany(osv.osv):
             5, 15, 15,
             15, 15,
             15, 15,
-            10, 10,
+            10, 10, 5,
             ]
 
         # ---------------------------------------------------------------------
@@ -216,6 +216,7 @@ class ResCompany(osv.osv):
 
                     (account_qty, excel_format['right']),
                     state,
+                    'X' if product.stock_obsolete else '',
                     ]
 
                 excel_pool.write_xls_line(
