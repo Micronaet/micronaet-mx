@@ -177,7 +177,10 @@ class MrpProductionWorkcenterLine(osv.osv):
         for product in product_pool.browse(
                 cr, uid, product_ids, context=context):
 
-            default_code = product.default_code
+            default_code = product.default_code or ''
+            if not default_code:
+                _logger.error('Product %s has no code' % product.name)
+
             if default_code not in product_obsolete:
                 product_obsolete[default_code] = True
 
