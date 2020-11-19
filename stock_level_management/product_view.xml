@@ -60,6 +60,7 @@
                             <field name="approx_integer" />
                             <field name="approx_mode" />
 
+                            <field name="medium_origin" />
 
                             <separator string="Stock period:" colspan="2" attrs="{'invisible': [('manual_stock_level','=',True)]}"/>
                             <separator string="Stock level:" colspan="2" />
