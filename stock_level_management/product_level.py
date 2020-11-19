@@ -167,6 +167,7 @@ class ProductProduct(osv.osv):
             help='Max q. for stock level when trigger the purchase order'),
 
         'medium_origin': fields.selection([
+            ('unknown', 'Unknown'),
             ('mrp', 'Production'),
             ('account', 'Account'),
             ], 'Medium origin'),
@@ -175,7 +176,7 @@ class ProductProduct(osv.osv):
     _defaults = {
         'approx_integer': lambda *x: 50,
         'approx_mode': lambda *x: 'over',
-        'medium_origin': lambda *x: 'mrp',
+        'medium_origin': lambda *x: 'unknown',
 
         'day_leadtime': lambda *x: 7,
         'day_min_level': lambda *x: 30,

@@ -50,7 +50,7 @@ class MrpProductionWorkcenterLine(osv.osv):
     _inherit = 'mrp.production.workcenter.line'
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
-        """ Update product level from production
+        """ Update product level from production (only raw materials)
         """
         product_pool = self.pool.get('product.product')
         company_pool = self.pool.get('res.company')
@@ -106,6 +106,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 medium_stock_qty = total / stock_level_days
 
             product_pool.write(cr, uid, [product.id], {
+                'medium_origin': 'mrp',
                 'medium_stock_qty': medium_stock_qty,
                 'min_stock_level':
                     product.day_min_level * medium_stock_qty,
