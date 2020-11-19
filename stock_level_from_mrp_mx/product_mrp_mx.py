@@ -177,6 +177,9 @@ class ResCompany(osv.osv):
                     x.default_code)):
                 # Filter code:
                 default_code = product.default_code
+                if not default_code:
+                    _logger.error('Product %s has no code' % product.name)
+                    continue
                 product_type = self.get_type(
                     product.default_code, product.uom_id.name)
 

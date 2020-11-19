@@ -180,6 +180,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             default_code = product.default_code
             if not default_code:
                 _logger.error('Product %s has no code' % product.name)
+                continue
 
             if default_code not in product_obsolete:
                 product_obsolete[default_code] = True
