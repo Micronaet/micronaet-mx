@@ -239,7 +239,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         """
         _logger.info('Updating medium from MRP (final product)')
         company_pool = self.pool.get('res.company')
-        load_pool = self.pool.get('mrp.production.workcenter.line')
+        load_pool = self.pool.get('mrp.production.workcenter.load')
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
