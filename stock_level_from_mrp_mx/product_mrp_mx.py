@@ -239,6 +239,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         """
         _logger.info('Updating medium from MRP (final product)')
         company_pool = self.pool.get('res.company')
+        load_pool = self.pool.get('mrp.production.workcenter.line')
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
@@ -258,7 +259,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         from_text = '%s 00:00:00' % from_date.strftime(
              DEFAULT_SERVER_DATE_FORMAT)
 
-        load_ids = self.search(cr, uid, [
+        load_ids = load_pool.search(cr, uid, [
             ('date', '>=', from_text),
             ('date', '<', now_text),
             ('recycle', '=', False),
@@ -270,7 +271,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             ))
 
         product_medium = {}
-        for load in self.browse(
+        for load in load_pool.browse(
                 cr, uid, load_ids, context=context):
 
             # -----------------------------------------------------------------
