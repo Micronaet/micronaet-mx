@@ -165,11 +165,17 @@ class ProductProduct(osv.osv):
         'ready_stock_level': fields.float(
             'Max stock level ready', digits=(16, 4),
             help='Max q. for stock level when trigger the purchase order'),
+
+        'medium_origin': fields.selection([
+            ('mrp', 'Production'),
+            ('account', 'Account'),
+            ], 'Medium origin'),
         }
 
     _defaults = {
         'approx_integer': lambda *x: 50,
         'approx_mode': lambda *x: 'over',
+        'medium_origin': lambda *x: 'mrp',
 
         'day_leadtime': lambda *x: 7,
         'day_min_level': lambda *x: 30,
