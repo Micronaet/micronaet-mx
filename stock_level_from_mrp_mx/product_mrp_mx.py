@@ -292,7 +292,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             # -----------------------------------------------------------------
             # Package:
             # -----------------------------------------------------------------
-            product = load.package_id
+            product = load.package_id.linked_product_id
             quantity = load.ul_qty
             if product and quantity:
                 if product in product_medium:
