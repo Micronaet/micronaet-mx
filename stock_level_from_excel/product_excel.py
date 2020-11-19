@@ -103,7 +103,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             # _logger.warning(' ' * 70 + '>>>>>> From %s to %s' % (value, res))
             return res
 
-        _logger.info('Update marketed product medium')
+        _logger.info('Update marketed product medium (from Excel)')
         product_pool = self.pool.get('product.product')
         company_pool = self.pool.get('res.company')
 
@@ -268,6 +268,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 """
 
             product_pool.write(cr, uid, [product.id], {
+                'medium_origin': 'accounting',
                 'medium_stock_qty': medium_stock_qty,
                 'stock_obsolete':  product_obsolete[default_code],
 

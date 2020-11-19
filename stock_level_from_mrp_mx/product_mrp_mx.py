@@ -225,3 +225,95 @@ class ResCompany(osv.osv):
         return excel_pool.return_attachment(
             cr, uid, 'Livelli prodotto MX', 'stock_level_MX.xlsx',
             version='7.0', php=True, context=context)
+
+
+class MrpProductionWorkcenterLineOverride(osv.osv):
+    """ Model name: Override for add product in calc of medium
+    """
+
+    _inherit = 'mrp.production.workcenter.line'
+
+    # Override to medium also product and packages:
+    def update_product_level_from_production(self, cr, uid, ids, context=None):
+        """ Update product level from production (this time also product)
+        """
+        _logger.info('Updating medium from MRP (final product)')
+        company_pool = self.pool.get('res.company')
+
+        # Get parameters:
+        company_ids = company_pool.search(cr, uid, [], context=context)
+        company = company_pool.browse(
+            cr, uid, company_ids, context=context)[0]
+        stock_level_days = company.stock_level_days
+        if not stock_level_days:
+            raise osv.except_osv(
+                _('Error stock management'),
+                _('Setup the parameter in company form'),
+                )
+
+        now = datetime.now()
+        from_date = now - timedelta(days=stock_level_days)
+        now_text = '%s 00:00:00' % now.strftime(
+             DEFAULT_SERVER_DATE_FORMAT)
+        from_text = '%s 00:00:00' % from_date.strftime(
+             DEFAULT_SERVER_DATE_FORMAT)
+
+        load_ids = self.search(cr, uid, [
+            ('date', '>=', from_text),
+            ('date', '<', now_text),
+            ('recycle', '=', False),
+            ], context=context)
+        _logger.warning('Load found: %s Period: [>=%s <%s]' % (
+            len(load_ids),
+            from_text,
+            now_text,
+            ))
+
+        product_medium = {}
+        for load in self.browse(
+                cr, uid, load_ids, context=context):
+
+            # -----------------------------------------------------------------
+            # Product:
+            # -----------------------------------------------------------------
+            product = load.mrp_id.product_id
+            quantity = load.product_qty
+            if product in product_medium:
+                product_medium[product] += quantity
+            else:
+                product_medium[product] = quantity
+
+            # -----------------------------------------------------------------
+            # Recycle:
+            # -----------------------------------------------------------------
+            # recycle_product_id  # TODO not used
+
+            # -----------------------------------------------------------------
+            # Package:
+            # -----------------------------------------------------------------
+            product = load.package_id
+            quantity = load.ul_qty
+            if product and quantity:
+                if product in product_medium:
+                    product_medium[product] += quantity
+                else:
+                    product_medium[product] = quantity
+
+            # -----------------------------------------------------------------
+            # Package:
+            # -----------------------------------------------------------------
+            product = load.pallet_product_id
+            quantity = load.pallet_qty
+            if product and quantity:
+                if product in product_medium:
+                    product_medium[product] += quantity
+                else:
+                    product_medium[product] = quantity
+
+        # Update medium in product:
+        self.update_product_medium_from_dict(
+            cr, uid, product_medium, stock_level_days, context=context)
+
+        # Call original method for raw materials:
+        return super(MrpProductionWorkcenterLineOverride, self).\
+            update_product_level_from_production(cr, uid, ids, context=context)

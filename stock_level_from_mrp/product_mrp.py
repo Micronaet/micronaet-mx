@@ -49,10 +49,49 @@ class MrpProductionWorkcenterLine(osv.osv):
 
     _inherit = 'mrp.production.workcenter.line'
 
+    def update_product_medium_from_dict(
+            self, cr, uid, product_medium, stock_level_days, context=None):
+        """" Upload product with dictionary loaded:
+        """
+        product_pool = self.pool.get('product.product')
+        _logger.warning('Product found: %s' % len(product_medium))
+        for product in product_medium:
+            total = product_medium[product]
+            if product.manual_stock_level:
+                continue
+
+            if not total:
+                medium_stock_qty = 0.0
+            else:
+                medium_stock_qty = total / stock_level_days
+
+            product_pool.write(cr, uid, [product.id], {
+                'medium_origin': 'mrp',
+                'medium_stock_qty': medium_stock_qty,
+                'min_stock_level':
+                    product.day_min_level * medium_stock_qty,
+                # product_pool.round_integer_order(
+                #    product.day_min_level * medium_stock_qty,
+                #    approx=product.approx_integer,
+                #    mode=product.approx_mode),
+                'max_stock_level':
+                    product.day_max_level * medium_stock_qty,
+                # product_pool.round_integer_order(
+                #    product.day_max_level * medium_stock_qty,
+                #    approx=product.approx_integer,
+                #    mode=product.approx_mode),
+                'ready_stock_level':
+                    product.day_max_ready_level * medium_stock_qty,
+                # product_pool.round_integer_order(
+                #    product.day_max_ready_level * medium_stock_qty,
+                #    approx=product.approx_integer,
+                #    mode=product.approx_mode),
+            }, context=context)
+
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production (only raw materials)
         """
-        product_pool = self.pool.get('product.product')
+        _logger.info('Updating medium from MRP (raw material)')
         company_pool = self.pool.get('res.company')
 
         # Get parameters:
@@ -77,7 +116,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             ('real_date_planned', '>=', from_text),
             ('real_date_planned', '<', now_text),
             ], context=context)
-        _logger.warning('Lavoration found: %s Period: [>=%s <%s]' % (
+        _logger.warning('Job found: %s Period: [>=%s <%s]' % (
             len(lavoration_ids),
             from_text,
             now_text,
@@ -94,40 +133,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 else:
                     product_medium[product] = quantity
 
-        _logger.warning('Product found: %s' % len(product_medium))
-        for product in product_medium:
-            total = product_medium[product]
-            if product.manual_stock_level:
-                continue
-
-            if not total:
-                medium_stock_qty = 0.0
-            else:
-                medium_stock_qty = total / stock_level_days
-
-            product_pool.write(cr, uid, [product.id], {
-                'medium_origin': 'mrp',
-                'medium_stock_qty': medium_stock_qty,
-                'min_stock_level':
-                    product.day_min_level * medium_stock_qty,
-                    # product_pool.round_integer_order(
-                    #    product.day_min_level * medium_stock_qty,
-                    #    approx=product.approx_integer,
-                    #    mode=product.approx_mode),
-                'max_stock_level':
-                    product.day_max_level * medium_stock_qty,
-                    # product_pool.round_integer_order(
-                    #    product.day_max_level * medium_stock_qty,
-                    #    approx=product.approx_integer,
-                    #    mode=product.approx_mode),
-                'ready_stock_level':
-                    product.day_max_ready_level * medium_stock_qty,
-                    # product_pool.round_integer_order(
-                    #    product.day_max_ready_level * medium_stock_qty,
-                    #    approx=product.approx_integer,
-                    #    mode=product.approx_mode),
-                }, context=context)
-        return True
+        return self.update_product_medium_from_dict(
+            cr, uid, product_medium, stock_level_days, context=context)
 
 
 class ResCompany(osv.osv):

@@ -169,7 +169,7 @@ class ProductProduct(osv.osv):
         'medium_origin': fields.selection([
             ('unknown', 'Unknown'),
             ('mrp', 'Production'),
-            ('account', 'Account'),
+            ('accounting', 'Accounting'),
             ], 'Medium origin'),
         }
 
