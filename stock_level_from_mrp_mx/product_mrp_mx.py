@@ -277,7 +277,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             # -----------------------------------------------------------------
             # Product:
             # -----------------------------------------------------------------
-            product = load.mrp_id.product_id
+            product = load.product_id  # production_id.product_id
             quantity = load.product_qty
             if product in product_medium:
                 product_medium[product] += quantity

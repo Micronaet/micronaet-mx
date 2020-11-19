@@ -22,7 +22,7 @@
 ###############################################################################
 
 {
-    'name': 'Stock level from MRP for MX',
+    'name': 'Stock level from MRP for MX (Excel stock move)',
     'version': '0.1',
     'category': 'Stock',
     'description': '''
