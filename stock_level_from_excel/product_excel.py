@@ -217,8 +217,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                 continue
 
             default_code = ws.cell(row, columns_position['default_code']).value
-            if default_code == 'S0039M':
-                print(row)
             if not(start and date and default_code in product_medium):
                 _logger.info(
                     '%s. Line not used (no start or no product watched: %s' % (
@@ -251,8 +249,6 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.warning('Product found: %s' % len(product_medium))
 
         for default_code in product_medium:
-            if default_code == 'S0039M':
-                pdb.set_trace()
             total, product = product_medium[default_code]
             if product.manual_stock_level:
                 continue
