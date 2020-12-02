@@ -14,8 +14,8 @@
                             <button name="update_product_level_from_production" string="Update" type="object" colspan="1" class="oe_highlight"/>
                             <field name="stock_level_days" />
                             <field name="stock_level_mode" />
-                            <field name="mrp_stock_level_mp" />
-                            <field name="mrp_stock_level_pf" />
+                            <!--<field name="mrp_stock_level_mp" />
+                            <field name="mrp_stock_level_pf" />-->
                         </group>
                     </page>
                 </xpath>
