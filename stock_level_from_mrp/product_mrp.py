@@ -68,6 +68,8 @@ class MrpProductionWorkcenterLine(osv.osv):
             context=None):
         """" Upload product with dictionary loaded:
         """
+        # TODO Not used for now:
+        product_obsolete = {}
         product_pool = self.pool.get('product.product')
         _logger.warning('Product found: %s' % len(product_medium))
         for product in product_medium:
