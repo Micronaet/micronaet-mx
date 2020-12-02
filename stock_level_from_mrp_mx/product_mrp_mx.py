@@ -144,6 +144,8 @@ class ResCompany(osv.osv):
                 excel_pool.set_format()
                 excel_format['title'] = excel_pool.get_format(key='title')
                 excel_format['header'] = excel_pool.get_format(key='header')
+                excel_format['header_wrap'] = excel_pool.get_format(
+                    key='header_wrap')
                 excel_format['text'] = excel_pool.get_format(key='text')
                 excel_format['right'] = excel_pool.get_format(key='text_right')
                 excel_format['number'] = excel_pool.get_format(key='number')
@@ -155,7 +157,7 @@ class ResCompany(osv.osv):
             excel_pool.write_xls_line(
                 ws_name, row, header, default_format=excel_format['header'])
             excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
-            excel_pool.row_height(ws_name, [row], height=20)
+            excel_pool.row_height(ws_name, [row], height=25)
 
             # -----------------------------------------------------------------
             # Product selection:
