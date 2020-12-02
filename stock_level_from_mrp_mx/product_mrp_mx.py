@@ -196,9 +196,9 @@ class ResCompany(osv.osv):
                 account_qty = int(product.accounting_qty)
                 min_stock_level = int(product.min_stock_level)
                 if account_qty < min_stock_level:
-                    state = _('Under level')
+                    state = _(u'Bajo Nivel')
                 elif account_qty < 0:
-                    state = _('Negative')
+                    state = _(u'Negativo')
                 else:
                     state = _('OK')
 
