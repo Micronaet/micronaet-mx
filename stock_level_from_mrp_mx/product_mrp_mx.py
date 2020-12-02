@@ -101,8 +101,8 @@ class ResCompany(osv.osv):
             ]
 
         width = [
-            18,
-            15, 25, 5,
+            10,
+            14, 28, 5,
             6, 9,
             5, 8, 8,
             8, 8,
@@ -141,7 +141,7 @@ class ResCompany(osv.osv):
             # Generate format used (first time only):
             # -----------------------------------------------------------------
             if not excel_format:
-                excel_pool.set_format()
+                excel_pool.set_format(header_size=10, text_size=10)
                 excel_format['title'] = excel_pool.get_format(key='title')
                 excel_format['header'] = excel_pool.get_format(key='header')
                 excel_format['header_wrap'] = excel_pool.get_format(
