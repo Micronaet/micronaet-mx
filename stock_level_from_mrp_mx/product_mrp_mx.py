@@ -113,16 +113,17 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         # Create WS:
         # ---------------------------------------------------------------------
+        ws_not_present = 'Obsoletos'
         ws_list = (
-            ('Livelli auto', [
+            ('ROP', [
                 ('manual_stock_level', '=', False),
                 ('medium_stock_qty', '>', 0),
                 ]),
-            ('Livelli manuali', [
+            ('Niveles Manuales', [
                 ('manual_stock_level', '=', True),
                 # ('min_stock_level', '>', 0),
                 ]),
-            ('Non presenti', [  # Not change the ws_name
+            (ws_not_present, [
                 ('min_stock_level', '<=', 0),
                 ]),
             )
@@ -182,7 +183,7 @@ class ResCompany(osv.osv):
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
-            if ws_name == 'Non presenti' and removed_ids:
+            if ws_name == ws_not_present and removed_ids:
                 # Add also removed from other loop
                 product_ids = list(set(product_ids).union(set(removed_ids)))
 
@@ -204,7 +205,7 @@ class ResCompany(osv.osv):
                     product.default_code, product.uom_id.name)
 
                 # Remove REC and SER product (go in last page):
-                if ws_name != 'Non presenti' and product_type == 'REC' or \
+                if ws_name != ws_not_present and product_type == 'REC' or \
                         default_code.startswith('SER'):
                     removed_ids.append(product.id)
                     continue
@@ -220,7 +221,6 @@ class ResCompany(osv.osv):
                 else:
                     state = _('OK')
                     color_format = excel_format['white']
-
 
                 line = [
                     product_type,
