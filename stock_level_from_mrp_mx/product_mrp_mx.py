@@ -263,6 +263,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
     # Override to medium also product and packages:
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production (this time also product)
+            MX Mode:
         """
         _logger.info('Updating medium from MRP (final product)')
         company_pool = self.pool.get('res.company')
@@ -278,33 +279,50 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 _('Error stock management'),
                 _('Setup the parameter in company form'),
                 )
+        # MRP stock level extra parameters:
+        mrp_stock_level_mp = company.mrp_stock_level_mp or stock_level_days
+        mrp_stock_level_pf = company.mrp_stock_level_pf or stock_level_days
+        # mrp_stock_level_force (for product)
 
         now = datetime.now()
-        from_date = now - timedelta(days=stock_level_days)
-        now_text = '%s 00:00:00' % now.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
-        from_text = '%s 00:00:00' % from_date.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
+        date_limit = {
+            # statistic period from keep MRP production:
+            'now': self.get_form_date(now, 0),
+            'mrp': self.get_form_date(now, stock_level_days),
+
+            'material': self.get_form_date(now, mrp_stock_level_mp),
+            'product': self.get_form_date(now, mrp_stock_level_pf),
+        }
+        # Update with particular product
+        self.get_product_stock_days_force(cr, uid, date_limit, context=context)
 
         load_ids = load_pool.search(cr, uid, [
-            ('date', '>=', from_text),
-            ('date', '<', now_text),
+            ('date', '>=', date_limit['mrp']),
+            ('date', '<', date_limit['now']),
             ('recycle', '=', False),
             ], context=context)
         _logger.warning('Load found: %s Period: [>=%s <%s]' % (
             len(load_ids),
-            from_text,
-            now_text,
+            date_limit['mrp'],
+            date_limit['now'],
             ))
 
+        product_obsolete = {}
         product_medium = {}
         for load in load_pool.browse(
                 cr, uid, load_ids, context=context):
+            date = load.date
 
             # -----------------------------------------------------------------
             # Product:
             # -----------------------------------------------------------------
             product = load.product_id  # production_id.product_id
+            if product not in product_obsolete:
+                product_obsolete[product] = True  # Default obsolete
+
+            # Check product obsolete (partic or default):
+            if date > date_limit.get(product, date_limit['product']):
+                product_obsolete[product] = False
             quantity = load.product_qty
             if product in product_medium:
                 product_medium[product] += quantity
@@ -320,6 +338,13 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             # Package:
             # -----------------------------------------------------------------
             product = load.package_id.linked_product_id
+            if product not in product_obsolete:
+                product_obsolete[product] = True  # Default obsolete
+
+            # Check product obsolete (partic. or default):
+            if date > date_limit.get(product, date_limit['product']):
+                product_obsolete[product] = False
+
             quantity = load.ul_qty
             if product and quantity:
                 if product in product_medium:
@@ -331,6 +356,13 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             # Package:
             # -----------------------------------------------------------------
             product = load.pallet_product_id
+            if product not in product_obsolete:
+                product_obsolete[product] = True  # Default obsolete
+
+            # Check product obsolete (partic. or default):
+            if date > date_limit.get(product, date_limit['product']):
+                product_obsolete[product] = False
+
             quantity = load.pallet_qty
             if product and quantity:
                 if product in product_medium:
@@ -340,7 +372,9 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
 
         # Update medium in product:
         self.update_product_medium_from_dict(
-            cr, uid, product_medium, stock_level_days, context=context)
+            cr, uid, product_medium, stock_level_days,
+            product_obsolete,  # manage obsolete in this function,
+            context=context)
 
         # Call original method for raw materials:
         return super(MrpProductionWorkcenterLineOverride, self).\

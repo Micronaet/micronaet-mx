@@ -49,8 +49,23 @@ class MrpProductionWorkcenterLine(osv.osv):
 
     _inherit = 'mrp.production.workcenter.line'
 
+    def get_product_stock_days_force(self, cr, uid, data, context=None):
+        """ Extract product if exist particularity for stock level days forced
+        """
+        now = datetime.now()
+        product_pool = self.pool.get('product.product')
+        product_ids = product_pool.search(cr, uid, [
+            ('mrp_stock_level_force', '>', 0),
+        ], context=context)
+        for product in product_pool.browse(
+                cr, uid, product_ids, context=context):
+            data[product] = self.get_form_date(
+                now, product.mrp_stock_level_force)
+        return True
+
     def update_product_medium_from_dict(
-            self, cr, uid, product_medium, stock_level_days, context=None):
+            self, cr, uid, product_medium, stock_level_days, product_obsolete,
+            context=None):
         """" Upload product with dictionary loaded:
         """
         product_pool = self.pool.get('product.product')
@@ -86,10 +101,18 @@ class MrpProductionWorkcenterLine(osv.osv):
                 #    product.day_max_ready_level * medium_stock_qty,
                 #    approx=product.approx_integer,
                 #    mode=product.approx_mode),
+                'stock_obsolete': product_obsolete.get(product, False),
             }, context=context)
+
+    def get_form_date(self, now, days):
+        """ Utility: Generate text date for evaluation
+        """
+        from_dt = now - timedelta(days=days)
+        return '%s 00:00:00' % from_dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production (only raw materials)
+            No obsolete management
         """
         _logger.info('Updating medium from MRP (raw material)')
         company_pool = self.pool.get('res.company')
@@ -105,28 +128,44 @@ class MrpProductionWorkcenterLine(osv.osv):
                 _('Setup the parameter in company form'),
                 )
 
-        now = datetime.now()
-        from_date = now - timedelta(days=stock_level_days)
-        now_text = '%s 00:00:00' % now.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
-        from_text = '%s 00:00:00' % from_date.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
+        # MRP stock level extra parameters:
+        mrp_stock_level_mp = company.mrp_stock_level_mp or stock_level_days
+        mrp_stock_level_pf = company.mrp_stock_level_pf or stock_level_days
 
-        lavoration_ids = self.search(cr, uid, [
-            ('real_date_planned', '>=', from_text),
-            ('real_date_planned', '<', now_text),
+        now = datetime.now()
+        date_limit = {
+            # statistic period from keep MRP production:
+            'now': self.get_form_date(now, 0),
+            'mrp': self.get_form_date(now, stock_level_days),
+
+            'material': self.get_form_date(now, mrp_stock_level_mp),
+            'product': self.get_form_date(now, mrp_stock_level_pf),
+        }
+        self.get_product_stock_days_force(cr, uid, date_limit, context=context)
+
+        job_ids = self.search(cr, uid, [
+            ('real_date_planned', '>=', date_limit['mrp']),
+            ('real_date_planned', '<', date_limit['now']),
             ], context=context)
         _logger.warning('Job found: %s Period: [>=%s <%s]' % (
-            len(lavoration_ids),
-            from_text,
-            now_text,
+            len(job_ids),
+            date_limit['mrp'],
+            date_limit['now'],
             ))
 
+        product_obsolete = {}
         product_medium = {}
-        for lavoration in self.browse(
-                cr, uid, lavoration_ids, context=context):
-            for material in lavoration.bom_material_ids:
+        for job in self.browse(cr, uid, job_ids, context=context):
+            date = job.real_date_planned
+            for material in job.bom_material_ids:
                 product = material.product_id
+                if product not in product_obsolete:
+                    product_obsolete[product] = True  # Default obsolete
+
+                # Check product obsolete (partic. or default):
+                if date > date_limit.get(product, date_limit['material']):
+                    product_obsolete[product] = False
+
                 quantity = material.quantity
                 if product in product_medium:
                     product_medium[product] += quantity
@@ -134,7 +173,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] = quantity
 
         return self.update_product_medium_from_dict(
-            cr, uid, product_medium, stock_level_days, context=context)
+            cr, uid, product_medium, stock_level_days,
+            product_obsolete, context=context)
 
 
 class ResCompany(osv.osv):
@@ -276,6 +316,14 @@ class ResCompany(osv.osv):
         'stock_level_days': fields.integer(
             'Stock level days', help='Days for from data till today'),
 
+        # Used only in MX:
+        'mrp_stock_level_mp': fields.integer(
+            'MRP MP obsolete',
+            help='Days to consider obsolete raw material'),
+        'mrp_stock_level_pf': fields.integer(
+            'MRP FP obsolete',
+            help='Days to consider obsolete final product'),
+
         # Manage mode?
         'stock_level_mode': fields.selection([
             ('medium', 'Medium'),
@@ -295,3 +343,9 @@ class ProductProduct(osv.osv):
     """
 
     _inherit = 'product.product'
+
+    _columns = {
+        'mrp_stock_level_force': fields.integer(
+            'MRP force obsolete',
+            help='Days to force default level in parameters'),
+        }
