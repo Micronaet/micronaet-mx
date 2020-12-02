@@ -155,7 +155,8 @@ class ResCompany(osv.osv):
             # -----------------------------------------------------------------
             row = 0
             excel_pool.write_xls_line(
-                ws_name, row, header, default_format=excel_format['header'])
+                ws_name, row, header,
+                default_format=excel_format['header_wrap'])
             excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
             excel_pool.row_height(ws_name, [row], height=25)
 
