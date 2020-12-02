@@ -113,6 +113,10 @@ class ProductProduct(osv.osv):
             return number
 
     _columns = {
+        'mrp_stock_level_force': fields.integer(
+            'MRP force obsolete',
+            help='Days to force default level in parameters'),
+
         'stock_obsolete': fields.boolean(
             'Stock obsolete',
             help='Product that has no stock movement from X month '

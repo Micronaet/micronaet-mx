@@ -338,14 +338,3 @@ class ResCompany(osv.osv):
         }
 
 
-class ProductProduct(osv.osv):
-    """ Model name: ProductProduct
-    """
-
-    _inherit = 'product.product'
-
-    _columns = {
-        'mrp_stock_level_force': fields.integer(
-            'MRP force obsolete',
-            help='Days to force default level in parameters'),
-        }
