@@ -97,7 +97,7 @@ class ResCompany(osv.osv):
 
             u'Nivel Minimo Dias', u'Nivel Minimo Kg.',
             u'Nivel Maximo Dia', u'Nivel Maximo Kg.',
-            u'Contipaq', u'Status', u'Obsolete',
+            u'Inventario actual', u'Status', u'Obsolete',
             ]
 
         width = [
