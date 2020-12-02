@@ -155,10 +155,10 @@ class ResCompany(osv.osv):
                     'right': excel_pool.get_format(key='text_right'),
                     'number': excel_pool.get_format(key='number'),
                 }
-                excel_format['yellow'] = {
-                    'text': excel_pool.get_format(key='bg_yellow'),
-                    'right': excel_pool.get_format(key='bg_yellow_right'),
-                    'number': excel_pool.get_format(key='bg_yellow_number'),
+                excel_format['orange'] = {
+                    'text': excel_pool.get_format(key='bg_orange'),
+                    'right': excel_pool.get_format(key='bg_orange_right'),
+                    'number': excel_pool.get_format(key='bg_orange_number'),
                 }
                 excel_format['red'] = {
                     'text': excel_pool.get_format(key='bg_red'),
@@ -213,7 +213,7 @@ class ResCompany(osv.osv):
                 min_stock_level = int(product.min_stock_level)
                 if account_qty < min_stock_level:
                     state = _(u'Bajo Nivel')
-                    color_format = excel_format['yellow']
+                    color_format = excel_format['orange']
                 elif account_qty < 0:
                     state = _(u'Negativo')
                     color_format = excel_format['red']
