@@ -150,6 +150,22 @@ class ResCompany(osv.osv):
                 excel_format['right'] = excel_pool.get_format(key='text_right')
                 excel_format['number'] = excel_pool.get_format(key='number')
 
+                excel_format['white'] = {
+                    'text': excel_pool.get_format(key='text'),
+                    'right': excel_pool.get_format(key='text_right'),
+                    'number': excel_pool.get_format(key='number'),
+                }
+                excel_format['yellow'] = {
+                    'text': excel_pool.get_format(key='bg_yellow'),
+                    'right': excel_pool.get_format(key='bg_yellow_right'),
+                    'number': excel_pool.get_format(key='bg_yellow_number'),
+                }
+                excel_format['red'] = {
+                    'text': excel_pool.get_format(key='bg_red'),
+                    'right': excel_pool.get_format(key='bg_red_right'),
+                    'number': excel_pool.get_format(key='bg_red_number'),
+                }
+
             # -----------------------------------------------------------------
             # Write title / header
             # -----------------------------------------------------------------
@@ -197,10 +213,14 @@ class ResCompany(osv.osv):
                 min_stock_level = int(product.min_stock_level)
                 if account_qty < min_stock_level:
                     state = _(u'Bajo Nivel')
+                    color_format = excel_format['yellow']
                 elif account_qty < 0:
                     state = _(u'Negativo')
+                    color_format = excel_format['red']
                 else:
                     state = _('OK')
+                    color_format = excel_format['white']
+
 
                 line = [
                     product_type,
@@ -208,26 +228,26 @@ class ResCompany(osv.osv):
                     product.name or '',
                     product.uom_id.name or '',
 
-                    (product.approx_integer, excel_format['right']),
+                    (product.approx_integer, color_format['right']),
                     product.approx_mode or '',
 
-                    (product.manual_stock_level or '', excel_format['right']),
+                    (product.manual_stock_level or '', color_format['right']),
                     product.day_leadtime or '',
-                    (product.medium_stock_qty, excel_format['number']),
+                    (product.medium_stock_qty, color_format['number']),
 
-                    (product.day_min_level, excel_format['right']),
-                    (int(min_stock_level), excel_format['right']),
+                    (product.day_min_level, color_format['right']),
+                    (int(min_stock_level), color_format['right']),
 
-                    (product.day_max_level, excel_format['right']),
-                    (int(product.max_stock_level), excel_format['right']),
+                    (product.day_max_level, color_format['right']),
+                    (int(product.max_stock_level), color_format['right']),
 
-                    (account_qty, excel_format['right']),
+                    (account_qty, color_format['right']),
                     state,
                     'X' if product.stock_obsolete else '',
                     ]
 
                 excel_pool.write_xls_line(
-                    ws_name, row, line, default_format=excel_format['text'])
+                    ws_name, row, line, default_format=color_format['text'])
                 row += 1
         return excel_pool.return_attachment(
             cr, uid, 'Livelli prodotto MX', 'stock_level_MX.xlsx',
