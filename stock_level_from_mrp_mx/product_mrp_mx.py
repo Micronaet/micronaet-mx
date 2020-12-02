@@ -158,7 +158,7 @@ class ResCompany(osv.osv):
                 ws_name, row, header,
                 default_format=excel_format['header_wrap'])
             excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
-            excel_pool.row_height(ws_name, [row], height=25)
+            excel_pool.row_height(ws_name, [row], height=27)
 
             # -----------------------------------------------------------------
             # Product selection:
