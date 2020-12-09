@@ -96,7 +96,7 @@ class ResCompany(osv.osv):
 
             u'Manual',
             u'Tiempo de Entrega',
-            u'Promedio Kg/Dia',
+            u'Promedio Kg/Mes',
 
             u'Nivel Minimo Dias', u'Nivel Minimo Kg.',
             u'Nivel Maximo Dia', u'Nivel Maximo Kg.',
@@ -240,7 +240,8 @@ class ResCompany(osv.osv):
 
                     (product.manual_stock_level or '', color_format['right']),
                     product.day_leadtime or '',
-                    (product.medium_stock_qty, color_format['number']),
+                    # per month:
+                    (product.medium_stock_qty * 30, color_format['number']),
 
                     (product.day_min_level, color_format['right']),
                     (int(min_stock_level), color_format['right']),
