@@ -92,7 +92,7 @@ class ResCompany(osv.osv):
 
             u'Codigo', u'Descripcion', u'UM',
             u'Appr.', u'Mod.',
-            u'Inventario actual', u'Status',
+            u'Invent. actual', u'Status',
 
             u'Manual',
             u'Tiempo de Entrega',
