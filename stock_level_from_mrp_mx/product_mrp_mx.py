@@ -92,37 +92,41 @@ class ResCompany(osv.osv):
 
             u'Codigo', u'Descripcion', u'UM',
             u'Appr.', u'Mod.',
+            u'Inventario actual', u'Status',
 
-            u'Manual', u'Tiempo de Entrega', u'Promedio Kg/Dia',
+            u'Manual',
+            u'Tiempo de Entrega',
+            u'Promedio Kg/Dia',
 
             u'Nivel Minimo Dias', u'Nivel Minimo Kg.',
             u'Nivel Maximo Dia', u'Nivel Maximo Kg.',
-            u'Inventario actual', u'Status', u'Obsolete',
+            # u'Obsolete',
             ]
 
         width = [
             10,
             15, 30, 5,
+            10, 10,
             6, 9,
             5, 8, 8,
             8, 8,
             8, 8,
-            10, 10, 6,
+            # 6,
             ]
 
         # ---------------------------------------------------------------------
         # Create WS:
         # ---------------------------------------------------------------------
-        ws_not_present = 'Obsoletos'
+        ws_not_present = 'Sin Movimentos'
         ws_list = (
             ('ROP', [
-                ('manual_stock_level', '=', False),
+                # ('manual_stock_level', '=', False),
                 ('medium_stock_qty', '>', 0),
                 ]),
-            ('Niveles Manuales', [
-                ('manual_stock_level', '=', True),
-                # ('min_stock_level', '>', 0),
-                ]),
+            # ('Niveles Manuales', [
+            #    ('manual_stock_level', '=', True),
+            #    # ('min_stock_level', '>', 0),
+            #    ]),
             (ws_not_present, [
                 ('min_stock_level', '<=', 0),
                 ]),
@@ -136,7 +140,7 @@ class ResCompany(osv.osv):
             excel_pool.column_width(ws_name, width)
             # excel_pool.row_height(ws_name, row_list, height=10)
             excel_pool.freeze_panes(ws_name, 1, 2)
-            excel_pool.column_hidden(ws_name, [4, 5, 7])
+            excel_pool.column_hidden(ws_name, [4, 5, 9])
 
             # -----------------------------------------------------------------
             # Generate format used (first time only):
@@ -231,6 +235,9 @@ class ResCompany(osv.osv):
                     (product.approx_integer, color_format['right']),
                     product.approx_mode or '',
 
+                    (account_qty, color_format['right']),
+                    state,
+
                     (product.manual_stock_level or '', color_format['right']),
                     product.day_leadtime or '',
                     (product.medium_stock_qty, color_format['number']),
@@ -241,9 +248,7 @@ class ResCompany(osv.osv):
                     (product.day_max_level, color_format['right']),
                     (int(product.max_stock_level), color_format['right']),
 
-                    (account_qty, color_format['right']),
-                    state,
-                    'X' if product.stock_obsolete else '',
+                    # 'X' if product.stock_obsolete else '',
                     ]
 
                 excel_pool.write_xls_line(
