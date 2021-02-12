@@ -52,7 +52,7 @@ odoo = {
 
 # Mail:
 smtp = {
-    'report_mode': eval(config.get('smtp', 'reorder_mode')),
+    'report_mode': config.get('smtp', 'reorder_mode').split(','),
     'text':
         '''<p>To the stock management operators. Evaluation data: %s</p>
            <p>All product and rwa materials are represented in stock 
