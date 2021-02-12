@@ -187,7 +187,13 @@ class ResCompany(osv.osv):
 
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
         """ Extract current report stock level
+            @context parameter:
+                save_mode: fullname for XLSX file generated instead of returned
         """
+        if context is None:
+            context = {}
+        save_mode = context.get('save_mode')
+
         # Pool used:
         excel_pool = self.pool.get('excel.writer')
         product_pool = self.pool.get('product.product')
@@ -303,9 +309,12 @@ class ResCompany(osv.osv):
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=excel_format['text'])
                 row += 1
-        return excel_pool.return_attachment(
-            cr, uid, 'Livelli prodotto', 'livelli_magazzino.xlsx',
-            version='7.0', php=True, context=context)
+        if save_mode:
+            return excel_pool.save_file_as(save_mode)
+        else:
+            return excel_pool.return_attachment(
+                cr, uid, 'Livelli prodotto', 'livelli_magazzino.xlsx',
+                version='7.0', php=True, context=context)
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Button from company
