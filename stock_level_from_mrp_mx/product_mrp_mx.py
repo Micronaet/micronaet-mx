@@ -79,7 +79,6 @@ class ResCompany(osv.osv):
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
         """ Extract current report stock level
         """
-        pdb.set_trace()
         if context is None:
             context = {}
         save_mode = context.get('save_mode')

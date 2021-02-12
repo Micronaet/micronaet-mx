@@ -124,7 +124,7 @@ odoo.context = context
 company = odoo.model('res.company')
 
 # Launch extract procedure for this mode:
-company.extract_product_level_xlsx()
+company.extract_product_level_xlsx([])
 
 for to in smtp['report_mode']:
     to = to.replace(' ', '')
