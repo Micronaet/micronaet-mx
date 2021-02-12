@@ -79,6 +79,7 @@ class ResCompany(osv.osv):
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
         """ Extract current report stock level
         """
+        pdb.set_trace()
         if context is None:
             context = {}
         save_mode = context.get('save_mode')
@@ -260,7 +261,6 @@ class ResCompany(osv.osv):
                     ws_name, row, line, default_format=color_format['text'])
                 row += 1
 
-        pdb.set_trace()
         if save_mode:
             return excel_pool.save_file_as(save_mode)
         else:

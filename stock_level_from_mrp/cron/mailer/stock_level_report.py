@@ -119,6 +119,7 @@ context = {
     }
 
 # Setup context for MRP:
+pdb.set_trace()
 odoo.context = context
 company = odoo.model('res.company')
 
