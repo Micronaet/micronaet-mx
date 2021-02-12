@@ -193,7 +193,6 @@ class ResCompany(osv.osv):
         """
         if context is None:
             context = {}
-        pdb.set_trace()
         save_mode = context.get('save_mode')
 
         # Pool used:
@@ -311,7 +310,6 @@ class ResCompany(osv.osv):
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=excel_format['text'])
                 row += 1
-        pdb.set_trace()
         if save_mode:
             return excel_pool.save_file_as(save_mode)
         else:
