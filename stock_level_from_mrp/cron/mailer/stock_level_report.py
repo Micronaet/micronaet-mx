@@ -34,7 +34,6 @@ from email import Encoders
 # -----------------------------------------------------------------------------
 # Read configuration parameter:
 # -----------------------------------------------------------------------------
-pdb.set_trace()
 cfg_file = os.path.expanduser('../openerp.cfg')
 now = ('%s' % datetime.now())[:19]
 

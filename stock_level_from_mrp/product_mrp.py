@@ -39,6 +39,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
     DATETIME_FORMATS_MAP,
     float_compare)
+import pdb
 
 _logger = logging.getLogger(__name__)
 
@@ -309,6 +310,7 @@ class ResCompany(osv.osv):
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=excel_format['text'])
                 row += 1
+        pdb.set_trace()
         if save_mode:
             return excel_pool.save_file_as(save_mode)
         else:
