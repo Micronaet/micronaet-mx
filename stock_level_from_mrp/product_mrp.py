@@ -193,6 +193,7 @@ class ResCompany(osv.osv):
         """
         if context is None:
             context = {}
+        pdb.set_trace()
         save_mode = context.get('save_mode')
 
         # Pool used:
