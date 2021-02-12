@@ -260,6 +260,7 @@ class ResCompany(osv.osv):
                     ws_name, row, line, default_format=color_format['text'])
                 row += 1
 
+        pdb.set_trace()
         if save_mode:
             return excel_pool.save_file_as(save_mode)
         else:
