@@ -391,7 +391,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     load.product_qty,
                     date > date_limit.get(product, date_limit['product']),
                 ))
-
+        pdb.set_trace()
         # Update medium in product:
         self.update_product_medium_from_dict(
             cr, uid, product_medium, stock_level_days,
