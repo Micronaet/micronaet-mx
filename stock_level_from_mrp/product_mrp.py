@@ -75,8 +75,6 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.warning('Product found: %s' % len(product_medium))
 
         for product in product_medium:
-            if product.default_code in ('S1000T--X', 'S0066M--X'):
-                pdb.set_trace()
             total = product_medium[product]
             if product.manual_stock_level:
                 continue
