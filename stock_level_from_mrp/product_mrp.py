@@ -76,7 +76,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_f = open(os.path.expanduser('~/medium.log'), 'w')
         for product in product_medium:
-            if product.default_code in ('S0066M--X', )
+            if product.default_code in ('S0066M--X', ):
+                pdb.set_trace()
             total = product_medium[product]
             if product.manual_stock_level:
                 continue
