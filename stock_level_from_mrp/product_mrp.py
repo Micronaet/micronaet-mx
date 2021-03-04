@@ -76,8 +76,6 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_f = open(os.path.expanduser('~/medium.log'), 'w')
         for product in product_medium:
-            if product.default_code in ('S0066M--X', ):
-                pdb.set_trace()
             total = product_medium[product]
             if product.manual_stock_level:
                 continue
@@ -175,6 +173,9 @@ class MrpProductionWorkcenterLine(osv.osv):
             date = job.real_date_planned
             for material in job.bom_material_ids:
                 product = material.product_id
+                if product.product_type == 'PT':
+                    _logger.error(
+                        'Not used, unload product: %s' % product.default_code)
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
 
