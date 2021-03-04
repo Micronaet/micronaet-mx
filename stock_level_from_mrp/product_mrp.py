@@ -85,9 +85,11 @@ class MrpProductionWorkcenterLine(osv.osv):
             else:
                 medium_stock_qty = total / stock_level_days
 
-            log_f.write('%s|%s|%s|%s\n' % (
+            log_f.write('%s|%s|%s|%s|%s|%s\n' % (
                 product.id,
                 product.default_code,
+                total,
+                stock_level_days,
                 medium_stock_qty,
                 product_obsolete.get(product, False)
             ))
