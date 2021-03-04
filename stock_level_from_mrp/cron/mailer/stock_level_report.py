@@ -54,7 +54,7 @@ smtp = {
     'report_mode': config.get('smtp', 'reorder_mode').split(','),
     'text':
         '''<p>To the stock management operators. Evaluation data: %s</p>
-           <p>All product and rwa materials are represented in stock 
+           <p>All product and raw materials are represented in stock 
               status. Use this report to create Supplier order indicated.<br/>
               Supplier orders in Contipaq are not present (need extra export)
               so check before order again same products.
