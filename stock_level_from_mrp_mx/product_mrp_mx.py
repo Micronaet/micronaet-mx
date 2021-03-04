@@ -387,7 +387,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 log_f.write('%s|%s|%s|%s\n' % (
                     date,
                     load.production_id.name,
-                    product.default_code or '',
+                    load.product_id.default_code or '',
                     quantity,
                 ))
 
