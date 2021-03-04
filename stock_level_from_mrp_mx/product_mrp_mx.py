@@ -384,9 +384,8 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s|%s\n' % (
+                log_f.write('%s|%s|%s|%s\n' % (
                     date,
-                    load.name,
                     load.mrp_id.name,
                     product.default_code or '',
                     quantity,
