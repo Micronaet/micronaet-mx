@@ -74,6 +74,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_pool = self.pool.get('product.product')
         _logger.warning('Product found: %s' % len(product_medium))
 
+        log_f = open(os.path.expanduser('~/medium.log'), 'w')
         for product in product_medium:
             total = product_medium[product]
             if product.manual_stock_level:
@@ -84,6 +85,12 @@ class MrpProductionWorkcenterLine(osv.osv):
             else:
                 medium_stock_qty = total / stock_level_days
 
+            log_f.write('%s|%s|%s|%s\n' % (
+                product.id,
+                product.default_code,
+                medium_stock_qty,
+                product_obsolete.get(product, False)
+            ))
             product_pool.write(cr, uid, [product.id], {
                 'medium_origin': 'mrp',
                 'medium_stock_qty': medium_stock_qty,
