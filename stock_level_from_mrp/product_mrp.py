@@ -176,6 +176,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 if product.product_type == 'PT':
                     _logger.error(
                         'Not used, unload product: %s' % product.default_code)
+                    continue
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
 
