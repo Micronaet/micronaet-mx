@@ -388,7 +388,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     date,
                     load.production_id.name,
                     load.product_id.default_code or '',
-                    quantity,
+                    load.product_qty,
                 ))
 
         # Update medium in product:
