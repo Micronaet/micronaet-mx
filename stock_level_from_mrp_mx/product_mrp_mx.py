@@ -24,17 +24,10 @@
 import os
 import sys
 import logging
-import openerp
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
 import xlsxwriter
 from openerp.osv import fields, osv, expression
 from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID
-from openerp import tools
 from openerp.tools.translate import _
-from openerp.tools.float_utils import float_round as round
 from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
     DATETIME_FORMATS_MAP,
@@ -77,7 +70,7 @@ class ResCompany(osv.osv):
 
     # Override for MX report (was different)
     def extract_product_level_xlsx(self, cr, uid, ids, context=None):
-        """ Extract current report stock level
+        """ Extract current report stock level MX Version
         """
         if context is None:
             context = {}
