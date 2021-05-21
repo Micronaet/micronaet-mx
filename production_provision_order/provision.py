@@ -224,8 +224,8 @@ class PurchaseOrderProvision(orm.Model):
             'with_medium': False,
             'month_window': 0,
             'with_order_detail': False,
-            #'row_mode': '',
-            #'fake_ids':
+            # 'row_mode': '',
+            # 'fake_ids':
             }, context=context)
 
         wizard = wiz_pool.browse(cr, uid, wiz_id, context=context)
@@ -240,7 +240,7 @@ class PurchaseOrderProvision(orm.Model):
                 fake.qty,
                 )
         if fake_ids:
-            _logger.info('Mark as used all previsional order')
+            _logger.info('Mark as used all provisional order')
             previsional_pool.wkf_draft_2_used(
                 cr, uid, fake_ids, context=context)
 
