@@ -114,9 +114,9 @@ class MrpProductionWorkcenterLine(osv.osv):
         columns_position = {
             'date': 1,
             # 'invoice': 7,
-            'default_code': 21,
+            'default_code': 22,
             # 'name': 21,
-            'qty': 23,
+            'qty': 24,
             # 'uom': 23,
             # 'price': 24,
         }
