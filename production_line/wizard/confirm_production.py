@@ -32,16 +32,16 @@ from openerp.tools.translate import _
 _logger = logging.getLogger(__name__)
 
 class confirm_mrp_production_wizard(osv.osv_memory):
-    ''' Wizard that confirm production/lavoration
-    '''
+    """ Wizard that confirm production/lavoration
+    """
     _name = "mrp.production.confirm.wizard"
 
     # -------------------------------------------------------------------------
     #                             Utility function
     # -------------------------------------------------------------------------
     def get_parameter(self, cr, uid, context=None):
-        ''' Get parameter browse obj for connection info
-        '''
+        """ Get parameter browse obj for connection info
+        """
         try:
             parameter = self.pool.get('res.company').get_production_parameter(
                 cr, uid, context=context)
@@ -58,7 +58,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     _('The exportation of CL and SL is not enabled, check and fix in '
                     'Company window to setup parameters!'))
 
-            if not all ((
+            if not all((
                     parameter.production_host,
                     parameter.production_port,
                     parameter.production_path,
@@ -74,11 +74,11 @@ class confirm_mrp_production_wizard(osv.osv_memory):
             raise osv.except_osv(
                 _("Parameter error!"),
                 _("Problem reading parameters!"))
-        return parameter        
+        return parameter
 
     def get_interchange_files(self, cr, uid, parameter, context=None):
-        ''' Return 3 interchange file name
-        '''
+        """ Return 3 interchange file name
+        """
         try:
             path_list = eval(parameter.production_path)
             path = os.path.expanduser(os.path.join(*path_list))
@@ -97,10 +97,10 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                 _("Interchange file!"),
                 _("Error create interchange file name!"))
         return file_cl, file_cl_upd, file_sl
-        
+
     def get_xmlrpc_server(self, cr, uid, parameter, context=None):
-        ''' Configure and retur XML-RPC server for accounting        
-        '''
+        """ Configure and retur XML-RPC server for accounting
+        """
         try:
             mx_parameter_server = parameter.production_host
             mx_parameter_port = parameter.production_port
@@ -113,15 +113,15 @@ class confirm_mrp_production_wizard(osv.osv_memory):
             raise osv.except_osv(
                 _('Import CL error!'),
                 _('XMLRPC for calling importation is not response'), )
-                
+
         return xmlrpclib.ServerProxy(xmlrpc_server)
-        
+
     # ---------------
     # Onchange event:
     # ---------------
     def onchange_package_id(self, cr, uid, ids, package_id, product_id, total, context=None):
-        ''' Get selected package_id and calculate total package
-        '''
+        """ Get selected package_id and calculate total package
+        """
         res = {}
         res['value'] = {}
 
@@ -139,8 +139,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         return res
 
     def onchange_pallet_id(self, cr, uid, ids, pallet_product_id, real_product_qty, pallet_max_weight, context=None):
-        ''' Get total pallet with real qty and pallet selected
-        '''
+        """ Get total pallet with real qty and pallet selected
+        """
         res = {}
         res['value'] = {}
         res['value']['pallet_qty'] = 0.0
@@ -160,8 +160,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
     # Wizard button:
     # --------------
     def action_confirm_mrp_production_order(self, cr, uid, ids, context=None):
-        ''' Write confirmed weight
-        '''
+        """ Write confirmed weight
+        """
         if context is None:
             context = {}
 
@@ -180,7 +180,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         # Interchange file:
         file_cl, file_cl_upd, file_sl = self.get_interchange_files(
             cr, uid, parameter, context=context)
-        
+
         # XMLRPC server:
         mx_server = self.get_xmlrpc_server(cr, uid, parameter, context=context)
 
@@ -310,7 +310,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     ))
             else:
                 pass
-                
+
             f_cl.close()
 
             # -----------------------------------------------------------------
@@ -322,7 +322,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                 else:
                     try:
                         accounting_cl_code = mx_server.sprix("CL")
-                    except:    
+                    except:
                         raise osv.except_osv(
                             _('Import CL error!'),
                             _('XMLRPC error calling import CL procedure'), )
@@ -345,8 +345,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                 # --------------------------------
                 # TODO portare l'informazione sulla produzione qui non ha più senso con i carichi sballati
                 total = 0.0 # net production total
-                
-                # Partial (calculated every load on all production)                
+
+                # Partial (calculated every load on all production)
                 for l in lavoration_browse.production_id.workcenter_lines:
                     for partial in l.load_ids:
                         total += partial.product_qty or 0.0
@@ -361,9 +361,9 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     # ---------------------------------------------------------
                     #                     CL update price file
                     # ---------------------------------------------------------
-                    try:        
+                    try:
                         f_cl_upd = open(file_cl_upd, "w")
-                    except:    
+                    except:
                         raise osv.except_osv(
                             _('Transit file!'),
                             _('Problem accessing file: %s (maybe open in accounting program)!') % (
@@ -378,7 +378,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     except:
                         cost_line = 0.0
 
-                    if not cost_line:    
+                    if not cost_line:
                         raise osv.except_osv(
                             _('Calculate lavoration cost!'),
                             _('Error calculating lavoration cost, verifiy if the workcenter has product linked'), )
@@ -395,25 +395,25 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                             try:
                                 unload_cost_total += unload.product_id.standard_price * unload.quantity
                             except:
-                                _logger.error(_("Error calculating unload lavoration"))    
+                                _logger.error(_("Error calculating unload lavoration"))
                     _logger.info(_("With materials [%s]") % (unload_cost_total, ))
 
                     # ------------------------------
                     # All unload package and pallet:
                     # ------------------------------
-                    for l in lavoration_browse.production_id.workcenter_lines:                    
+                    for l in lavoration_browse.production_id.workcenter_lines:
                         for load in l.load_ids:
                             try:
                                 # Package:
                                 if load.package_id: # there's pallet
                                     unload_cost_total += load.package_id.linked_product_id.standard_price * load.ul_qty
                                     _logger.info(_("Package cost %s [%s]") % (
-                                        load.package_id.linked_product_id.standard_price, 
+                                        load.package_id.linked_product_id.standard_price,
                                         load.ul_qty,
                                     ))
                             except:
-                                _logger.error(_("Error calculating package price"))    
-                                
+                                _logger.error(_("Error calculating package price"))
+
                             try:
                                 # Pallet:
                                 if load.pallet_product_id: # there's pallet
@@ -423,14 +423,14 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                                         load.pallet_qty,
                                     ))
                             except:
-                                _logger.error(_("Error calculating pallet price"))    
-                                
+                                _logger.error(_("Error calculating pallet price"))
+
                     unload_cost = unload_cost_total / total
                     _logger.info(_("With package  %s [unit.: %s]") % (
                         unload_cost_total, unload_cost, ))
 
                     # Update all production with value calculated: #TODO serve?
-                    for l in lavoration_browse.production_id.workcenter_lines:                    
+                    for l in lavoration_browse.production_id.workcenter_lines:
                         for load in l.load_ids:
                             load_pool.write(cr, uid, load.id, {
                                 'accounting_cost': unload_cost * load.product_qty,
@@ -441,7 +441,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                                 raise osv.except_osv(
                                     _('CL list!'),
                                     _('Error CL without number finded!'), )
-                                
+
                             accounting_cl_code = load.accounting_cl_code.strip()
                             f_cl_upd.write(
                                 "%-6s%10.5f\r\n" % (
@@ -499,7 +499,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     #                break
                     #        if all_closed:
                     wf_service.trg_validate(
-                        uid, 'mrp.production', 
+                        uid, 'mrp.production',
                         lavoration_browse.production_id.id,
                         'trigger_accounting_close',
                         cr)
@@ -536,7 +536,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                 )
 
             # -----------------------------------------------------------------
-            #                      XMLRPC call for import SL 
+            #                      XMLRPC call for import SL
             # -----------------------------------------------------------------
             try: # an error here could mean that the document is created in accounting program #TODO manage this problem
                 if parameter.production_demo:
@@ -547,7 +547,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     # ---------------------------------------------------------
                     try:
                         accounting_sl_code = mx_server.sprix("SL")
-                    except:    
+                    except:
                         raise osv.except_osv(
                         _('Import SL error!'),
                         _('XMLRPC error calling import SL procedure'), )
@@ -575,29 +575,29 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     wf_service.trg_validate(
                         uid, 'mrp.production.workcenter.line',
                         current_lavoration_id, 'button_done', cr)
-                except:    
+                except:
                     raise osv.except_osv(
                     _('Workflow error:'),
                     _('Error closing lavoration!'), )
             except:
-                raise osv.except_osv(*error)                
+                raise osv.except_osv(*error)
         return {'type':'ir.actions.act_window_close'}
 
     # -----------------
     # default function:
     # -----------------
     def default_quantity(self, cr, uid, context=None):
-        ''' Get default value
-        '''
+        """ Get default value
+        """
         wc_pool = self.pool.get('mrp.production.workcenter.line')
         wc_browse = wc_pool.browse(cr, uid, context.get('active_id', 0), context=context)
-        
+
         total = 0.0
         try:
             for l in wc_browse.production_id.workcenter_lines:
                 total += l.product_qty - sum([load.product_qty for load in l.load_ids])
         except:
-            total = 0.0  
+            total = 0.0
         return total
 
 
@@ -626,8 +626,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
     #    return False # not launched during wizard
 
     def default_list_unload(self, cr, uid, context=None):
-        ''' Get default value, if load_confirmed so to_close is True
-        '''
+        """ Get default value, if load_confirmed so to_close is True
+        """
         wc_pool = self.pool.get('mrp.production.workcenter.line')
         res = ""
         active_id = context.get("active_id", 0)
@@ -657,8 +657,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         return res
 
     def default_product(self, cr, uid, context=None):
-        ''' Get default value for product (get from product order)
-        '''
+        """ Get default value for product (get from product order)
+        """
         wc_pool = self.pool.get('mrp.production.workcenter.line')
 
         if context.get("active_id", 0):
