@@ -167,7 +167,6 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         if context is None:
             context = {}
 
-        import pdb; pdb.set_trace()
         wiz_proxy = self.browse(
             cr, uid, ids, context=context)[0]
         current_lavoration_id = context.get("active_id", 0)
