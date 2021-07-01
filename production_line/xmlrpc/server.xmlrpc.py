@@ -31,10 +31,10 @@ config = ConfigParser.ConfigParser()
 config.read(['./openerp.cfg'])
 
 # XMLRPC server:
-xmlrpc_host = config.get('XMLRPC', 'host') 
+xmlrpc_host = config.get('XMLRPC', 'host')
 xmlrpc_port = eval(config.get('XMLRPC', 'port'))
 
-path = config.get('mexal', 'path') #"c:\mexal_cli\prog"
+path = config.get('mexal', 'path')  # "c:\mexal_cli\prog"
 company_code = config.get('mexal', 'company')
 
 # Access:
@@ -42,11 +42,11 @@ mx_user = config.get('mexal', 'user')
 mx_login = config.get('mexal', 'login')
 
 # Sprix:
-sprix_cl = eval(config.get('mexal', 'sprix_cl')) #125
-sprix_cl_upd = eval(config.get('mexal', 'sprix_cl_upd')) # 126
-sprix_sl = eval(config.get('mexal', 'sprix_sl')) # 127
-sprix_bom = eval(config.get('mexal', 'sprix_bom')) # 608
-sprix_move = eval(config.get('mexal', 'sprix_move')) # 128 # TODO verificare!
+sprix_cl = eval(config.get('mexal', 'sprix_cl'))  # 125
+sprix_cl_upd = eval(config.get('mexal', 'sprix_cl_upd'))  # 126
+sprix_sl = eval(config.get('mexal', 'sprix_sl'))  # 127
+sprix_bom = eval(config.get('mexal', 'sprix_bom'))  # 608
+sprix_move = eval(config.get('mexal', 'sprix_move'))  # 128 # TODO verificare!
 
 # Parameters calculated:
 # Transit files:
@@ -75,14 +75,13 @@ server = SimpleXMLRPCServer(
     (xmlrpc_host, xmlrpc_port), requestHandler=RequestHandler)
 server.register_introspection_functions()
 
+
 # -----------------------------------------------------------------------------
 #                                 Functions
 # -----------------------------------------------------------------------------
 def sprix(operation, parameters=None):
-    ''' Call mxrs program passing sprix number
-    '''
-    if parameters is None:
-        parameters = {}
+    """ Call mxrs program passing sprix number
+    """
     # --------
     # Utility:
     # --------
@@ -92,87 +91,90 @@ def sprix(operation, parameters=None):
         """
         try:
             res_file = open(transit_file, "r")
-            
+
             if is_list:
                 res = []
                 for item in res_file:
                     code = item[:6].strip()
                     operation = "OK" == item[6:8].upper()
                     res.append((code, operation))
-            else:        
+            else:
                 res = res_file.read().strip()
 
             res_file.close()
-            os.remove(transit_file)    
-            return res                
+            os.remove(transit_file)
+            return res
         except:
-            return False # for all errors    
+            return False  # for all errors
 
-        
     # -------------------------------------------------------------------------
     #                        Cases (operations):
-    # -------------------------------------------------------------------------    
-    if operation.upper() == "CL": 
+    # -------------------------------------------------------------------------
+    if parameters is None:
+        parameters = {}
+
+    if operation.upper() == "CL":
         # Call sprix for create CL:
         try:
-            os.system(sprix_command % sprix_cl)            
+            os.system(sprix_command % sprix_cl)
         except:
-            return "#Error launching importation CL command" # on error    
-        
+            return "#Error launching importation CL command" # on error
+
         # get result of operation:
-        return get_res(file_cl) 
-        
-    elif operation.upper() == "CLW": 
-        # Call sprix for update price in CL: 
+        return get_res(file_cl)
+
+    elif operation.upper() == "CLW":
+        # Call sprix for update price in CL:
         try:
             os.system (sprix_command % sprix_cl_upd)
         except:
-            return False # on error    
-        
+            return False  # on error
+
         # get result of operation:
         return get_res(file_cl_upd, is_list=True)
-        
-    elif operation.upper() == "SL": 
+
+    elif operation.upper() == "SL":
         # Call sprix for create SL:
         try:
             os.system (sprix_command % sprix_sl)
         except:
-            return "#Error launching importation SL command" # on error    
-        
-        # get result of operation:
-        return get_res(file_sl) 
+            return "#Error launching importation SL command" # on error
 
-    elif operation.upper() == "MOVE": 
+        # get result of operation:
+        return get_res(file_sl)
+
+    elif operation.upper() == "MOVE":
         # Call sprix for move data from lot to another:
         try:
             # Create files from line passed
-            line = paramaters.get('line', False)
+            line = parameters.get('line', False)
             if not line:
                 return "#Error movement line not present!"
-            try:    
+            try:
                 f = open(file_move, "w")
                 f.write(line)
                 f.close()
             except:
-                return "#Error creating transit file!"            
+                return "#Error creating transit file!"
             os.system (sprix_command % sprix_move)
         except:
-            return "#Error launching importation SL command" # on error    
-        
-        # get result of operation:
-        return "" #get_res(file_move_res)  # TODO leggere e tornare eventuale errore!
+            return "#Error launching importation SL command" # on error
 
-    elif operation.upper() == "BOM": 
+        # get result of operation:
+        return ""  # get_res(file_move_res)  # TODO leggere e tornare eventuale errore!
+
+    elif operation.upper() == "BOM":
         # Call sprix for create BOM:
         try:
-            os.system (sprix_command % sprix_bom)
+            os.system(sprix_command % sprix_bom)
         except:
-            return "#Error launching export BOM" 
-        
-        # get result of operation:
-        return get_res(file_sl) 
+            return "#Error launching export BOM"
 
-    return False # error
+        # get result of operation:
+        return get_res(file_sl)
+
+    return False  # error
+
 
 # -----------------------------------------------------------------------------
 #                  Register Function in XML-RPC server:
@@ -183,6 +185,3 @@ server.register_function(sprix, 'sprix')
 #                       Run the server's main loop:
 # -----------------------------------------------------------------------------
 server.serve_forever()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
