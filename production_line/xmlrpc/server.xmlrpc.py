@@ -158,10 +158,11 @@ def sprix(operation, parameters=None):
                 return "#Error creating transit file!"
             os.system (sprix_command % sprix_move)
         except:
-            return "#Error launching importation SL command" # on error
+            return "#Error launching importation SL command"  # on error
 
         # get result of operation:
-        return ""  # get_res(file_move_res)  # TODO leggere e tornare eventuale errore!
+        # get_res(file_move_res)  # TODO leggere e tornare eventuale errore!
+        return ""
 
     elif operation.upper() == "BOM":
         # Call sprix for create BOM:

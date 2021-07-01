@@ -177,7 +177,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         # get parameters
         parameter = self.get_parameter(cr, uid, context=context)
         wf_service = netsvc.LocalService("workflow")
-        error_prefix = "#ERR" # TODO configuration area?
+        error_prefix = "#ERR"  # TODO configuration area?
 
         # Interchange file:
         file_cl, file_cl_upd, file_sl = self.get_interchange_files(
