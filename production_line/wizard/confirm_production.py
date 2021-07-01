@@ -18,6 +18,7 @@
 #
 ###############################################################################
 import os
+import pdb
 import sys
 import openerp.netsvc as netsvc
 import logging
@@ -119,7 +120,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
     # ---------------
     # Onchange event:
     # ---------------
-    def onchange_package_id(self, cr, uid, ids, package_id, product_id, total, context=None):
+    def onchange_package_id(
+            self, cr, uid, ids, package_id, product_id, total, context=None):
         """ Get selected package_id and calculate total package
         """
         res = {}
@@ -128,8 +130,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         if package_id and product_id and total:
             pack_pool = self.pool.get('product.packaging')
             pack_ids = pack_pool.search(cr, uid, [
-                ('product_id','=',product_id),
-                ('ul','=',package_id)], context=context)
+                ('product_id', '=', product_id),
+                ('ul', '=', package_id)], context=context)
             if pack_ids:
                 pack_proxy=pack_pool.browse(cr, uid, pack_ids, context=context)[0]
                 q_x_pack = pack_proxy.qty or 0.0
@@ -165,6 +167,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
         if context is None:
             context = {}
 
+        import pdb; pdb.set_trace()
         wiz_proxy = self.browse(
             cr, uid, ids, context=context)[0]
         current_lavoration_id = context.get("active_id", 0)
@@ -242,26 +245,31 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                 'wrong': wrong,
                 'wrong_comment': wiz_proxy.wrong_comment,
             })
-            sequence = load_pool.browse( # TODO crearla in funzione della produzione
-                cr, uid, load_id, context=context).sequence # reload record for get sequence value
+            # TODO crearla in funzione della produzione
+            sequence = load_pool.browse(
+                cr, uid, load_id, context=context).sequence
+            # reload record for get sequence value
 
             # TODO manage recycle product!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
             # [(1)Famiglia-(6)Prodotto-(1).Pezzatura-(1)Versione]-[(5)Partita-#(2)SequenzaCarico]-[(10)Imballo]
             product_code = "%-8s%-2s%-10s%-10s" % (
-                wiz_proxy.product_id.default_code,                                            # Product code
-                lavoration_browse.workcenter_id.code[:2],                                     # Workcenter
+                wiz_proxy.product_id.default_code,  # Product code
+                lavoration_browse.workcenter_id.code[:2],  # Workcenter
                 "%06d#%01d" % (
                     int(lavoration_browse.production_id.name[3:]),
                     sequence,
-                ),    # Job         <<<<<<< TODO use production (test, production is 5)
-                wiz_proxy.package_id.code if package_id else "",                              # Package
+                ),    # Job <<<< TODO use production (test, production is 5)
+                wiz_proxy.package_id.code if package_id else "",  # Package
             )
-            load_pool.write(cr, uid, load_id, {'product_code': product_code}, context=context)
+            load_pool.write(cr, uid, load_id, {
+                'product_code': product_code}, context=context)
 
-            ### Write load on accounting: # TODO potrebbe generare problemi se annullassero carichi o cose del genere!!!
+            # Write load on accounting:
+            # TODO potrebbe generare problemi se annullassero carichi o cose del genere!!!
             # Better: reload from dbmirror (but in real time)
-            product_pool.write(cr, uid, lavoration_browse.production_id.product_id.id,    # Now update accounting_qty on db for speed up
+            product_pool.write(
+                cr, uid, lavoration_browse.production_id.product_id.id,    # Now update accounting_qty on db for speed up
                 {'accounting_qty': (lavoration_browse.production_id.product_id.accounting_qty or 0.0) + (wiz_proxy.real_product_qty or 0.0),
             }, context=context)
 
@@ -284,7 +292,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     product_code, product_qty, price))
 
             # TODO mode in product (end movement)
-            convert_load_id = {} # list for convert CL code in load.id
+            convert_load_id = {}  # list for convert CL code in load.id
             #for load in lavoration_browse.load_ids:
 
             # -----------------------------------------------------
@@ -292,14 +300,14 @@ class confirm_mrp_production_wizard(osv.osv_memory):
             # -----------------------------------------------------
             if wiz_proxy.package_id and wiz_proxy.ul_qty:
                 f_cl.write(
-                    "%-10s%-25s%10.2f%-10s\r\n" % ( # TODO 10 extra space
+                    "%-10s%-25s%10.2f%-10s\r\n" % (  # TODO 10 extra space
                         wiz_proxy.package_id.linked_product_id.default_code,
-                        " " * 25, #lavoration_browse.name[4:],
+                        " " * 25,  # lavoration_browse.name[4:],
                         - wiz_proxy.ul_qty,
                         lavoration_browse.accounting_sl_code, #" " * 10, # no value
                     ))
             else:
-                pass # TODO raise error if no package? (no if wrong!)
+                pass  # TODO raise error if no package? (no if wrong!)
             if wiz_proxy.pallet_product_id and wiz_proxy.pallet_qty:
                 f_cl.write(
                     "%-10s%-25s%10.2f%-10s\r\n" % ( # TODO 10 extra space
@@ -475,22 +483,22 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                             _('Update loaded CL price error!'),
                             _('Error during confirm the load or price for product in accounting program!'),
                         )
-                        for (key,res) in res_list:
+                        for (key, res) in res_list:
                             load_id = convert_load_id[key]
-                            if res: # if True update succesfully
+                            if res:  # if True update succesfully
                                 load_pool.write(
                                     cr, uid, load_id,
                                     {'accounting_cost_confirmed': True},
                                     context=context)
                             else:
-                                pass # TODO raise error?
+                                pass  # TODO raise error?
 
                     # ---------------------------------------------------------
                     #            Real workflow operation (only last load)
                     # ---------------------------------------------------------
                     # TODO Non occorre più verificare togliee questa parte:
                     # Close production order:
-                    #if lavoration_browse.production_id.accounting_state in ('draft', 'production'):
+                    # if lavoration_browse.production_id.accounting_state in ('draft', 'production'):
                     #    if lavoration_browse.production_id.accounting_state in ('production'):
                     #        all_closed = True
                     #        for lavoration in lavoration_browse.production_id.workcenter_lines:
@@ -509,11 +517,11 @@ class confirm_mrp_production_wizard(osv.osv_memory):
             except:
                 raise osv.except_osv(_("Generic error"), "%s" % (sys.exc_info(), )) #error[0], "%s [%s]" % (error[1], sys.exc_info()) )
 
-        else: # state == 'material' >> unload all material and package:
+        else:  # state == 'material' >> unload all material and package:
             # -----------------------------------------------------------------
             #                              SL Document
             # -----------------------------------------------------------------
-            try: # SL file:
+            try:  # SL file:
                 f_sl = open(file_sl, "w")
 
                 for unload in lavoration_browse.bom_material_ids:
@@ -523,11 +531,12 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                         lavoration_browse.name[4:],
                         unload.quantity))
                     try:
-                        product_pool.write(cr, uid, [unload.product_id.id],    # Now update accounting_qty on db for speed up
-                            {'accounting_qty': (unload.product_id.accounting_qty or 0.0) - (unload.quantity or 0.0), },
+                        # Now update accounting_qty on db for speed up
+                        product_pool.write(cr, uid, [unload.product_id.id], {
+                            'accounting_qty': (unload.product_id.accounting_qty or 0.0) - (unload.quantity or 0.0), },
                         context=context)
                     except:
-                        pass # no error raise if problems
+                        pass  # no error raise if problems
                 f_sl.close()
             except:
                 raise osv.except_osv(
@@ -567,7 +576,8 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     cr, uid, [current_lavoration_id],
                     {
                         'accounting_sl_code': accounting_sl_code,
-                        'unload_confirmed': True, # TODO non dovrebbe più servire # Next "confirm" is for prod.
+                        'unload_confirmed': True,
+                        # TODO non dovrebbe più servire # Next "confirm" is for prod.
                     },
                     context=context)
 
@@ -581,7 +591,7 @@ class confirm_mrp_production_wizard(osv.osv_memory):
                     _('Error closing lavoration!'), )
             except:
                 raise osv.except_osv(*error)
-        return {'type':'ir.actions.act_window_close'}
+        return {'type': 'ir.actions.act_window_close'}
 
     # -----------------
     # default function:
