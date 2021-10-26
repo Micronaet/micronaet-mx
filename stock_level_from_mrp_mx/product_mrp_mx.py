@@ -118,20 +118,22 @@ class ResCompany(osv.osv):
         ws_list = (
             ('ROP', [
                 # ('manual_stock_level', '=', False),
-                ('medium_stock_qty', '>', 0),
+                ('medium_stock_qty', '>', 0),  # todo remove domain not used
+                'product.medium_stock_qty > 0.0',  # test
                 ]),
             # ('Niveles Manuales', [
             #    ('manual_stock_level', '=', True),
             #    # ('min_stock_level', '>', 0),
             #    ]),
             (ws_not_present, [
-                ('min_stock_level', '<=', 0),
+                ('min_stock_level', '<=', 0),   # todo remove
+                'product.min_stock_level <= 0.0',  # test
                 ]),
             )
         # Create all pages:
         excel_format = {}
         removed_ids = []
-        for ws_name, product_filter in ws_list:
+        for ws_name, product_filter, test in ws_list:
             excel_pool.create_worksheet(name=ws_name)
 
             excel_pool.column_width(ws_name, width)
@@ -181,10 +183,9 @@ class ResCompany(osv.osv):
             # -----------------------------------------------------------------
             # Product selection:
             # -----------------------------------------------------------------
+            product_filter = []  # overridden (product_filter will be removed)
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
-            pdb.set_trace()
-            print([p.default_code for p in product_pool.browse(cr, uid, product_ids, context=context) if p.default_code == 'S0045VV--X'])
 
             if ws_name == ws_not_present and removed_ids:
                 # Add also removed from other loop
@@ -199,10 +200,11 @@ class ResCompany(osv.osv):
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
+                if not eval(test):
+                    continue
+
                 # Filter code:
                 default_code = product.default_code
-                # if default_code == 'S0045VV--X':
-                #    pdb.set_trace()
                 if not default_code:
                     _logger.error('Product %s has no code' % product.name)
                     continue
