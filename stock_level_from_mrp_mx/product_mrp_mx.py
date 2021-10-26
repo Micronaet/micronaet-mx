@@ -199,6 +199,8 @@ class ResCompany(osv.osv):
                     x.default_code)):
                 # Filter code:
                 default_code = product.default_code
+                if default_code == 'S0045VV--X':
+                    pdb.set_trace()
                 if not default_code:
                     _logger.error('Product %s has no code' % product.name)
                     continue
