@@ -116,19 +116,20 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         ws_not_present = 'Sin Movimentos'
         ws_list = (
-            ('ROP', [
-                # ('manual_stock_level', '=', False),
-                ('medium_stock_qty', '>', 0),  # todo remove domain not used
+            (
+                'ROP',
+                [('medium_stock_qty', '>', 0)],  # todo remove domain not used
                 'product.medium_stock_qty > 0.0',  # test
-                ]),
+                ),
             # ('Niveles Manuales', [
             #    ('manual_stock_level', '=', True),
             #    # ('min_stock_level', '>', 0),
             #    ]),
-            (ws_not_present, [
-                ('min_stock_level', '<=', 0),   # todo remove
+            (
+                ws_not_present,
+                [('min_stock_level', '<=', 0)],   # todo remove
                 'product.min_stock_level <= 0.0',  # test
-                ]),
+                ),
             )
         # Create all pages:
         excel_format = {}
