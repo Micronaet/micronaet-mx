@@ -183,10 +183,12 @@ class ResCompany(osv.osv):
             # -----------------------------------------------------------------
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
+            pdb.set_trace()
+            print([p.default_code for p in product_pool.browse(cr, uid, product_ids, context=context) if p.default_code == 'S0045VV--X'])
 
-            #if ws_name == ws_not_present and removed_ids:
-            #    # Add also removed from other loop
-            #    product_ids = list(set(product_ids).union(set(removed_ids)))
+            if ws_name == ws_not_present and removed_ids:
+                # Add also removed from other loop
+                product_ids = list(set(product_ids).union(set(removed_ids)))
 
             products = product_pool.browse(
                 cr, uid, product_ids,
@@ -199,8 +201,8 @@ class ResCompany(osv.osv):
                     x.default_code)):
                 # Filter code:
                 default_code = product.default_code
-                if default_code == 'S0045VV--X':
-                    pdb.set_trace()
+                # if default_code == 'S0045VV--X':
+                #    pdb.set_trace()
                 if not default_code:
                     _logger.error('Product %s has no code' % product.name)
                     continue
