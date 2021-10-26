@@ -184,9 +184,9 @@ class ResCompany(osv.osv):
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
-            if ws_name == ws_not_present and removed_ids:
-                # Add also removed from other loop
-                product_ids = list(set(product_ids).union(set(removed_ids)))
+            #if ws_name == ws_not_present and removed_ids:
+            #    # Add also removed from other loop
+            #    product_ids = list(set(product_ids).union(set(removed_ids)))
 
             products = product_pool.browse(
                 cr, uid, product_ids,
