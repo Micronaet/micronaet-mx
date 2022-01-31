@@ -115,14 +115,13 @@ class SaleOrderLine(orm.Model):
 
         if 'value' not in res:
             res['value'] = {}
-        pdb.set_trace()
         # Reset if partner or product not present:
         if not partner_id or not product:
             res['value'].update({
                 'alias_id': False,
                 'price_unit': False,
                 'product_packaging': False,
-                'load_qty': False, # XXX remove?
+                'load_qty': False,  # XXX remove?
                 # TODO
                 })
             return res
@@ -141,8 +140,13 @@ class SaleOrderLine(orm.Model):
                     'price_unit': item.price,
                     # TODO use first if not present in customization?
                     'product_packaging': item.packaging_id.id,
-                    'load_qty': item.load_qty, #XXX remove?
+                    'load_qty': item.load_qty,  # XXX remove?
                     })
+                if 'warning' in res:
+                    _logger.error('Remove warning message: \n%s' %
+                                  res['warning'].get('message'))
+                    del(res['warning'])
+                break
         return res
 
     _columns = {
