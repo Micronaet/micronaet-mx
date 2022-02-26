@@ -55,6 +55,7 @@ class ResPartnerPricelistProduct(orm.Model):
 
     _columns = {
         'product_id': fields.many2one('product.product', 'Product'),
+        'alias_id': fields.many2one('product.product', 'Alias'),  # todo remove
         'alias_name': fields.char(
             'Alias testo', size=50,
             help='Forzatura testuale del prodotto alias',
@@ -123,7 +124,7 @@ class SaleOrderLine(orm.Model):
         # Reset if partner or product not present:
         if not partner_id or not product:
             res['value'].update({
-                'name': False,
+                # 'alias_id': False,
                 'price_unit': False,
                 'product_packaging': False,
                 'load_qty': False,  # XXX remove?
@@ -140,9 +141,11 @@ class SaleOrderLine(orm.Model):
 
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
-                name = item.alias_name or item.product_id.name
+                name = item.alias_name or item.alias_id.name or \
+                       item.product_id.name
                 data = {
                     'name': name,
+                    # 'alias_id': item.alias_id.id,  # todo remove
                     'price_unit': item.price,
                     # todo use first if not present in customization?
                     'product_packaging': item.packaging_id.id,
