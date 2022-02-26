@@ -45,7 +45,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 
-class ResPartnerPpricelistProduct(orm.Model):
+class ResPartnerPricelistProduct(orm.Model):
     """ Class for manage particularity for partner - product
     """
     _name = 'res.partner.pricelist.product'
@@ -55,7 +55,7 @@ class ResPartnerPpricelistProduct(orm.Model):
 
     _columns = {
         'product_id': fields.many2one('product.product', 'Product'),
-        'alias_id': fields.many2one('product.product', 'Alias'),
+        'alias_id': fields.many2one('product.product', 'Alias'),  # todo remove
         'alias_name': fields.char(
             'Alias testo', size=50,
             help='Forzatura testuale del prodotto alias',
@@ -69,11 +69,13 @@ class ResPartnerPpricelistProduct(orm.Model):
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
 
-        'packaging_id': fields.many2one('product.packaging', 'Imballo',
+        'packaging_id': fields.many2one(
+            'product.packaging', 'Imballo',
             ondelete='set null'),
         # ---------------------------------------------------------------------
         # TODO used for calculate packaging? XXX not used for now
-        'product_ul': fields.many2one('product.ul', 'Pack',
+        'product_ul': fields.many2one(
+            'product.ul', 'Pack',
             ondelete='set null'),
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),
         # ---------------------------------------------------------------------
@@ -122,7 +124,7 @@ class SaleOrderLine(orm.Model):
         # Reset if partner or product not present:
         if not partner_id or not product:
             res['value'].update({
-                'alias_id': False,
+                # 'alias_id': False,
                 'price_unit': False,
                 'product_packaging': False,
                 'load_qty': False,  # XXX remove?
@@ -133,27 +135,33 @@ class SaleOrderLine(orm.Model):
         # Used pool:
         partner_pool = self.pool.get('res.partner')
 
-        # Udpate field instead:
+        # Update field instead:
         partner_proxy = partner_pool.browse(
             cr, uid, partner_id, context=context)
 
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
-                res['value'].update({
-                    'alias_id': item.alias_id.id,
+                name = item.alias_name or item.alias_id.name or \
+                       item.product_id.name
+                data = {
+                    'name': name,
+                    # 'alias_id': item.alias_id.id,  # todo remove
                     'price_unit': item.price,
-                    # TODO use first if not present in customization?
+                    # todo use first if not present in customization?
                     'product_packaging': item.packaging_id.id,
-                    'load_qty': item.load_qty,  # XXX remove?
-                    })
+                    'load_qty': item.load_qty,  # todo remove?
+                }
+                res['value'].update(data)
+
                 if 'warning' in res:
-                    _logger.error('Remove warning message: \n%s' %
-                                  res['warning'].get('message'))
+                    _logger.error(
+                        'Remove warning message: \n%s' %
+                        res['warning'].get('message'))
                     del(res['warning'])
                 break
         return res
 
     _columns = {
-        # TODO remove?
+        # todo remove?
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),
         }
