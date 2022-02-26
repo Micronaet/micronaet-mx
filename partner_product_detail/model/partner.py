@@ -56,17 +56,20 @@ class ResPartnerPpricelistProduct(orm.Model):
     _columns = {
         'product_id': fields.many2one('product.product', 'Product'),
         'alias_id': fields.many2one('product.product', 'Alias'),
-
-        'date': fields.date('Date'),
-        'deadline': fields.date('Deadline'),
+        'alias_name': fields.char(
+            'Alias testo', size=50,
+            help='Forzatura testuale del prodotto alias',
+        ),
+        'date': fields.date('Data'),
+        'deadline': fields.date('Scadenza'),
         # 'sell': fields.boolean('Sell rule'),
         # 'cost': fields.float('Cost', digits=(16, 2)), # for purchase?
-        'price': fields.float('Price', digits=(16, 2)),
+        'price': fields.float('Prezzo', digits=(16, 2)),
         # TODO Currency
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
 
-        'packaging_id': fields.many2one('product.packaging', 'Packaging',
+        'packaging_id': fields.many2one('product.packaging', 'Imballo',
             ondelete='set null'),
         # ---------------------------------------------------------------------
         # TODO used for calculate packaging? XXX not used for now
@@ -99,7 +102,8 @@ class SaleOrderLine(orm.Model):
     """
     _inherit = 'sale.order.line'
 
-    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+    def product_id_change(
+            self, cr, uid, ids, pricelist, product, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False,
             fiscal_position=False, flag=False, context=None):
@@ -153,4 +157,3 @@ class SaleOrderLine(orm.Model):
         # TODO remove?
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),
         }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
