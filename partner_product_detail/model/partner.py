@@ -128,8 +128,8 @@ class SaleOrderLine(orm.Model):
                 'alias_id': False,
                 'price_unit': False,
                 'product_packaging': False,
-                'load_qty': False,  # XXX remove?
-                # TODO
+                'load_qty': False,  # todo remove?
+                # todo
                 })
             return res
 
