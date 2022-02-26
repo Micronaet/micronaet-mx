@@ -58,7 +58,8 @@ class ResPartnerPricelistProduct(orm.Model):
         'alias_id': fields.many2one('product.product', 'Alias'),
         'alias_name': fields.char(
             'Alias testo', size=50,
-            help='Forzatura testuale del prodotto alias',
+            help='Forzatura testuale del prodotto alias qualora non esistesse'
+                 'il prodotto fisico',
         ),
         'date': fields.date('Data'),
         'deadline': fields.date('Scadenza'),
