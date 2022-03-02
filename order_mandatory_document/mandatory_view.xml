@@ -6,7 +6,7 @@
             <field name="name">Order docs</field>
             <field name="model">sale.order.docs</field>
             <field name="arch" type="xml">
-                <form string="Order docs" version="7.0">        
+                <form string="Order docs" version="7.0">
                     <sheet>
                         <group col="4" colspan="4">
                             <field name="name" colspan="4"/>
@@ -15,7 +15,7 @@
                             <separator string="Note" colspan="4" />
                             <field name="note" colspan="4" nolabel="1"/>
                         </group>
-                    </sheet>        
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -23,7 +23,7 @@
             <field name="name">Order docs</field>
             <field name="model">sale.order.docs</field>
             <field name="arch" type="xml">
-                <tree string="Order docs">        
+                <tree string="Order docs">
                     <field name="name" />
                     <field name="sequence" />
                     <field name="mandatory" />
@@ -44,7 +44,7 @@
                     <button name="dummy_button" string="Docs error" type="object" icon="gtk-missing-image" attrs="{'invisible': [('extra_doc_error', '=', False)]}" />
                 </field>
             </field>
-        </record>     
+        </record>
         <record model="ir.ui.view" id="view_order_mandatory_docs_tree">
             <field name="name">Order extra docs</field>
             <field name="model">sale.order</field>
@@ -57,20 +57,21 @@
                     <button name="dummy_button" string="Docs error" type="object" icon="gtk-missing-image" attrs="{'invisible': [('extra_doc_error', '=', False)]}" />
                 </field>
             </field>
-        </record>     
-        
+        </record>
+
+
         <record model="ir.ui.view" id="view_sale_order_docs_order_form">
             <field name="name">Order extra docs</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
-            <field name="arch" type="xml">                
+            <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page" position="after">
                     <page string="Extra docs">
-                        <group colspan="4" col="4">    
-                            <button name="load_from_partner" string="Load from partner" type="object" />    
-                            <button name="load_from_list" string="Load from list" type="object" />                       
+                        <group colspan="4" col="4">
+                            <button name="load_from_partner" string="Load from partner" type="object" />
+                            <button name="load_from_list" string="Load from list" type="object" />
                             <field name="order_docs_ids" colspan="4" nolabel="1">
-                                <tree editable="bottom" colspan="4" >
+                                <tree editable="bottom" colspan="4" colors="green: present == True">
                                     <field name="sequence" />
                                     <field name="mandatory" />
                                     <field name="present" />
@@ -86,14 +87,14 @@
                                         <field name="docs_id" />
                                         <field name="note"/>
                                      </group>
-                                  </sheet>      
-                                </form>  
-                            </field>                                 
-                        </group>     
+                                  </sheet>
+                                </form>
+                            </field>
+                        </group>
                     </page>
-                </xpath>                
+                </xpath>
             </field>
-       </record>         
+       </record>
 
         <!--INHERIT res.partner-->
         <record id="view_res_partner_order_docs_parter_form" model="ir.ui.view">
@@ -103,7 +104,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@string='Contacts']" position="after">
                     <page string="Order docs" attrs="{'invisible': [('is_company','=',False)]}">
-                        <button name="load_from_list" string="Load from list" type="object" />                       
+                        <button name="load_from_list" string="Load from list" type="object" />
                         <field name="order_docs_ids" colspan="4" nolabel="1">
                             <tree editable="bottom" colspan="4" >
                                 <field name="sequence" />
@@ -119,10 +120,10 @@
                                     <field name="docs_id" />
                                     <field name="note" />
                                  </group>
-                              </sheet>      
+                              </sheet>
                             </form>
                         </field>
-                    </page>                    
+                    </page>
                 </xpath>
             </field>
         </record>
@@ -135,13 +136,13 @@
             <field name="context">{}</field>
             <field name="domain">[]</field>
         </record>
-        <menuitem 
-            parent="base.menu_base_config" 
-            id="menu_sale_oder_docs_form" 
+        <menuitem
+            parent="base.menu_base_config"
+            id="menu_sale_oder_docs_form"
             action="action_sale_oder_docs"
-            sequence="50"            
+            sequence="50"
             />
-        
+
     </data>
 </openerp>
 

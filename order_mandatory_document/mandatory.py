@@ -69,6 +69,7 @@ class SaleOrderDocsOrder(osv.osv):
         'present': fields.boolean('Present (done)'),
         }
 
+
 class SaleOrderDocsPartner(osv.osv):
     """ Document mandatory attached to order
     """
@@ -84,6 +85,7 @@ class SaleOrderDocsPartner(osv.osv):
         'mandatory': fields.boolean('Mandatory for customer'),
         'note': fields.text('Note'),
         }
+
 
 class SaleOder(osv.osv):
     """ Sale order documents
@@ -106,13 +108,13 @@ class SaleOder(osv.osv):
 
         # Load current list of docs:
         current_record = self.browse(cr, uid, ids, context=context)[0]
-        current_docs = [item.docs_id.id for item in \
-            current_record.order_docs_ids]
+        current_docs = [
+            item.docs_id.id for item in current_record.order_docs_ids]
 
         # Load origin list:
         if mode == 'partner':
             if not current_record.partner_id:
-                return True # TODO alert or delete all?
+                return True  # todo alert or delete all?
             partner_id = current_record.partner_id.id
             partner_ids = partner_pool.search(cr, uid, [
                 ('partner_id', '=', partner_id)], context=context)
