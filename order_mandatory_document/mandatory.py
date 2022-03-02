@@ -62,11 +62,11 @@ class SaleOrderDocsOrder(osv.osv):
 
     _columns = {
         'sequence': fields.integer('Seq.'),
-        'order_id': fields.many2one('sale.order', 'Order'),
-        'docs_id': fields.many2one('sale.order.docs', 'Document'),
-        'mandatory': fields.boolean('Mandatory for order'),
+        'order_id': fields.many2one('sale.order', 'Ordine'),
+        'docs_id': fields.many2one('sale.order.docs', 'Documento'),
+        'mandatory': fields.boolean('Obbligatori per ordine'),
         'note': fields.text('Note'),
-        'present': fields.boolean('Present (done)'),
+        'present': fields.boolean('Presente (fatto)'),
         }
 
 
