@@ -319,7 +319,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # Load product:
                 (load.product_id, load.product_qty, 'load'),
                 # Unload pack:
-                (load.package_id, load.ul_qty, 'unload'),
+                (load.package_id.linked_product_id, load.ul_qty, 'unload'),
                 # Unload pallet:
                 (load.pallet_product_id, load.pallet_qty, 'unload'),
                 )
