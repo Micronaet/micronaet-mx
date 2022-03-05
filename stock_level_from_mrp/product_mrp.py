@@ -73,7 +73,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_pool = self.pool.get('product.product')
         _logger.warning('Product found: %s' % len(product_medium))
 
-        log_f = open(os.path.expanduser('~/medium.log'), 'w')
+        os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
+        log_f = open(os.path.expanduser('~/log/medium/medium.log'), 'w')
         log_f.write('ID|Codice|Totale periodo|Giorni periodo|Media|Obsoleto\n')
 
         # todo remove unused medium for product?
@@ -185,7 +186,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         product_obsolete = {}
         product_medium = {}
-        log_f = open(os.path.expanduser('~/unload.log'), 'w')
+        os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
+        log_f = open(os.path.expanduser('~/log/medium/unload.log'), 'w')
         log_f.write('ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
@@ -229,7 +231,8 @@ class MrpProductionWorkcenterLine(osv.osv):
             date_limit['now'],
             ))
         # Note keep same dict of material for collect data and obsolete!
-        log_f = open(os.path.expanduser('~/load.log'), 'w')
+        os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
+        log_f = open(os.path.expanduser('~/log/medium/load.log'), 'w')
         log_f.write('ID|Codice|CL|Data|Mode\n')
         for load in load_pool.browse(cr, uid, load_ids, context=context):
             date = load.date
@@ -326,7 +329,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         product_obsolete = {}
         product_medium = {}
-        log_f = open(os.path.expanduser('~/unload.log'), 'w')
+        os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
+        log_f = open(os.path.expanduser('~/log/medium/unload.log'), 'w')
         log_f.write('ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
