@@ -410,34 +410,37 @@ class ResCompany(osv.osv):
                 ('manual_stock_level', '=', False),
                 ('medium_stock_qty', '>', 0),
                 ],
-             '(default_code or ' ')[0] not in "AB"',
+             '(default_code or " ")[0] not in "AB"',
              ),
             ('Prod. Livelli manuali', [
                 ('manual_stock_level', '=', True),
                 # ('min_stock_level', '>', 0),
                 ],
-             '(default_code or ' ')[0] not in "AB"',
+             '(default_code or " ")[0] not in "AB"',
              ),
             ('Prod. Non presenti', [
                 ('min_stock_level', '<=', 0),
-                ]),
+                ],
+             '(default_code or " ")[0] not in "AB"',
+
+             ),
 
             ('Mat. Livelli auto', [
                 ('manual_stock_level', '=', False),
                 ('medium_stock_qty', '>', 0),
                 ],
-             '(default_code or ' ')[0] in "AB"',
+             '(default_code or " ")[0] in "AB"',
              ),
             ('Mat. Livelli manuali', [
                 ('manual_stock_level', '=', True),
                 # ('min_stock_level', '>', 0),
                 ],
-             '(default_code or ' ')[0] in "AB"',
+             '(default_code or " ")[0] in "AB"',
              ),
             ('Mat. Non presenti', [
                 ('min_stock_level', '<=', 0),
                 ],
-             '(default_code or ' ')[0] in "AB"',
+             '(default_code or " ")[0] in "AB"',
              ),
             )
         # Create all pages:
