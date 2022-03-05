@@ -140,6 +140,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'max_stock_level': False,
                 'ready_stock_level': False,
             }, context=context)
+        return True
 
     def get_form_date(self, now, days):
         """ Utility: Generate text date for evaluation
