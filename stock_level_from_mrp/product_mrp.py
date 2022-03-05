@@ -208,6 +208,13 @@ class MrpProductionWorkcenterLine(osv.osv):
             cr, uid, product_medium, stock_level_days,
             product_obsolete, context=context)
 
+    def button_update_product_level_from_production_IT(
+            self, cr, uid, ids, context=None):
+        """ Button call
+        """
+        return self.update_product_level_from_production_IT(
+            cr, uid, context=context)
+
     def update_product_level_from_production_IT(
             self, cr, uid, context=None):
         """ Update product level from production (only raw materials)
