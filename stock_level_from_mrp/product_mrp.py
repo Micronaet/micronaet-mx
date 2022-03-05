@@ -186,6 +186,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_obsolete = {}
         product_medium = {}
         log_f = open(os.path.expanduser('~/unload.log'), 'w')
+        log_f.write('ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
             for material in job.bom_material_ids:
@@ -207,11 +208,12 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s\n' % (
+                log_f.write('%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
                     job.name,
                     job.production_id.name,
+                    job.real_date_planned,
                 ))
 
         # ---------------------------------------------------------------------
@@ -325,6 +327,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_obsolete = {}
         product_medium = {}
         log_f = open(os.path.expanduser('~/unload.log'), 'w')
+        log_f.write('ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
             for material in job.bom_material_ids:
@@ -346,16 +349,18 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s\n' % (
+                log_f.write('%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
                     job.name,
                     job.production_id.name,
+                    job.real_date_planned,
                 ))
 
         return self.update_product_medium_from_dict(
             cr, uid, product_medium, stock_level_days,
             product_obsolete, context=context)
+
 
 class ResCompany(osv.osv):
     """ Model name: Parameters
