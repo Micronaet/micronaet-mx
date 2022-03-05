@@ -13,10 +13,10 @@
                             <button name="extract_product_level_xlsx" string="Extract excel" type="object" colspan="1" class="oe_highlight"/>
                             <button name="update_product_level_from_production_IT" string="Update IT" type="object" colspan="1" class="oe_highlight"/>
                             <button name="update_product_level_from_production" string="Update MX" type="object" colspan="1" class="oe_highlight"/>
-                            <separator string="Parametri generici:"/>
+                            <separator string="Parametri generici:" colspan="4"/>
                             <field name="stock_level_days" />
                             <field name="stock_level_mode" />
-                            <separator string="Giorno per medie prodotto / materie prime:"/>
+                            <separator string="Obsolescenza per medie prodotto / materie prime:" colspan="4"/>
                             <field name="mrp_stock_level_mp" />
                             <field name="mrp_stock_level_pf" />
                         </group>

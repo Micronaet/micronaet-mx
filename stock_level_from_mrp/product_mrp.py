@@ -161,6 +161,8 @@ class MrpProductionWorkcenterLine(osv.osv):
             'material': self.get_form_date(now, mrp_stock_level_mp),
             'product': self.get_form_date(now, mrp_stock_level_pf),
         }
+
+        # Product force parameters:
         self.get_product_stock_days_force(cr, uid, date_limit, context=context)
 
         job_ids = self.search(cr, uid, [
@@ -233,7 +235,10 @@ class MrpProductionWorkcenterLine(osv.osv):
                 _('Setup the parameter in company form'),
                 )
 
-        # MRP stock level extra parameters:
+        # ---------------------------------------------------------------------
+        # MRP stock level extra parameters (obsolete product manage):
+        # ---------------------------------------------------------------------
+        # Force parameter or used default master days:
         mrp_stock_level_mp = company.mrp_stock_level_mp or stock_level_days
         mrp_stock_level_pf = company.mrp_stock_level_pf or stock_level_days
 
@@ -246,13 +251,17 @@ class MrpProductionWorkcenterLine(osv.osv):
             'material': self.get_form_date(now, mrp_stock_level_mp),
             'product': self.get_form_date(now, mrp_stock_level_pf),
         }
+        # MRP stock level extra parameters:
         self.get_product_stock_days_force(cr, uid, date_limit, context=context)
 
+        # ---------------------------------------------------------------------
+        #                             RAW MATERIALS:
+        # ---------------------------------------------------------------------
         job_ids = self.search(cr, uid, [
             ('real_date_planned', '>=', date_limit['mrp']),
             ('real_date_planned', '<', date_limit['now']),
             ], context=context)
-        _logger.warning('Job found: %s Period: [>=%s <%s]' % (
+        _logger.warning('Job (for material) found: %s Period: [>=%s <%s]' % (
             len(job_ids),
             date_limit['mrp'],
             date_limit['now'],
@@ -273,7 +282,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
 
-                # Check product obsolete (partic. or default):
+                # Check product obsolete (partics or default):
                 if date > date_limit.get(product, date_limit['material']):
                     product_obsolete[product] = False
 
@@ -287,6 +296,58 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product.default_code,
                     job.name,
                     job.production_id.name,
+                ))
+
+        # ---------------------------------------------------------------------
+        #                            FINAL PRODUCT:
+        # ---------------------------------------------------------------------
+        load_ids = self.search(cr, uid, [
+            ('date', '>=', date_limit['mrp']),
+            ('date', '<', date_limit['now']),
+            ], context=context)
+        _logger.warning('Load (for final product) #: %s Period: [>=%s <%s]' % (
+            len(job_ids),
+            date_limit['mrp'],
+            date_limit['now'],
+            ))
+        # Note keep same dict of material for collect data and obsolete!
+        log_f = open(os.path.expanduser('~/load.log'), 'w')
+        log_f.write('ID|Codice|CL|Data|Mode\n')
+        for load in load_pool.browse(cr, uid, load_ids, context=context):
+            date = load.date
+
+            for product, product_qty, mode in (
+                    (load.product_id, load.product_qty, 'load'),  # Load product
+                    (load.package_id, load.ul_qty, 'unload'),  # Unload pack
+                    (load.pallet_product_id, load.pallet_qty, 'unload'),  # Unload pallet
+                    ):
+                if not product or product_qty <= 0:
+                    continue
+                default_code = product.default_code
+
+                if default_code[0] in 'AB':  # not consider raw material
+                    _logger.error(
+                        'Not used product7pack/pallet: %s' % default_code)
+                    continue
+
+                # Obsolete check:
+                if product not in product_obsolete:
+                    product_obsolete[product] = True  # Default obsolete
+
+                # Check product obsolete (partic. or default):
+                if date > date_limit.get(product, date_limit['product']):
+                    product_obsolete[product] = False
+
+                if product in product_medium:
+                    product_medium[product] += product_qty
+                else:
+                    product_medium[product] = product_qty
+                log_f.write('%s|%s|%s|%s|%s\n' % (
+                    product.id,
+                    product.default_code,
+                    load.accounting_cl_code,
+                    date,
+                    mode,
                 ))
 
         return self.update_product_medium_from_dict(
