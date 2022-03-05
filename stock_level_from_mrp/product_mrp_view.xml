@@ -9,9 +9,10 @@
                 <xpath expr="//page[3]" position="before">
                     <page string="Stock level">
                         <group col="4" colspan="4">
-                            <separator string="Stock period stats (MRP setup):" colspan="2"/>
+                            <separator string="Stock period stats (MRP setup):" colspan="1"/>
                             <button name="extract_product_level_xlsx" string="Extract excel" type="object" colspan="1" class="oe_highlight"/>
-                            <button name="update_product_level_from_production" string="Update" type="object" colspan="1" class="oe_highlight"/>
+                            <button name="update_product_level_from_production_IT" string="Update IT" type="object" colspan="1" class="oe_highlight"/>
+                            <button name="update_product_level_from_production" string="Update MX" type="object" colspan="1" class="oe_highlight"/>
                             <field name="stock_level_days" />
                             <field name="stock_level_mode" />
                             <!--<field name="mrp_stock_level_mp" />

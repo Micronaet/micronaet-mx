@@ -75,7 +75,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.warning('Product found: %s' % len(product_medium))
 
         log_f = open(os.path.expanduser('~/medium.log'), 'w')
-        log_f.write('ID|Codice|Totale|Giorni|Media|Obsoleto\n')
+        log_f.write('ID|Codice|Totale periodo|Giorni periodo|Media|Obsoleto\n')
 
         # todo remove unused medium for product?
         for product in product_medium:
