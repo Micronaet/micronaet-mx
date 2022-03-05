@@ -180,7 +180,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             for material in job.bom_material_ids:
                 product = material.product_id
                 default_code = product.default_code or ' '
-                if default_code[0] not in 'AB':  # is product not material!
+                if product.product_type == 'PT':
                     _logger.error(
                         'Not used, unload product: %s' % default_code)
                     continue
@@ -208,7 +208,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             product_obsolete, context=context)
 
     def update_product_level_from_production_IT(
-            self, cr, uid, ids, context=None):
+            self, cr, uid, context=None):
         """ Update product level from production (only raw materials)
             No obsolete management
             05/03/2022
@@ -264,9 +264,10 @@ class MrpProductionWorkcenterLine(osv.osv):
             date = job.real_date_planned
             for material in job.bom_material_ids:
                 product = material.product_id
-                if product.product_type == 'PT':
+                default_code = product.default_code
+                if default_code[0] not in 'AB':  # is product not material!
                     _logger.error(
-                        'Not used, unload product: %s' % product.default_code)
+                        'Not used, unload product: %s' % default_code)
                     continue
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
