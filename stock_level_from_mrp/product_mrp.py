@@ -301,7 +301,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # ---------------------------------------------------------------------
         #                            FINAL PRODUCT:
         # ---------------------------------------------------------------------
-        load_ids = self.search(cr, uid, [
+        load_ids = load_pool.search(cr, uid, [
             ('date', '>=', date_limit['mrp']),
             ('date', '<', date_limit['now']),
             ], context=context)
@@ -315,12 +315,15 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_f.write('ID|Codice|CL|Data|Mode\n')
         for load in load_pool.browse(cr, uid, load_ids, context=context):
             date = load.date
-
-            for product, product_qty, mode in (
-                    (load.product_id, load.product_qty, 'load'),  # Load product
-                    (load.package_id, load.ul_qty, 'unload'),  # Unload pack
-                    (load.pallet_product_id, load.pallet_qty, 'unload'),  # Unload pallet
-                    ):
+            data_list = (
+                # Load product:
+                (load.product_id, load.product_qty, 'load'),
+                # Unload pack:
+                (load.package_id, load.ul_qty, 'unload'),
+                # Unload pallet:
+                (load.pallet_product_id, load.pallet_qty, 'unload'),
+                )
+            for product, product_qty, mode in data_list:
                 if not product or product_qty <= 0:
                     continue
                 default_code = product.default_code
