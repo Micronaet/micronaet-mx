@@ -69,7 +69,12 @@ class MrpProductionWorkcenterLine(osv.osv):
             context=None):
         """ Upload product with dictionary loaded:
             product_obsolete: Not used for now in ID (mark product as obsolete)
+            context parameters: clean_remain >> Reset all remain product m(x)
         """
+        if context is None:
+            context = {}
+        clean_remain = context.get('clean_remain')
+
         product_pool = self.pool.get('product.product')
         _logger.warning('Product found: %s' % len(product_medium))
 
@@ -77,8 +82,9 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_f = open(os.path.expanduser('~/log/medium/medium.log'), 'w')
         log_f.write('ID|Codice|Totale periodo|Giorni periodo|Media|Obsoleto\n')
 
-        # todo remove unused medium for product?
+        done_product_ids = []
         for product in product_medium:
+            done_product_ids.append(product.id)
             total = product_medium[product]
             if product.manual_stock_level:
                 continue
@@ -119,6 +125,20 @@ class MrpProductionWorkcenterLine(osv.osv):
                 #    mode=product.approx_mode),
                 # todo not used for now:
                 # 'stock_obsolete': product_obsolete.get(product, False),
+            }, context=context)
+
+        if clean_remain:
+            product_ids = product_pool.search(cr, uid, [
+                ('id', 'not in', done_product_ids),
+            ], context=context)
+            _logger.warning('Clean remain product resetting medium (# %s' %
+                            len(product_ids))
+            product_pool.write(cr, uid, product_ids, {
+                'medium_origin': False,
+                'medium_stock_qty': False,
+                'min_stock_level': False,
+                'max_stock_level': False,
+                'ready_stock_level': False,
             }, context=context)
 
     def get_form_date(self, now, days):
