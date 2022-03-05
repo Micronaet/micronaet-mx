@@ -69,12 +69,14 @@ class MrpProductionWorkcenterLine(osv.osv):
             context=None):
         """" Upload product with dictionary loaded:
         """
-        # TODO Not used for now:
+        # todo Not used for now:
         product_obsolete = {}
         product_pool = self.pool.get('product.product')
         _logger.warning('Product found: %s' % len(product_medium))
 
         log_f = open(os.path.expanduser('~/medium.log'), 'w')
+
+        # todo remove unused medium for product?
         for product in product_medium:
             total = product_medium[product]
             if product.manual_stock_level:
@@ -126,9 +128,98 @@ class MrpProductionWorkcenterLine(osv.osv):
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production (only raw materials)
             No obsolete management
+
+            05/03/2022
+            NOTE: This procedure was kept but maybe is used only in MX:
+            create update_product_level_from_production_it for Italy
         """
         _logger.info('Updating medium from MRP (raw material)')
         company_pool = self.pool.get('res.company')
+
+        # Get parameters:
+        company_ids = company_pool.search(cr, uid, [], context=context)
+        company = company_pool.browse(
+            cr, uid, company_ids, context=context)[0]
+        stock_level_days = company.stock_level_days
+        if not stock_level_days:
+            raise osv.except_osv(
+                _('Error stock management'),
+                _('Setup the parameter in company form'),
+                )
+
+        # MRP stock level extra parameters:
+        mrp_stock_level_mp = company.mrp_stock_level_mp or stock_level_days
+        mrp_stock_level_pf = company.mrp_stock_level_pf or stock_level_days
+
+        now = datetime.now()
+        date_limit = {
+            # statistic period from keep MRP production:
+            'now': self.get_form_date(now, 0),
+            'mrp': self.get_form_date(now, stock_level_days),
+
+            'material': self.get_form_date(now, mrp_stock_level_mp),
+            'product': self.get_form_date(now, mrp_stock_level_pf),
+        }
+        self.get_product_stock_days_force(cr, uid, date_limit, context=context)
+
+        job_ids = self.search(cr, uid, [
+            ('real_date_planned', '>=', date_limit['mrp']),
+            ('real_date_planned', '<', date_limit['now']),
+            ], context=context)
+        _logger.warning('Job found: %s Period: [>=%s <%s]' % (
+            len(job_ids),
+            date_limit['mrp'],
+            date_limit['now'],
+            ))
+
+        product_obsolete = {}
+        product_medium = {}
+        log_f = open(os.path.expanduser('~/unload.log'), 'w')
+        for job in self.browse(cr, uid, job_ids, context=context):
+            date = job.real_date_planned
+            for material in job.bom_material_ids:
+                product = material.product_id
+                default_code = product.default_code or ' '
+                if default_code[0] not in 'AB':  # is product not material!
+                    _logger.error(
+                        'Not used, unload product: %s' % default_code)
+                    continue
+                if product not in product_obsolete:
+                    product_obsolete[product] = True  # Default obsolete
+
+                # Check product obsolete (partic. or default):
+                if date > date_limit.get(product, date_limit['material']):
+                    product_obsolete[product] = False
+
+                quantity = material.quantity
+                if product in product_medium:
+                    product_medium[product] += quantity
+                else:
+                    product_medium[product] = quantity
+                log_f.write('%s|%s|%s|%s\n' % (
+                    product.id,
+                    product.default_code,
+                    job.name,
+                    job.production_id.name,
+                ))
+
+        return self.update_product_medium_from_dict(
+            cr, uid, product_medium, stock_level_days,
+            product_obsolete, context=context)
+
+    def update_product_level_from_production_IT(
+            self, cr, uid, ids, context=None):
+        """ Update product level from production (only raw materials)
+            No obsolete management
+            05/03/2022
+            NOTE: This procedure was duplicated from:
+            update_product_level_from_production because original procedure
+            was a mix of logic from IT to MX so it's not valid from Italy
+        """
+        _logger.info('Updating medium from MRP (raw material)')
+        company_pool = self.pool.get('res.company')
+        load_pool = self.pool.get('mrp.production.workcenter.load')
+        # Unload from: mrp.production.workcenter.line
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
