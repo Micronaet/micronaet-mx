@@ -244,9 +244,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                     continue
                 default_code = product.default_code
 
-                if default_code[0] in 'AB':  # not consider raw material
+                if default_code[0] == 'A':  # not raw material but package yes
                     _logger.error(
-                        'Not used product7pack/pallet: %s' % default_code)
+                        'Not used product/pack/pallet: %s' % default_code)
                     continue
 
                 # Obsolete check:
