@@ -45,7 +45,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MrpProductionWorkcenterLine(osv.osv):
-    """ Model name: Lavoration
+    """ Model name: Job
     """
 
     _inherit = 'mrp.production.workcenter.line'
@@ -67,10 +67,9 @@ class MrpProductionWorkcenterLine(osv.osv):
     def update_product_medium_from_dict(
             self, cr, uid, product_medium, stock_level_days, product_obsolete,
             context=None):
-        """" Upload product with dictionary loaded:
+        """ Upload product with dictionary loaded:
+            product_obsolete: Not used for now in ID (mark product as obsolete)
         """
-        # todo Not used for now:
-        product_obsolete = {}
         product_pool = self.pool.get('product.product')
         _logger.warning('Product found: %s' % len(product_medium))
 
@@ -117,7 +116,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 #    product.day_max_ready_level * medium_stock_qty,
                 #    approx=product.approx_integer,
                 #    mode=product.approx_mode),
-                'stock_obsolete': product_obsolete.get(product, False),
+                # todo not used for now:
+                # 'stock_obsolete': product_obsolete.get(product, False),
             }, context=context)
 
     def get_form_date(self, now, days):
@@ -125,90 +125,6 @@ class MrpProductionWorkcenterLine(osv.osv):
         """
         from_dt = now - timedelta(days=days)
         return '%s 00:00:00' % from_dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
-
-    def update_product_level_from_production(self, cr, uid, ids, context=None):
-        """ Update product level from production (only raw materials)
-            No obsolete management
-
-            05/03/2022
-            NOTE: This procedure was kept but maybe is used only in MX:
-            create update_product_level_from_production_it for Italy
-        """
-        _logger.info('Updating medium from MRP (raw material)')
-        company_pool = self.pool.get('res.company')
-
-        # Get parameters:
-        company_ids = company_pool.search(cr, uid, [], context=context)
-        company = company_pool.browse(
-            cr, uid, company_ids, context=context)[0]
-        stock_level_days = company.stock_level_days
-        if not stock_level_days:
-            raise osv.except_osv(
-                _('Error stock management'),
-                _('Setup the parameter in company form'),
-                )
-
-        # MRP stock level extra parameters:
-        mrp_stock_level_mp = company.mrp_stock_level_mp or stock_level_days
-        mrp_stock_level_pf = company.mrp_stock_level_pf or stock_level_days
-
-        now = datetime.now()
-        date_limit = {
-            # statistic period from keep MRP production:
-            'now': self.get_form_date(now, 0),
-            'mrp': self.get_form_date(now, stock_level_days),
-
-            'material': self.get_form_date(now, mrp_stock_level_mp),
-            'product': self.get_form_date(now, mrp_stock_level_pf),
-        }
-
-        # Product force parameters:
-        self.get_product_stock_days_force(cr, uid, date_limit, context=context)
-
-        job_ids = self.search(cr, uid, [
-            ('real_date_planned', '>=', date_limit['mrp']),
-            ('real_date_planned', '<', date_limit['now']),
-            ], context=context)
-        _logger.warning('Job found: %s Period: [>=%s <%s]' % (
-            len(job_ids),
-            date_limit['mrp'],
-            date_limit['now'],
-            ))
-
-        product_obsolete = {}
-        product_medium = {}
-        log_f = open(os.path.expanduser('~/unload.log'), 'w')
-        for job in self.browse(cr, uid, job_ids, context=context):
-            date = job.real_date_planned
-            for material in job.bom_material_ids:
-                product = material.product_id
-                default_code = product.default_code or ' '
-                if product.product_type == 'PT':
-                    _logger.error(
-                        'Not used, unload product: %s' % default_code)
-                    continue
-                if product not in product_obsolete:
-                    product_obsolete[product] = True  # Default obsolete
-
-                # Check product obsolete (partic. or default):
-                if date > date_limit.get(product, date_limit['material']):
-                    product_obsolete[product] = False
-
-                quantity = material.quantity
-                if product in product_medium:
-                    product_medium[product] += quantity
-                else:
-                    product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s\n' % (
-                    product.id,
-                    product.default_code,
-                    job.name,
-                    job.production_id.name,
-                ))
-
-        return self.update_product_medium_from_dict(
-            cr, uid, product_medium, stock_level_days,
-            product_obsolete, context=context)
 
     def update_product_level_from_production_IT(
             self, cr, uid, context=None):
@@ -357,6 +273,89 @@ class MrpProductionWorkcenterLine(osv.osv):
             cr, uid, product_medium, stock_level_days,
             product_obsolete, context=context)
 
+    def update_product_level_from_production(self, cr, uid, ids, context=None):
+        """ Update product level from production (only raw materials)
+            No obsolete management
+
+            05/03/2022
+            NOTE: This procedure was kept but maybe is used only in MX:
+            create update_product_level_from_production_it for Italy
+        """
+        _logger.info('Updating medium from MRP (raw material)')
+        company_pool = self.pool.get('res.company')
+
+        # Get parameters:
+        company_ids = company_pool.search(cr, uid, [], context=context)
+        company = company_pool.browse(
+            cr, uid, company_ids, context=context)[0]
+        stock_level_days = company.stock_level_days
+        if not stock_level_days:
+            raise osv.except_osv(
+                _('Error stock management'),
+                _('Setup the parameter in company form'),
+                )
+
+        # MRP stock level extra parameters:
+        mrp_stock_level_mp = company.mrp_stock_level_mp or stock_level_days
+        mrp_stock_level_pf = company.mrp_stock_level_pf or stock_level_days
+
+        now = datetime.now()
+        date_limit = {
+            # statistic period from keep MRP production:
+            'now': self.get_form_date(now, 0),
+            'mrp': self.get_form_date(now, stock_level_days),
+
+            'material': self.get_form_date(now, mrp_stock_level_mp),
+            'product': self.get_form_date(now, mrp_stock_level_pf),
+        }
+
+        # Product force parameters:
+        self.get_product_stock_days_force(cr, uid, date_limit, context=context)
+
+        job_ids = self.search(cr, uid, [
+            ('real_date_planned', '>=', date_limit['mrp']),
+            ('real_date_planned', '<', date_limit['now']),
+            ], context=context)
+        _logger.warning('Job found: %s Period: [>=%s <%s]' % (
+            len(job_ids),
+            date_limit['mrp'],
+            date_limit['now'],
+            ))
+
+        product_obsolete = {}
+        product_medium = {}
+        log_f = open(os.path.expanduser('~/unload.log'), 'w')
+        for job in self.browse(cr, uid, job_ids, context=context):
+            date = job.real_date_planned
+            for material in job.bom_material_ids:
+                product = material.product_id
+                default_code = product.default_code or ' '
+                if product.product_type == 'PT':
+                    _logger.error(
+                        'Not used, unload product: %s' % default_code)
+                    continue
+                if product not in product_obsolete:
+                    product_obsolete[product] = True  # Default obsolete
+
+                # Check product obsolete (partic. or default):
+                if date > date_limit.get(product, date_limit['material']):
+                    product_obsolete[product] = False
+
+                quantity = material.quantity
+                if product in product_medium:
+                    product_medium[product] += quantity
+                else:
+                    product_medium[product] = quantity
+                log_f.write('%s|%s|%s|%s\n' % (
+                    product.id,
+                    product.default_code,
+                    job.name,
+                    job.production_id.name,
+                ))
+
+        return self.update_product_medium_from_dict(
+            cr, uid, product_medium, stock_level_days,
+            product_obsolete, context=context)
 
 class ResCompany(osv.osv):
     """ Model name: Parameters
@@ -407,21 +406,43 @@ class ResCompany(osv.osv):
         # Create WS:
         # ---------------------------------------------------------------------
         ws_list = (
-            ('Livelli auto', [
+            ('Prod. Livelli auto', [
                 ('manual_stock_level', '=', False),
                 ('medium_stock_qty', '>', 0),
-                ]),
-            ('Livelli manuali', [
+                ],
+             '(default_code or ' ')[0] not in "AB"',
+             ),
+            ('Prod. Livelli manuali', [
                 ('manual_stock_level', '=', True),
                 # ('min_stock_level', '>', 0),
-                ]),
-            ('Non presenti', [
+                ],
+             '(default_code or ' ')[0] not in "AB"',
+             ),
+            ('Prod. Non presenti', [
                 ('min_stock_level', '<=', 0),
                 ]),
+
+            ('Mat. Livelli auto', [
+                ('manual_stock_level', '=', False),
+                ('medium_stock_qty', '>', 0),
+                ],
+             '(default_code or ' ')[0] in "AB"',
+             ),
+            ('Mat. Livelli manuali', [
+                ('manual_stock_level', '=', True),
+                # ('min_stock_level', '>', 0),
+                ],
+             '(default_code or ' ')[0] in "AB"',
+             ),
+            ('Mat. Non presenti', [
+                ('min_stock_level', '<=', 0),
+                ],
+             '(default_code or ' ')[0] in "AB"',
+             ),
             )
         # Create all pages:
         excel_format = {}
-        for ws_name, product_filter in ws_list:
+        for ws_name, product_filter, code_filter in ws_list:
             excel_pool.create_worksheet(name=ws_name)
 
             excel_pool.column_width(ws_name, width)
@@ -460,8 +481,11 @@ class ResCompany(osv.osv):
 
             row += 1
             for product in sorted(product, key=lambda x: x.default_code):
+                default_code = product.default_code
+                if not eval(code_filter):  # Post filter (not used in domain)
+                    continue
                 line = [
-                    product.default_code or '',
+                    default_code or '',
                     product.name or '',
                     product.uom_id.name or '',
 
