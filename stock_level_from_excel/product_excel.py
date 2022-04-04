@@ -31,7 +31,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DATETIME_FORMATS_MAP,
     float_compare)
 try:
-    import xlrd
+    import xlrd  # problem in pan!
 except:
     pass
 import pdb
