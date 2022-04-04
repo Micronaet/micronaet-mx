@@ -70,11 +70,12 @@ class ResPartnerPricelistProduct(orm.Model):
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
 
+        'pallet_weight': fields.float('Peso pallet', digits=(16, 2)),
         'packaging_id': fields.many2one(
             'product.packaging', 'Imballo',
             ondelete='set null'),
         # ---------------------------------------------------------------------
-        # TODO used for calculate packaging? XXX not used for now
+        # todo used for calculate packaging? XXX not used for now
         'product_ul': fields.many2one(
             'product.ul', 'Pack',
             ondelete='set null'),
