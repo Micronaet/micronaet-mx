@@ -196,6 +196,7 @@ class SaleOrderLine(orm.Model):
         if setup_ids:  # Update setup:
             setup_pool.write(cr, uid, setup_ids[0], data, context=context)
         else:  # Create new record:
+            pdb.set_trace()
             setup_pool.create(cr, uid, data, context=context)
         return True
 
