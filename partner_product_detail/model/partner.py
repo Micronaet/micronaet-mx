@@ -178,11 +178,12 @@ class SaleOrderLine(orm.Model):
         partner_id = line.order_id.partner_id.id
 
         setup_ids = setup_pool.search(cr, uid, [], context=context)
+        name = line.name.split(']')[-1].strip()
         data = {
             'partner_id': partner_id,
             'product_id': line.product_id.id,
             'alias_id': line.alias_id.id,
-            'alias_name': line.name if line.product_id.name != line.name
+            'alias_name': name if line.product_id.name != name
             else '',
             'price': line.price_unit,
             'pallet_weight': line.pallet_weight,
