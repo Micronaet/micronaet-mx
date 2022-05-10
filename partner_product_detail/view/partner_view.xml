@@ -41,16 +41,15 @@
                 </xpath>
             </field>
         </record>
-       <!--<record model="ir.ui.view" id="view_sale_order_line_default">
+        <record model="ir.ui.view" id="view_sale_order_line_default">
             <field name="name">sale.order.line.default</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='tax_id']" position="before">
-                    <field name="load_qty"/>
+                    <field name="pallet_weight"/>
                 </xpath>
             </field>
-       </record>-->
-
+       </record>
     </data>
 </openerp>
