@@ -196,11 +196,12 @@ class SaleOrderLine(orm.Model):
             'pallet_weight': line.pallet_weight,
             'packaging_id': line.product_packaging.id,
         }
-        if context.get('force_only_mrp'):  # MRP not update price!
-            _logger.warning('Updating only MRP data!')
-            del(data['price'])
 
         if setup_ids:  # Update setup:
+            if context.get('force_only_mrp'):  # MRP not update price!
+                _logger.warning('Updating only MRP data!')
+                del (data['price'])
+
             setup_pool.write(cr, uid, setup_ids[0], data, context=context)
         else:  # Create new record:
             setup_pool.create(cr, uid, data, context=context)
