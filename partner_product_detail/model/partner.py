@@ -183,7 +183,6 @@ class SaleOrderLine(orm.Model):
             ('product_id', '=', product_id),
         ], context=context)
         name = line.name.split(']')[-1].split('\n')[0].strip()
-        pdb.set_trace()
         data = {
             'partner_id': partner_id,
             'product_id': product_id,

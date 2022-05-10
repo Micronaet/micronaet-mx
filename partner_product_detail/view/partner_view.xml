@@ -50,7 +50,7 @@
                     <field name="pallet_weight"/>
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/tree//field[@name='state']" position="after">
-                    <button name="set_sale_line_as_default_for_partner" type="object" string="Imposta come predefinito per il cliente" icon="star-on"/>
+                    <button name="set_sale_line_as_default_for_partner" type="object" string="Imposta come predefinito per il cliente" icon="star-on" confirme="Imposto come default prezzo, peso, imballo quelli della riga?"/>
                 </xpath>
             </field>
        </record>
