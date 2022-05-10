@@ -172,6 +172,8 @@ class SaleOrderLine(orm.Model):
     def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
         """ Default for this partner
         """
+        if context is None:
+            context = {}
         setup_pool = self.pool.get('res.partner.pricelist.product')
 
         line = self.browse(cr, uid, ids, context=context)[0]
@@ -183,6 +185,7 @@ class SaleOrderLine(orm.Model):
             ('product_id', '=', product_id),
         ], context=context)
         name = line.name.split(']')[-1].split('\n')[0].strip()
+
         data = {
             'partner_id': partner_id,
             'product_id': product_id,
@@ -193,10 +196,12 @@ class SaleOrderLine(orm.Model):
             'pallet_weight': line.pallet_weight,
             'packaging_id': line.product_packaging.id,
         }
+        if context.get('force_only_mrp'):  # MRP not update price!
+            del(data['price'])
+
         if setup_ids:  # Update setup:
             setup_pool.write(cr, uid, setup_ids[0], data, context=context)
         else:  # Create new record:
-            pdb.set_trace()
             setup_pool.create(cr, uid, data, context=context)
         return True
 
