@@ -182,7 +182,8 @@ class SaleOrderLine(orm.Model):
             'partner_id': partner_id,
             'product_id': line.product_id.id,
             'alias_id': line.alias_id.id,
-            'alias_name': line.name,
+            'alias_name': line.name if line.product_id.name != line.name
+            else '',
             'price': line.price_unit,
             'pallet_weight': line.pallet_weight,
             'packaging_id': line.product_packaging.id,
