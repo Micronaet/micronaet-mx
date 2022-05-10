@@ -70,7 +70,7 @@ class ResPartnerPricelistProduct(orm.Model):
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
 
-        'pallet_weight': fields.float('Peso pallet', digits=(16, 2)),
+        'pallet_weight': fields.integer('Peso pallet'),
         'packaging_id': fields.many2one(
             'product.packaging', 'Imballo',
             ondelete='set null'),
@@ -170,8 +170,8 @@ class SaleOrderLine(orm.Model):
         return res
 
     _columns = {
-        'pallet_weight': fields.float(
-            'Peso pallet', digits=(16, 2),
+        'pallet_weight': fields.integer(
+            'Peso pallet',
             help='Caricare per questo prodotto il pallet con questi Kg'),
 
         # todo remove?
