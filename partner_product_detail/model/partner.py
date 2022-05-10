@@ -153,8 +153,8 @@ class SaleOrderLine(orm.Model):
                     'price_unit': item.price,
                     # todo use first if not present in customization?
                     'product_packaging': item.packaging_id.id,
-                    'pallet_weight': item.pallet_weight or
-                                     partner_proxy.pallet_weight,
+                    'pallet_weight':
+                        item.pallet_weight or partner_proxy.pallet_weight,
                     # todo also pallet_weight for company if not present?
 
                     'load_qty': item.load_qty,  # todo remove?
