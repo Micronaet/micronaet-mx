@@ -130,6 +130,7 @@ class SaleOrderLine(orm.Model):
                 'alias_id': False,
                 'price_unit': False,
                 'product_packaging': False,
+                'pallet_weight': False,
                 'load_qty': False,  # todo remove?
                 # todo
                 })
@@ -152,6 +153,10 @@ class SaleOrderLine(orm.Model):
                     'price_unit': item.price,
                     # todo use first if not present in customization?
                     'product_packaging': item.packaging_id.id,
+                    'pallet_weight': item.pallet_weight or
+                                     partner_proxy.pallet_weight,
+                    # todo also pallet_weight for company if not present?
+
                     'load_qty': item.load_qty,  # todo remove?
                 }
                 res['value'].update(data)
@@ -165,6 +170,11 @@ class SaleOrderLine(orm.Model):
         return res
 
     _columns = {
+        'pallet_weight': fields.float(
+            'Peso pallet', digits=(16, 2),
+            help='Caricare per questo prodotto il pallet con questi Kg'),
+
         # todo remove?
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),
         }
+
