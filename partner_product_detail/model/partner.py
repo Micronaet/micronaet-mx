@@ -169,6 +169,30 @@ class SaleOrderLine(orm.Model):
                 break
         return res
 
+    def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
+        """ Default for this partner
+        """
+        setup_pool = self.pool.get('res.partner.pricelist.product')
+
+        line = self.browse(cr, uid, ids, context=context)[0]
+        partner_id = line.order_id.partner_id.id
+
+        setup_ids = setup_pool.search(cr, uid, [], context=context)
+        data = {
+            'partner_id': partner_id,
+            'product_id': line.product_id.id,
+            'alias_id': line.alias_id.id,
+            'alias_name': line.name,
+            'price': line.unit_price,
+            'pallet_weight': line.pallet_weight,
+            'packaging_id': line.product_packaging.id,
+        }
+        if setup_ids:  # Update setup:
+            setup_pool.write(cr, uid, setup_ids[0], data, context=context)
+        else:  # Create new record:
+            setup_pool.create(cr, uid, data, context=context)
+        return True
+
     _columns = {
         'pallet_weight': fields.integer(
             'Peso pallet',

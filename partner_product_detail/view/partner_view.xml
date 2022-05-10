@@ -48,6 +48,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page//field[@name='order_line']/form//field[@name='tax_id']" position="before">
                     <field name="pallet_weight"/>
+                    <button name="set_sale_line_as_default_for_partner" type="object" string="Imposta come predefinito per il cliente" icon="star-on"/>
                 </xpath>
             </field>
        </record>
