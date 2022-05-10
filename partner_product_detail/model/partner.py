@@ -178,7 +178,7 @@ class SaleOrderLine(orm.Model):
         partner_id = line.order_id.partner_id.id
 
         setup_ids = setup_pool.search(cr, uid, [], context=context)
-        name = line.name.split(']')[-1].strip()
+        name = line.name.split(']')[-1].split('\n')[0].strip()
         pdb.set_trace()
         data = {
             'partner_id': partner_id,
