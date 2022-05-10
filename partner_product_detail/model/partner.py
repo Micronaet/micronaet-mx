@@ -176,13 +176,17 @@ class SaleOrderLine(orm.Model):
 
         line = self.browse(cr, uid, ids, context=context)[0]
         partner_id = line.order_id.partner_id.id
+        product_id = line.product_id.id
 
-        setup_ids = setup_pool.search(cr, uid, [], context=context)
+        setup_ids = setup_pool.search(cr, uid, [
+            ('partner_id', '=', partner_id),
+            ('product_id', '=', product_id),
+        ], context=context)
         name = line.name.split(']')[-1].split('\n')[0].strip()
         pdb.set_trace()
         data = {
             'partner_id': partner_id,
-            'product_id': line.product_id.id,
+            'product_id': product_id,
             'alias_id': line.alias_id.id,
             'alias_name': name if line.product_id.name != name
             else '',
