@@ -183,7 +183,7 @@ class SaleOrderLine(orm.Model):
             'product_id': line.product_id.id,
             'alias_id': line.alias_id.id,
             'alias_name': line.name,
-            'price': line.unit_price,
+            'price': line.price_unit,
             'pallet_weight': line.pallet_weight,
             'packaging_id': line.product_packaging.id,
         }
