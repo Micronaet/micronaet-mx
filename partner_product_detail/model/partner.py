@@ -197,6 +197,7 @@ class SaleOrderLine(orm.Model):
             'packaging_id': line.product_packaging.id,
         }
         if context.get('force_only_mrp'):  # MRP not update price!
+            _logger.warning('Updating only MRP data!')
             del(data['price'])
 
         if setup_ids:  # Update setup:
