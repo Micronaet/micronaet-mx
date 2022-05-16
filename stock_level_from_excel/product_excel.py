@@ -140,9 +140,9 @@ class MrpProductionWorkcenterLine(osv.osv):
             _logger.error(
                 'Setup the scheduled command with dropbox_link parameter')
         now = datetime.now()
-        now_text = str(now)[:19].replace('/', '_').replace(':', '_')
+        now_text = str(now)[:19].replace(
+            '/', '_').replace(':', '_').replace('-', '_')
         temp_filename = '/tmp/account_status_%s.xlsx' % now_text
-        # filename = '/tmp/account_status.xlsx'
         self.get_file(dropbox_link, temp_filename)
         if not temp_filename:
             raise osv.except_osv(
