@@ -171,7 +171,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_f.write('Selezionati prodotti iniziano per '
                     'D, E, F, G, H, L, M, O, P, R, S, X\n'
-                    'Rimosso quelli che iniziano per OLD e SER\n')
+                    'Rimosso quelli che iniziano per OLD e SER\n\n')
         _logger.warning('Imported product #%s [%s - %s]' % (
             len(product_ids),
             from_text,
@@ -194,7 +194,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 product_obsolete[default_code] = True
 
             if default_code.endswith('X'):
-                log_f.write('%s|Prodotto saltato inizia per X\n' % default_code)
+                log_f.write(
+                    '%s|Prodotto saltato finisce per X\n' % default_code)
                 continue
             if default_code in product_medium:
                 log_f.write('%s|Prodotto doppio\n' % default_code)
@@ -273,8 +274,9 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_f = open('/tmp/excel_medium.log', 'w')
         log_f.write('Codice|Totale|Giorni|Media|Mix|Max|Ready\n')
-        for default_code in product_medium:
-            total, product = product_medium[default_code]
+        for key in product_medium:
+            total, product = product_medium[key]
+            default_code = product.default_code
             if product.manual_stock_level:
                 continue
 
