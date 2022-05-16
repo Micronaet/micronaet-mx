@@ -222,6 +222,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.info('Read XLS file: %s' % temp_filename)
         start = False
         for row in range(ws.nrows):
+            if row == 7799;
+                pdb.set_trace()
             date = get_excel_date(ws.cell(row, columns_position['date']).value)
             if not start and date == start_test:
                 _logger.info('%s. Line not used: Start line' % (row + 1))
