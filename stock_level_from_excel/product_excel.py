@@ -79,36 +79,37 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'DIC': '12',
             }
             if not value:
-                res = ''
-            elif type(value) in (float, ):
-                res_dt = str(xlrd.xldate.xldate_as_datetime(
-                    value, wb.datemode))
-                print(res_dt)
-                pdb.set_trace()
-                res = ''
-            else:
-                value = value.strip()
-                value_item = value.split('/')
-                if len(value_item) == 3:
-                    if len(value_item[2]) == 4:
-                        pass  # correct
-                    elif len(value_item[2]) == 2:
-                        value_item[2] = '20%s' % value_item[2]
-                    elif value_item == '209':
-                        value_item[2] = '2019'
-                    else:
-                        _logger.error('Unmanaged error:')
+                return ''
 
-                    if value_item[1].upper() in months:
-                        value_item[1] = months[value_item[1].upper()]
+            # Preformat for Excel date:
+            if type(value) in (float, int):
+                value = str(xlrd.xldate.xldate_as_datetime(
+                    value, wb.datemode))[:10]
+                value = value.replace('-', '/')
 
-                    res = '%s-%02d-%02d' % (
-                        value_item[2],
-                        int(value_item[1]),
-                        int(value_item[0]),
-                    )
+            res = ''
+            value = value.strip()
+            value_item = value.split('/')
+            if len(value_item) == 3:
+                if len(value_item[2]) == 4:
+                    pass  # correct
+                elif len(value_item[2]) == 2:
+                    value_item[2] = '20%s' % value_item[2]
+                elif value_item == '209':
+                    value_item[2] = '2019'
                 else:
-                    res = value  # Nothing
+                    _logger.error('Unmanaged error:')
+
+                if value_item[1].upper() in months:
+                    value_item[1] = months[value_item[1].upper()]
+
+                res = '%s-%02d-%02d' % (
+                    value_item[2],
+                    int(value_item[1]),
+                    int(value_item[0]),
+                )
+            else:
+                res = value  # Nothing
             # _logger.warning(' ' * 70 + '>>>>>> From %s to %s' % (value, res))
             return res
 
