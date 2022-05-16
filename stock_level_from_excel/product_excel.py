@@ -171,7 +171,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_f.write('Selezionati prodotti iniziano per '
                     'D, E, F, G, H, L, M, O, P, R, S, X\n'
-                    'Rimosso quelli che iniziano per OLD e SER')
+                    'Rimosso quelli che iniziano per OLD e SER\n')
         _logger.warning('Imported product #%s [%s - %s]' % (
             len(product_ids),
             from_text,
@@ -186,7 +186,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             default_code = product.default_code
             if not default_code:
-                log_f.write('%s|Codice prodotto non trovato' % default_code)
+                log_f.write('%s|Codice prodotto non trovato\n' % default_code)
                 _logger.error('Product %s has no code' % product.name)
                 continue
 
@@ -194,13 +194,13 @@ class MrpProductionWorkcenterLine(osv.osv):
                 product_obsolete[default_code] = True
 
             if default_code.endswith('X'):
-                log_f.write('%s|Prodotto saltato inizia per X' % default_code)
+                log_f.write('%s|Prodotto saltato inizia per X\n' % default_code)
                 continue
             if default_code in product_medium:
-                log_f.write('%s|Prodotto doppio' % default_code)
+                log_f.write('%s|Prodotto doppio\n' % default_code)
                 _logger.error('Product double: %s' % default_code)
             else:
-                log_f.write('%s|Prodotto inserito' % default_code)
+                log_f.write('%s|Prodotto inserito\n' % default_code)
                 product_medium[default_code] = [0.0, product]
         log_f.close()
 
@@ -232,7 +232,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             default_code = ws.cell(row, columns_position['default_code']).value
             if not(start and date and default_code in product_medium):
-                log_f.write('%s|%s||Prod. non in lista' % (
+                log_f.write('%s|%s||Prod. non in lista\n' % (
                     row+1, default_code))
 
                 _logger.info(
@@ -245,7 +245,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
             if type(qty) not in (float, int):
-                log_f.write('%s|%s|%s|Q. non usata' % (
+                log_f.write('%s|%s|%s|Q. non usata\n' % (
                     row+1, default_code, qty))
                 _logger.error(
                     '%s. Line not used (qty not float: %s' % (
@@ -263,7 +263,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 default_code,
                 qty,
             ))
-            log_f.write('%s|%s|%s|Usato %s' % (
+            log_f.write('%s|%s|%s|Usato %s\n' % (
                 row + 1, default_code, qty,
                 '(obsoleto)' if product_obsolete[default_code] else ''))
         log_f.close()
@@ -272,7 +272,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.warning('Product found: %s' % len(product_medium))
 
         log_f = open('/tmp/excel_medium.log', 'w')
-        log_f.write('Codice|Totale|Giorni|Media|Mix|Max|Ready')
+        log_f.write('Codice|Totale|Giorni|Media|Mix|Max|Ready\n')
         for default_code in product_medium:
             total, product = product_medium[default_code]
             if product.manual_stock_level:
@@ -292,7 +292,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             ready_stock_level = product.day_max_ready_level * medium_stock_qty
 
             # Log message:
-            log_f.write('%s|%s|%s|%s|%s|%s|%s' % (
+            log_f.write('%s|%s|%s|%s|%s|%s|%s\n' % (
                 default_code, total, stock_level_days, medium_stock_qty,
                 min_stock_level, max_stock_level, ready_stock_level
             ))
