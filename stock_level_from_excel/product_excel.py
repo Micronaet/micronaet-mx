@@ -235,8 +235,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             default_code = ws.cell(row, columns_position['default_code']).value
             if not(start and date and default_code in product_medium):
-                log_f.write('%s|%s||Prod. non in lista\n' % (
-                    row+1, default_code))
+                log_f.write('%s|%s|%s||Prod. non in lista\n' % (
+                    row+1, date, default_code))
 
                 _logger.info(
                     '%s. Line not used (no start or no product watched: %s' % (
@@ -248,8 +248,8 @@ class MrpProductionWorkcenterLine(osv.osv):
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
             if type(qty) not in (float, int):
-                log_f.write('%s|%s|%s|Q. non usata\n' % (
-                    row+1, default_code, qty))
+                log_f.write('%s|%s|%s|%s|Q. non usata\n' % (
+                    row+1, date, default_code, qty))
                 _logger.error(
                     '%s. Line not used (qty not float: %s' % (
                         row + 1,
@@ -266,8 +266,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 default_code,
                 qty,
             ))
-            log_f.write('%s|%s|%s|Usato %s\n' % (
-                row + 1, default_code, qty,
+            log_f.write('%s|%s|%s|%s|Usato %s\n' % (
+                row + 1, date, default_code, qty,
                 '(obsoleto)' if product_obsolete[default_code] else ''))
         log_f.close()
 
