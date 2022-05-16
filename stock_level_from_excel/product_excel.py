@@ -139,15 +139,17 @@ class MrpProductionWorkcenterLine(osv.osv):
         if not dropbox_link:
             _logger.error(
                 'Setup the scheduled command with dropbox_link parameter')
-        filename = '/tmp/account_status.xlsx'
-        self.get_file(dropbox_link, filename)
-        if not filename:
+        now = datetime.now()
+        now_text = str(now)[:19].replace('/', '_').replace(':', '_')
+        temp_filename = '/tmp/account_status_%s.xlsx' % now_text
+        # filename = '/tmp/account_status.xlsx'
+        self.get_file(dropbox_link, temp_filename)
+        if not temp_filename:
             raise osv.except_osv(
                 _('Error stock management'),
                 _('Setup the parameter in company form (input file)'),
                 )
 
-        now = datetime.now()
         from_date = now - timedelta(days=stock_level_days)
         from_obsolete_date = now - timedelta(days=stock_level_days)
         now_text = '%s 00:00:00' % now.strftime(
