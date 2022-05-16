@@ -209,17 +209,17 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # A3. Load data from Excel:
         try:
-            wb = xlrd.open_workbook(filename)
+            wb = xlrd.open_workbook(temp_filename)
         except:
             _logger.error(
-                '[ERROR] Cannot read XLS file: %s' % filename
+                '[ERROR] Cannot read XLS file: %s' % temp_filename
             )
             return False
 
         # A3. Load data from Excel:
         log_f = open('/tmp/excel_data.log', 'w')
         ws = wb.sheet_by_name(sheet_name)
-        _logger.info('Read XLS file: %s' % filename)
+        _logger.info('Read XLS file: %s' % temp_filename)
         start = False
         for row in range(ws.nrows):
             date = get_excel_date(ws.cell(row, columns_position['date']).value)
