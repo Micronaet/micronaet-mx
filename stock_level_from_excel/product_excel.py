@@ -59,7 +59,7 @@ class MrpProductionWorkcenterLine(osv.osv):
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production
         """
-        def get_excel_date(value):
+        def get_excel_date(value, wb=False):
             """ Extract ISO date
             """
             months = {
@@ -78,7 +78,13 @@ class MrpProductionWorkcenterLine(osv.osv):
 
                 'DIC': '12',
             }
-            if not value or type(value) in (float, ):
+            if not value:
+                res = ''
+            elif type(value) in (float, ):
+                res_dt = str(xlrd.xldate.xldate_as_datetime(
+                    value, wb.datemode))
+                print res_dt
+                pdb.set_trace()
                 res = ''
             else:
                 value = value.strip()
