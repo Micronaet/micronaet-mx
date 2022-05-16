@@ -59,7 +59,7 @@ class MrpProductionWorkcenterLine(osv.osv):
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production
         """
-        def get_excel_date(value, wb=False):
+        def get_excel_date(value, wb):
             """ Extract ISO date
             """
             months = {
@@ -83,7 +83,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             elif type(value) in (float, ):
                 res_dt = str(xlrd.xldate.xldate_as_datetime(
                     value, wb.datemode))
-                print res_dt
+                print(res_dt)
                 pdb.set_trace()
                 res = ''
             else:
@@ -230,7 +230,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         for row in range(ws.nrows):
             if row == 7799:
                 pdb.set_trace()
-            date = get_excel_date(ws.cell(row, columns_position['date']).value)
+            date = get_excel_date(
+                ws.cell(row, columns_position['date']).value, wb)
             if not start and date == start_test:
                 _logger.info('%s. Line not used: Start line' % (row + 1))
                 start = True
