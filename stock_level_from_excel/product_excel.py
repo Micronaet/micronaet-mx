@@ -85,7 +85,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             if type(value) in (float, int):
                 value = str(xlrd.xldate.xldate_as_datetime(
                     value, wb.datemode))[:10]
-                value = value.replace('-', '/')
+                return value
 
             res = ''
             value = value.strip()
