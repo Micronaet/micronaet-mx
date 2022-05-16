@@ -232,6 +232,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 continue
 
             default_code = ws.cell(row, columns_position['default_code']).value
+            pdb.set_trace()
             if not(start and date and default_code in product_medium):
                 log_f.write('%s|%s||Prod. non in lista\n' % (
                     row+1, default_code))
