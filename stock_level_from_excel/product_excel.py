@@ -87,7 +87,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                     value, wb.datemode))[:10]
                 return value
 
-            res = ''
             value = value.strip()
             value_item = value.split('/')
             if len(value_item) == 3:
@@ -110,7 +109,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                 )
             else:
                 res = value  # Nothing
-            # _logger.warning(' ' * 70 + '>>>>>> From %s to %s' % (value, res))
             return res
 
         _logger.info('Update marketed product medium (from Excel)')
@@ -123,10 +121,10 @@ class MrpProductionWorkcenterLine(osv.osv):
         # Fixed parameters:
         columns_position = {
             'date': 1,
-            # 'invoice': 7,
             'default_code': 25,
-            # 'name': 21,
             'qty': 27,
+            # 'invoice': 7,
+            # 'name': 21,
             # 'uom': 23,
             # 'price': 24,
         }
@@ -138,10 +136,12 @@ class MrpProductionWorkcenterLine(osv.osv):
         company = company_pool.browse(
            cr, uid, company_ids, context=context)[0]
         stock_level_days = company.stock_level_mm_days
-        # TODO use it:
+        # todo use it:
         stock_level_obsolete_days = company.stock_level_obsolete_days
 
+        # ---------------------------------------------------------------------
         # Generate file:
+        # ---------------------------------------------------------------------
         dropbox_link = context.get('dropbox_link')
         if not dropbox_link:
             _logger.error(
@@ -175,7 +175,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                       'D', 'E', 'F', 'G', 'H', 'L', 'M', 
                       'O', 'P', 'R', 'S', 'X') AND 
                   SUBSTRING (default_code, 1, 3) NOT IN ('OLD', 'SER');
-        ''')
+            ''')
         product_ids = [record[0] for record in cr.fetchall()]
 
         log_f.write('Selezionati prodotti iniziano per '
@@ -200,6 +200,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 continue
 
             if default_code not in product_obsolete:
+                # Starting all obsolete after removed:
                 product_obsolete[default_code] = True
 
             if default_code.endswith('X'):
@@ -237,6 +238,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 continue
 
             if date < from_text or date > now_text:  # Out of period range:
+                log_f.write('%s|%s|%s||Prod. fuori range di data\n' % (
+                    row+1, date, default_code))
                 _logger.info('%s. Line not used out of range %s' % (
                     row + 1, date))
                 continue
@@ -256,7 +259,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
             if type(qty) not in (float, int):
-                log_f.write('%s|%s|%s|%s|Q. non usata\n' % (
+                log_f.write('%s|%s|%s|%s|Q. non usata (non numerica)\n' % (
                     row+1, date, default_code, qty))
                 _logger.error(
                     '%s. Line not used (qty not float: %s' % (
@@ -270,10 +273,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             product_medium[default_code][0] += qty
             _logger.info('%s. Line used %s - %s' % (
-                row + 1,
-                default_code,
-                qty,
-            ))
+                row + 1, default_code, qty,))
             log_f.write('%s|%s|%s|%s|Usato %s\n' % (
                 row + 1, date, default_code, qty,
                 '(obsoleto)' if product_obsolete[default_code] else ''))
@@ -309,28 +309,19 @@ class MrpProductionWorkcenterLine(osv.osv):
                 min_stock_level, max_stock_level, ready_stock_level
             ))
 
-            """
-            if default_code[0] in 'RP':
-                day_min_level = 30
-                day_max_level = 37
-            else:
-                day_min_level = 60
-                day_max_level = 67
-                """
-
             product_pool.write(cr, uid, [product.id], {
+                'product_imported': True,
                 'medium_origin': 'accounting',
                 'medium_stock_qty': medium_stock_qty,
                 'stock_obsolete':  product_obsolete[default_code],
 
-                # TODO Force different values?
-                # 'day_min_level': day_min_level,
-                # 'day_max_level': day_max_level,
-                'product_imported': True,
-
                 'min_stock_level': min_stock_level,
                 'max_stock_level': max_stock_level,
                 'ready_stock_level': ready_stock_level,
+
+                # todo Force different values?
+                # 'day_min_level': day_min_level,
+                # 'day_max_level': day_max_level,
                 }, context=context)
 
         _logger.info('Update marketed product: %s' % len(product_medium))

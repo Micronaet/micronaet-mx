@@ -127,7 +127,8 @@ class ResCompany(osv.osv):
             #    ]),
             (
                 ws_not_present,
-                [('min_stock_level', '<=', 0)],   # todo remove
+                # [('min_stock_level', '<=', 0)],   # todo remove
+                [('medium_stock_qty', '<=', 0)],   # todo remove
                 'product.min_stock_level <= 0.0',  # test
                 ),
             )
