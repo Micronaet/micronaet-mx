@@ -115,10 +115,11 @@ class ResCompany(osv.osv):
         # Create WS:
         # ---------------------------------------------------------------------
         ws_not_present = 'Sin Movimentos'
+        gap = 0.000001
         ws_list = (
             (
                 'ROP',
-                [('medium_stock_qty', '>', 0)],  # todo remove domain not used
+                [('medium_stock_qty', '>', gap)],  # todo remove domain not use
                 'product.medium_stock_qty > 0.0',  # test
                 ),
             # ('Niveles Manuales', [
@@ -128,7 +129,7 @@ class ResCompany(osv.osv):
             (
                 ws_not_present,
                 # [('min_stock_level', '<=', 0)],   # todo remove
-                [('medium_stock_qty', '<=', 0)],   # todo remove
+                [('medium_stock_qty', '<=', gap)],   # todo remove
                 'product.min_stock_level <= 0.0',  # test
                 ),
             )
@@ -185,7 +186,7 @@ class ResCompany(osv.osv):
             # -----------------------------------------------------------------
             # Product selection:
             # -----------------------------------------------------------------
-            product_filter = []  # overridden (product_filter will be removed)
+            # product_filter = []  # overridden (product_filter will be removed)
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
