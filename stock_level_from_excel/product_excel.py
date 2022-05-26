@@ -147,9 +147,9 @@ class MrpProductionWorkcenterLine(osv.osv):
             _logger.error(
                 'Setup the scheduled command with dropbox_link parameter')
         now = datetime.now()
-        now_text = str(now)[:19].replace(
+        now_log = str(now)[:19].replace(
             '/', '_').replace(':', '_').replace('-', '_')
-        temp_filename = '/tmp/account_status_%s.xlsx' % now_text
+        temp_filename = '/tmp/account_status_%s.xlsx' % now_log
         self.get_file(dropbox_link, temp_filename)
         if not temp_filename:
             raise osv.except_osv(
@@ -167,7 +167,7 @@ class MrpProductionWorkcenterLine(osv.osv):
              DEFAULT_SERVER_DATE_FORMAT)
 
         # A1. Search product marketed:
-        log_f = open('/tmp/odoo_select_%s.log' % now_text, 'w')
+        log_f = open('/tmp/odoo_select_%s.log' % now_log, 'w')
         cr.execute('''
             SELECT id from product_product 
             WHERE default_code is not null AND
@@ -184,7 +184,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.warning('Imported product #%s [%s - %s]' % (
             len(product_ids),
             from_text,
-            now_text,
+            now_log,
             ))
 
         # A2. Prepare dict for medium
@@ -225,7 +225,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             return False
 
         # A3. Load data from Excel:
-        log_f = open('/tmp/excel_data_%s.log' % now_text, 'w')
+        log_f = open('/tmp/excel_data_%s.log' % now_log, 'w')
         ws = wb.sheet_by_name(sheet_name)
         _logger.info('Read XLS file: %s' % temp_filename)
         start = False
@@ -282,7 +282,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # A4. Update product medium
         _logger.warning('Product found: %s' % len(product_medium))
 
-        log_f = open('/tmp/excel_medium_%s.log' % now_text, 'w')
+        log_f = open('/tmp/excel_medium_%s.log' % now_log, 'w')
         log_f.write('Codice|Totale|Giorni|Media|Mix|Max|Ready\n')
         for key in product_medium:
             total, product = product_medium[key]
