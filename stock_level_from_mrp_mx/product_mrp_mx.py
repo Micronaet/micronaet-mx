@@ -186,7 +186,7 @@ class ResCompany(osv.osv):
             # -----------------------------------------------------------------
             # Product selection:
             # -----------------------------------------------------------------
-            # product_filter = []  # overridden (product_filter will be removed)
+            # product_filter = [] # overridden (product_filter will be removed)
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
@@ -198,7 +198,7 @@ class ResCompany(osv.osv):
                 cr, uid, product_ids,
                 context=context)
 
-            # TODO add also package data!!!
+            # todo add also package data!!!
             row += 1
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),

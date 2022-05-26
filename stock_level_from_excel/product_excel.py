@@ -167,7 +167,7 @@ class MrpProductionWorkcenterLine(osv.osv):
              DEFAULT_SERVER_DATE_FORMAT)
 
         # A1. Search product marketed:
-        log_f = open('/tmp/odoo_select.log', 'w')
+        log_f = open('/tmp/odoo_select_%s.log' % now_text, 'w')
         cr.execute('''
             SELECT id from product_product 
             WHERE default_code is not null AND
@@ -225,13 +225,14 @@ class MrpProductionWorkcenterLine(osv.osv):
             return False
 
         # A3. Load data from Excel:
-        log_f = open('/tmp/excel_data.log', 'w')
+        log_f = open('/tmp/excel_data_%s.log' % now_text, 'w')
         ws = wb.sheet_by_name(sheet_name)
         _logger.info('Read XLS file: %s' % temp_filename)
         start = False
         for row in range(ws.nrows):
             date = get_excel_date(
                 ws.cell(row, columns_position['date']).value, wb)
+            default_code = ws.cell(row, columns_position['default_code']).value
             if not start and date == start_test:
                 _logger.info('%s. Line not used: Start line' % (row + 1))
                 start = True
@@ -244,7 +245,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                     row + 1, date))
                 continue
 
-            default_code = ws.cell(row, columns_position['default_code']).value
             if not(start and date and default_code in product_medium):
                 log_f.write('%s|%s|%s||Prod. non in lista\n' % (
                     row+1, date, default_code))
@@ -282,7 +282,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # A4. Update product medium
         _logger.warning('Product found: %s' % len(product_medium))
 
-        log_f = open('/tmp/excel_medium.log', 'w')
+        log_f = open('/tmp/excel_medium_%s.log' % now_text, 'w')
         log_f.write('Codice|Totale|Giorni|Media|Mix|Max|Ready\n')
         for key in product_medium:
             total, product = product_medium[key]
