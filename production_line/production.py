@@ -1762,7 +1762,7 @@ class mrp_production_extra(osv.osv):
             max_date = False
 
             for lavoration in production.workcenter_lines:
-                if lavoration.real_date_planned: # TODO remove!
+                if lavoration.real_date_planned: # todo remove!
                     if not min_date or lavoration.real_date_planned[:10] < min_date:
                         min_date=lavoration.real_date_planned[:10]
                     if not max_date or lavoration.real_date_planned[:10] > max_date:
@@ -1839,7 +1839,7 @@ class mrp_production_extra(osv.osv):
             string='Lavoration planned', store=False, multi='planned'),
         'lavoration_all_planned': fields.function(
             _function_lavoration_planned, method=True, type='boolean',
-            string='Is all planned', store=True, multi='planned'),
+            string='Is all planned', store=False, multi='planned'),
         'state_info': fields.function(
             _function_lavoration_planned, method=True, type='char',
             size=30, string='State info', store=False, multi='planned'),
