@@ -265,6 +265,9 @@ class ResCompany(osv.osv):
 
             # todo add also package data!!!
             row += 1
+            print(move_db)
+            pdb.set_trace()
+
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
