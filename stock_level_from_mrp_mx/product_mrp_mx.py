@@ -136,7 +136,7 @@ class ResCompany(osv.osv):
                 deadline_text = ''
             move_db[default_code]['total'] += move.quantity
 
-            move_db[default_code]['comment'] += 'Q. %s %s: %s > %s (%s)%s' % (
+            move_db[default_code]['comment'] += 'Q. %s%s: %s > %s (%s)%s\n' % (
                 move.quantity,
                 uom,
                 move.name,
