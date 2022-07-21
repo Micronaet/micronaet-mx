@@ -318,6 +318,12 @@ class ResCompany(osv.osv):
                     state = _('OK')
                     color_format = excel_format['white']
 
+                if order_deadlined:
+                    color_order_account_qty = (
+                        order_account_qty, excel_format['red']['right'])
+                else:
+                    color_order_account_qty = (
+                        order_account_qty, color_format['right'])
                 line = [
                     product_type,
                     default_code or '',
@@ -328,7 +334,7 @@ class ResCompany(osv.osv):
                     product.approx_mode or '',
 
                     (account_qty, color_format['right']),
-                    (order_account_qty, color_format['right']),
+                    color_order_account_qty,
                     state,
 
                     (product.manual_stock_level or '', color_format['right']),
