@@ -265,9 +265,6 @@ class ResCompany(osv.osv):
 
             # todo add also package data!!!
             row += 1
-            print(move_db)
-            pdb.set_trace()
-
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
@@ -292,8 +289,8 @@ class ResCompany(osv.osv):
 
                 # Supplier Order data:
                 order_data = move_db.get(default_code, {})
-                order_account_qty = order_data.get('total')
-                order_comment = order_data.get('comment')
+                order_account_qty = order_data.get('total', 0.0)
+                order_comment = order_data.get('comment', '')
 
                 order_account_qty += int(account_qty + 0.0)  # todo get order!
                 min_stock_level = int(product.min_stock_level)
