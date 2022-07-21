@@ -41,6 +41,7 @@
         'stock_level_from_mrp',
         ],
     'init_xml': [
+        'security/ir.model.access.csv',
     ],
     'demo': [],
     'data': [],

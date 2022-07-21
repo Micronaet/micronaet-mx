@@ -37,6 +37,27 @@ import pdb
 _logger = logging.getLogger(__name__)
 
 
+class ContipaqStockMove(osv.osv):
+    """ Model name: Contipaq Stock move
+    """
+
+    _name = 'contipaq.stock.move'
+    _rec_name = 'name'
+    _order = 'date'
+
+    _columns = {
+        'name': fields.char('Rif. ordine', size=20),
+        'type': fields.char('Tipo di ordine', size=5),
+        'date': fields.datetime('Data ordine'),
+        'deadline': fields.datetime('Scadenza ordine'),
+        'partner_name': fields.char('Nome partner', size=50),
+
+        'default_code': fields.char('Codice prodotto', size=20),
+        'quantity': fields.float('Q.', size=(10, 5)),
+        'uom': fields.char('UM', size=5),  # T, K, P, (N)
+    }
+
+
 class ResCompany(osv.osv):
     """ Model name: Parameters
     """
@@ -89,7 +110,7 @@ class ResCompany(osv.osv):
 
             u'Codigo', u'Descripcion', u'UM',
             u'Appr.', u'Mod.',
-            u'Invent. actual', u'Status',
+            u'Invent. actual', u'Disponibilidad bruta', u'Status',
 
             u'Manual',
             u'Tiempo de Entrega',
@@ -104,7 +125,7 @@ class ResCompany(osv.osv):
             10,
             15, 30, 5,
             6, 9,
-            10, 10,
+            10, 10, 10,
             5, 8, 8,
             8, 8,
             8, 8,
@@ -142,7 +163,7 @@ class ResCompany(osv.osv):
             excel_pool.column_width(ws_name, width)
             # excel_pool.row_height(ws_name, row_list, height=10)
             excel_pool.freeze_panes(ws_name, 1, 2)
-            excel_pool.column_hidden(ws_name, [4, 5, 9])
+            excel_pool.column_hidden(ws_name, [4, 5, 10])
 
             # -----------------------------------------------------------------
             # Generate format used (first time only):
@@ -166,6 +187,11 @@ class ResCompany(osv.osv):
                     'text': excel_pool.get_format(key='bg_orange'),
                     'right': excel_pool.get_format(key='bg_orange_right'),
                     'number': excel_pool.get_format(key='bg_orange_number'),
+                }
+                excel_format['yellow'] = {
+                    'text': excel_pool.get_format(key='bg_yellow'),
+                    'right': excel_pool.get_format(key='bg_yellow_right'),
+                    'number': excel_pool.get_format(key='bg_yellow_number'),
                 }
                 excel_format['red'] = {
                     'text': excel_pool.get_format(key='bg_red'),
@@ -221,8 +247,12 @@ class ResCompany(osv.osv):
                     continue
 
                 account_qty = int(product.accounting_qty)
+                order_account_qty = int(account_qty + 0.0)  # todo get order!
                 min_stock_level = int(product.min_stock_level)
-                if account_qty < min_stock_level:
+                if account_qty < min_stock_level < order_account_qty:
+                    state = _(u'Bajo Nivel, con ordenes')
+                    color_format = excel_format['yellow']
+                elif account_qty < min_stock_level:
                     state = _(u'Bajo Nivel')
                     color_format = excel_format['orange']
                 elif account_qty < 0:
@@ -242,6 +272,7 @@ class ResCompany(osv.osv):
                     product.approx_mode or '',
 
                     (account_qty, color_format['right']),
+                    (order_account_qty, color_format['right']),
                     state,
 
                     (product.manual_stock_level or '', color_format['right']),
