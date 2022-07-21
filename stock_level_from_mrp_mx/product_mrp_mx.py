@@ -105,6 +105,7 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         # Collect order data:
         # ---------------------------------------------------------------------
+        now = str(datetime.now())[:10]
         move_ids = move_pool.search(cr, uid, [
             ('type', '!=', 'PO'),
             ], context=context)
@@ -115,6 +116,7 @@ class ResCompany(osv.osv):
                 continue
             uom = move.uom
             quantity = move.quantity
+            deadline = move.deadline
             if uom == 'T':
                 quantity *= 1000.0
                 uom = 'K'
@@ -123,6 +125,7 @@ class ResCompany(osv.osv):
                 move_db[default_code] = {
                     'total': 0.0,
                     'comment': '',
+                    'deadlined': False,
                 }
 
             # Update data:
@@ -134,6 +137,8 @@ class ResCompany(osv.osv):
                 str(move.deadline)[:10],
                 move.partner_name,
                 )
+            if deadline < now:
+                move_db[default_code]['deadlined'] = True
 
         # ---------------------------------------------------------------------
         #                          Excel export:
