@@ -129,16 +129,21 @@ class ResCompany(osv.osv):
                 }
 
             # Update data:
+            if deadline < now:
+                move_db[default_code]['deadlined'] = True
+                deadline_text = ' [CADUCADO]'
+            else:
+                deadline_text = ''
             move_db[default_code]['total'] += move.quantity
-            move_db[default_code]['comment'] += 'Q. %s %s >> %s-%s (%s)' % (
+
+            move_db[default_code]['comment'] += 'Q. %s %s: %s > %s (%s)%s' % (
                 move.quantity,
                 uom,
                 move.name,
                 str(move.deadline)[:10],
                 move.partner_name,
+                deadline_text,
                 )
-            if deadline < now:
-                move_db[default_code]['deadlined'] = True
 
         # ---------------------------------------------------------------------
         #                          Excel export:
@@ -296,6 +301,7 @@ class ResCompany(osv.osv):
                 order_data = move_db.get(default_code, {})
                 order_account_qty = order_data.get('total', 0.0)
                 order_comment = order_data.get('comment', '')
+                order_deadlined = order_data.get('deadlined', '')
 
                 order_account_qty += int(account_qty + 0.0)  # todo get order!
                 min_stock_level = int(product.min_stock_level)
