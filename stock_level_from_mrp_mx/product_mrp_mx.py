@@ -100,10 +100,46 @@ class ResCompany(osv.osv):
         # Pool used:
         excel_pool = self.pool.get('excel.writer')
         product_pool = self.pool.get('product.product')
+        move_pool = self.pool.get('contipaq.stock.move')
+
+        # ---------------------------------------------------------------------
+        # Collect order data:
+        # ---------------------------------------------------------------------
+        move_ids = move_pool.search(cr, uid, [
+            ('type', '!=', 'PO'),
+            ], context=context)
+        move_db = {}
+        for move in move_pool.browse(cr, uid, move_ids, context=context):
+            default_code = move.default_code
+            uom = move.uom
+            quantity = move.quantity
+            if uom == 'T':
+                quantity *= 1000.0
+                uom = 'K'
+
+            if default_code not in move_db:
+                move_db[default_code] = {
+                    'total': 0.0,
+                    'comment': '',
+                }
+
+            # Update data:
+            move_db[default_code]['total'] += move.quantity
+            move_db[default_code]['comment'] += 'Q. %s %s >> %s-%s (%s)' % (
+                move.quantity,
+                uom,
+                move.name,
+                str(move.deadline)[:10],
+                move.partner_name,
+                )
 
         # ---------------------------------------------------------------------
         #                          Excel export:
         # ---------------------------------------------------------------------
+        order_col = 8
+        parameters = {
+            'width': 500,
+            }
         # Setup:
         header = [
             u'Tipo',
@@ -247,7 +283,13 @@ class ResCompany(osv.osv):
                     continue
 
                 account_qty = int(product.accounting_qty)
-                order_account_qty = int(account_qty + 0.0)  # todo get order!
+
+                # Supplier Order data:
+                order_data = move_db.get(default_code, {})
+                order_account_qty = order_data.get('total')
+                order_comment = order_data.get('comment')
+
+                order_account_qty += int(account_qty + 0.0)  # todo get order!
                 min_stock_level = int(product.min_stock_level)
                 if account_qty < min_stock_level < order_account_qty:
                     state = _(u'Bajo Nivel, con ordenes')
@@ -291,6 +333,10 @@ class ResCompany(osv.osv):
 
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=color_format['text'])
+                if order_comment:
+                    excel_pool.write_comment(
+                        ws_name, row, order_col, order_comment,
+                        parameters=parameters)
                 row += 1
 
         if save_mode:
