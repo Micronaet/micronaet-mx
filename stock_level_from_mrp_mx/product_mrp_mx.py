@@ -111,6 +111,8 @@ class ResCompany(osv.osv):
         move_db = {}
         for move in move_pool.browse(cr, uid, move_ids, context=context):
             default_code = move.default_code
+            if not default_code:
+                continue
             uom = move.uom
             quantity = move.quantity
             if uom == 'T':
@@ -194,8 +196,6 @@ class ResCompany(osv.osv):
         excel_format = {}
         removed_ids = []
 
-        print move_db
-        pdb.set_trace()
         for ws_name, product_filter, test in ws_list:
             excel_pool.create_worksheet(name=ws_name)
 
