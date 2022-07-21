@@ -193,6 +193,9 @@ class ResCompany(osv.osv):
         # Create all pages:
         excel_format = {}
         removed_ids = []
+
+        print move_db
+        pdb.set_trace()
         for ws_name, product_filter, test in ws_list:
             excel_pool.create_worksheet(name=ws_name)
 
