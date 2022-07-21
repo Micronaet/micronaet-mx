@@ -295,7 +295,7 @@ class ResCompany(osv.osv):
                 order_account_qty += int(account_qty + 0.0)  # todo get order!
                 min_stock_level = int(product.min_stock_level)
                 if account_qty < min_stock_level < order_account_qty:
-                    state = _(u'Bajo Nivel, con ordenes')
+                    state = _(u'En cobertura')
                     color_format = excel_format['yellow']
                 elif account_qty < min_stock_level:
                     state = _(u'Bajo Nivel')
