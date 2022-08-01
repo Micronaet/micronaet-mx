@@ -78,7 +78,7 @@ msgstr "Lavorazioni"
 
 #. module: production_line
 #: model:ir.actions.report.xml,name:production_line.aeroo_mrp_lavoration_weekly_planner
-msgid "Lavoration Weekly Planner"
+msgid "Production Weekly Planner"
 msgstr "Planner settimanale lavorazioni"
 
 #. module: production_line
