@@ -53,7 +53,7 @@ class ContipaqStockMove(osv.osv):
         'partner_name': fields.char('Nome partner', size=50),
 
         'default_code': fields.char('Codice prodotto', size=20),
-        'quantity': fields.float('Q.', size=(10, 5)),
+        'quantity': fields.float('Q.', digits=(10, 5)),
         'uom': fields.char('UM', size=5),  # T, K, P, (N)
     }
 
