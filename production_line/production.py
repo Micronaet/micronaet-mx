@@ -1418,7 +1418,7 @@ class mrp_production_extra(osv.osv):
                 of_deadline = supplier_order['DTT_SCAD'].strftime('%Y-%m-%d')
 
                 q = float(supplier_order['NQT_RIGA_O_PLOR'] or 0.0) * (
-                    1.0 / supplier_order['NCF_CONV']\
+                    1.0 / supplier_order['NCF_CONV']
                         if supplier_order['NCF_CONV'] else 1.0)
                 if of_deadline not in supplier_orders[ref]: # TODO test UM
                     supplier_orders[ref][of_deadline] = q
@@ -1493,7 +1493,7 @@ class mrp_production_extra(osv.osv):
                 table[element[1]][1] -= line.product_uom_qty or 0.0
 
         # ---------------------------------------------------------------------
-        #                   Get material list from Lavoration order
+        #               Get material list from Lavoration order
         # ---------------------------------------------------------------------
         # Populate cols:
         lavoration_ids = lavoration_pool.search(cr, uid, [
@@ -1548,7 +1548,7 @@ class mrp_production_extra(osv.osv):
                 element = ('M: %s [%s]%s' % (
                     product.name,
                     default_code,
-                    ' <b>%s t.</b>' % (media),
+                    ' <b>%s t.</b>' % (media, ),
                     ), product.id)
                 if element not in rows:
                     rows.append(element)
@@ -1623,6 +1623,7 @@ class mrp_production_extra(osv.osv):
         if row in table:
             return (table[row][col], minimum.get(row, 0.0))
         return (0.0, 0.0)
+
 
     # -----------------
     # Utility function:

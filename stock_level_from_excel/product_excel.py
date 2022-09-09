@@ -120,9 +120,9 @@ class MrpProductionWorkcenterLine(osv.osv):
         # ---------------------------------------------------------------------
         # Fixed parameters:
         columns_position = {
-            'date': 1,
-            'default_code': 25,
-            'qty': 27,
+            'date': 1,  # INVOICE
+            'default_code': 27,  # CODE
+            'qty': 29,  # QTY
             # 'invoice': 7,
             # 'name': 21,
             # 'uom': 23,
