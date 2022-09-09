@@ -139,6 +139,7 @@ class res_company_send_mail(osv.osv):
         smtp.quit()
         return True
 
+
 class sale_order_add_extra(osv.osv):
     """ Create import scheduled action
         Add extra field for manage termporary order in account program (for
@@ -607,12 +608,14 @@ class sale_order_add_extra(osv.osv):
             ('planned', 'Planned for delivery'),
             ('deleted', 'Deleted'),   # Not used (order vanished when delete order)
             ('close', 'Close'),       # Not used (order vanished when delete order)
-        ],'Accounting state', select=True, readonly=True), }
+        ],'Accounting state', select=True, readonly=True),
+    }
 
     _defaults = {
         'accounting_order': lambda *x: False,
         'accounting_state': lambda *x: 'new',
         }
+
 
 class sale_order_line_extra(osv.osv):
     """ Create extra fields in sale.order.line obj
@@ -1046,43 +1049,43 @@ class mrp_production_workcenter_line_extra(osv.osv):
         """ Update or create record in history of lavoration
             (workcenter-product parameters)
         """
-         try:
-             history_pool = self.pool.get('mrp.workcenter.history')
-             production_pool = self.pool.get('mrp.production')
+        try:
+            history_pool = self.pool.get('mrp.workcenter.history')
+            production_pool = self.pool.get('mrp.production')
 
-             production_id = vals.get('production_id',False)
-             workcenter_id = vals.get('workcenter_id',False)
+            production_id = vals.get('production_id',False)
+            workcenter_id = vals.get('workcenter_id',False)
 
-             # Test if workcenbter is child (if so take parent for save hist.)
-             wc_proxy = self.pool.get('mrp.workcenter').browse(
-                cr, uid, workcenter_id, context=context)
-             if wc_proxy.parent_workcenter_id:
-                 workcenter_id = wc_proxy.parent_workcenter_id.id
+            # Test if workcenbter is child (if so take parent for save hist.)
+            wc_proxy = self.pool.get('mrp.workcenter').browse(
+               cr, uid, workcenter_id, context=context)
+            if wc_proxy.parent_workcenter_id:
+                workcenter_id = wc_proxy.parent_workcenter_id.id
 
-             if not production_id:
-                 return False # error
-             product_id = production_pool.browse(
+            if not production_id:
+                return False # error
+            product_id = production_pool.browse(
                 cr, uid, production_id, context=context).product_id.id
 
-             data = {
-                 'product_id': product_id,
-                 'workcenter_id': workcenter_id,
-                 'single_cycle_duration': vals.get('single_cycle_duration',False),
-                 'single_cycle_qty': vals.get('single_cycle_qty',False),
-             }
+            data = {
+                'product_id': product_id,
+                'workcenter_id': workcenter_id,
+                'single_cycle_duration': vals.get('single_cycle_duration',False),
+                'single_cycle_qty': vals.get('single_cycle_qty',False),
+            }
 
-             item_ids = history_pool.search(cr, uid, [
-                 ('product_id', '=', product_id),
-                 ('workcenter_id', '=', workcenter_id),
-             ], context=context)
+            item_ids = history_pool.search(cr, uid, [
+                ('product_id', '=', product_id),
+                ('workcenter_id', '=', workcenter_id),
+            ], context=context)
 
-             if item_ids:
-                 res = history_pool.write(cr, uid, item_ids, data, context=context)
-             else:
-                 res_id = history_pool.create(cr, uid, data, context=context)
-         except:
-             return False # manage error?
-         return True
+            if item_ids:
+                res = history_pool.write(cr, uid, item_ids, data, context=context)
+            else:
+                res_id = history_pool.create(cr, uid, data, context=context)
+        except:
+            return False # manage error?
+        return True
 
     # -----------------
     # Utility function:
