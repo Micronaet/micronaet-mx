@@ -103,7 +103,25 @@ class ResCompany(osv.osv):
         move_pool = self.pool.get('contipaq.stock.move')
 
         # ---------------------------------------------------------------------
-        # Collect order data:
+        # Log system:
+        # ---------------------------------------------------------------------
+        log_file = {
+            'contipaq': open('/tmp/ROP_contipaq.csv', 'w'),
+            'used': open('/tmp/ROP_used.csv', 'w'),
+            'not_used': open('/tmp/ROP_not_used.csv', 'w'),
+        }
+
+        def save_log(mode, message):
+            """ Save log data on file:
+            """
+            message = '%s\n' % message
+            try:
+                log_file[mode].write(message)
+            except:
+                _logger.error('Error writing log: %s' % message)
+
+        # ---------------------------------------------------------------------
+        # Collect order data (Contipaq mode):
         # ---------------------------------------------------------------------
         now = str(datetime.now())[:10]
         move_ids = move_pool.search(cr, uid, [
@@ -127,6 +145,14 @@ class ResCompany(osv.osv):
                     'comment': '',
                     'deadlined': False,
                 }
+
+                # -------------------------------------------------------------
+                # Logging mode:
+                # -------------------------------------------------------------
+                save_log(
+                    'contipaq',
+                    '%s|%s|%s|%s' % (default_code, uom, quantity, deadline),
+                )
 
             # Update data:
             if deadline < now:
@@ -353,6 +379,15 @@ class ResCompany(osv.osv):
 
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=color_format['text'])
+
+                # -------------------------------------------------------------
+                # Logging mode:
+                # -------------------------------------------------------------
+                save_log(
+                    'used',
+                    '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                )
+
                 if order_comment:
                     excel_pool.write_comment(
                         ws_name, row, order_col, order_comment,
