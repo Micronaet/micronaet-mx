@@ -228,8 +228,7 @@ class ResCompany(osv.osv):
             (
                 ws_not_present,
                 [('medium_stock_qty', '<=', gap)],   # todo remove
-                # 10/10/2022 removed to keep all in no medium
-                'True',  # 'product.min_stock_level <= 0.0',  # test
+                'product.min_stock_level <= 0.0',  # test
                 ),
             )
         # Create all pages:
