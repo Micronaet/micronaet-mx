@@ -140,19 +140,23 @@ class ResCompany(osv.osv):
                 uom = 'K'
 
             if default_code not in move_db:
+                new = 'NUOVO'
                 move_db[default_code] = {
                     'total': 0.0,
                     'comment': '',
                     'deadlined': False,
                 }
+            else:
+                new = 'VECCHIO'
 
-                # -------------------------------------------------------------
-                # Logging mode:
-                # -------------------------------------------------------------
-                save_log(
-                    'contipaq',
-                    '%s|%s|%s|%s' % (default_code, uom, quantity, deadline),
-                )
+            # -----------------------------------------------------------------
+            # Logging mode:
+            # -----------------------------------------------------------------
+            save_log(
+                'contipaq',
+                '%s|%s|%s|%s|%s' % (
+                    default_code, uom, quantity, deadline, new),
+            )
 
             # Update data:
             if deadline < now:
