@@ -125,7 +125,7 @@ class ResCompany(osv.osv):
         # ---------------------------------------------------------------------
         now = str(datetime.now())[:10]
         move_ids = move_pool.search(cr, uid, [
-            ('type', '!=', 'PO'),
+            ('type', '!=', 'PO'),  # Comes from purchase order
             ], context=context)
         move_db = {}
         for move in move_pool.browse(cr, uid, move_ids, context=context):
@@ -227,9 +227,9 @@ class ResCompany(osv.osv):
             #    ]),
             (
                 ws_not_present,
-                # [('min_stock_level', '<=', 0)],   # todo remove
                 [('medium_stock_qty', '<=', gap)],   # todo remove
-                'product.min_stock_level <= 0.0',  # test
+                # 10/10/2022 removed to keep all in no medium
+                'False',  # 'product.min_stock_level <= 0.0',  # test
                 ),
             )
         # Create all pages:
