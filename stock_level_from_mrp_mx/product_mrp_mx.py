@@ -386,10 +386,16 @@ class ResCompany(osv.osv):
                 # -------------------------------------------------------------
                 # Logging mode:
                 # -------------------------------------------------------------
-                save_log(
-                    'used',
-                    '>> %s|%s|%s' % (ws_name, default_code, account_qty),
-                )
+                if ws_name != ws_not_present:
+                    save_log(
+                        'not_used',
+                        '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                    )
+                else:
+                    save_log(
+                        'used',
+                        '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                    )
 
                 if order_comment:
                     excel_pool.write_comment(
