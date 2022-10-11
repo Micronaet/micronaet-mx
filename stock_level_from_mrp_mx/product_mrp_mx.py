@@ -109,6 +109,7 @@ class ResCompany(osv.osv):
             'contipaq': open('/tmp/ROP_contipaq.csv', 'w'),
             'used': open('/tmp/ROP_used.csv', 'w'),
             'not_used': open('/tmp/ROP_not_used.csv', 'w'),
+            'pre_not_used': open('/tmp/ROP_pre_not_used.csv', 'w'),
         }
 
         def save_log(mode, message):
@@ -307,6 +308,12 @@ class ResCompany(osv.osv):
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
+                if ws_name == ws_not_present:
+                    save_log(
+                        'pre_not_used',
+                        '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                    )
+
                 if not eval(test):
                     continue
 
@@ -386,7 +393,7 @@ class ResCompany(osv.osv):
                 # -------------------------------------------------------------
                 # Logging mode:
                 # -------------------------------------------------------------
-                if ws_name != ws_not_present:
+                if ws_name == ws_not_present:
                     save_log(
                         'not_used',
                         '>> %s|%s|%s' % (ws_name, default_code, account_qty),
