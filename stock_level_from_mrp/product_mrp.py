@@ -24,10 +24,6 @@
 import os
 import sys
 import logging
-import openerp
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
-import xlsxwriter
 from openerp.osv import fields, osv, expression
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta

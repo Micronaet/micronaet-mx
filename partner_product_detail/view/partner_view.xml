@@ -7,14 +7,14 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@string='Contacts']" position="after">
-                    <page string="Custom product" attrs="{'invisible': [('is_company','=',False)]}">
+                    <page string="Setup prodotti" attrs="{'invisible': [('is_company','=',False)]}">
                         <field name="pricelist_product_ids" colspan="4" nolabel="1">
                             <!--todo color the line--> <!--colors="red:deadline&lt;datetime.now().strftime('%%Y/%%mm/%%dd')"-->
                             <tree editable="bottom" colspan="4" >
                                 <field name="product_id" />
                                 <field name="alias_id" />
                                 <field name="alias_name" />
-                                <field name="packaging_id" domain="[('product_id', '=', product_id)]"/>
+                                <field name="packaging_id" domain="[('is_active', '=', True), ('product_id', '=', product_id)]"/>
                                 <field name="pallet_weight" />
                                 <!--<field name="load_qty" />-->
                                 <field name="price" />
@@ -27,7 +27,7 @@
                                  <group colspan="4" col="4">
                                     <field name="product_id" />
                                     <field name="alias_id" />
-                                    <field name="packaging_id" domain="[('product_id', '=', product_id)]" />
+                                    <field name="packaging_id" domain="[('is_active', '=', True), ('product_id', '=', product_id)]" />
                                     <!--<field name="load_qty" />-->
                                     <field name="price" />
                                     <field name="date" />

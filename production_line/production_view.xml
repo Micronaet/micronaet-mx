@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
-    <data>        
+    <data>
     <!--mrp.production.material-->
     <record model="ir.ui.view" id="view_mrp_production_material_tree">
         <field name="name">Production material</field>
@@ -15,7 +15,7 @@
                <field name='uom_id'/>
            </tree>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_mrp_production_material_form">
         <field name="name">Production material</field>
         <field name="model">mrp.production.material</field>
@@ -29,25 +29,25 @@
                        <!--<field name='accounting_qty'/>-->
                        <field name='quantity' readonly="True"/>
                        <field name='uom_id'/>
-                   </group>    
-               </sheet>    
+                   </group>
+               </sheet>
            </form>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_mrp_production_material_search">
         <field name="name">Production material</field>
         <field name="model">mrp.production.material</field>
         <field name="arch" type="xml">
             <search string="Material for production">
                 <field name="product_id" string="Product" filter_domain="[('product_id','=',self)]"/>
-                <field name="workcenter_production_id" string="Workcenter" filter_domain="[('workcenter_id','=',self)]"/> 
+                <field name="workcenter_production_id" string="Workcenter" filter_domain="[('workcenter_id','=',self)]"/>
                 <group expand="1" string="Group By...">
                     <filter name="group_workcenter" string="Lavoration" icon="terp-partner" context="{'group_by':'workcenter_production_id'}"/>
                     <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
-                </group>                    
+                </group>
            </search>
         </field>
-    </record>    
+    </record>
     <record model="ir.actions.act_window" id="action_mrp_production_material">
         <field name="name">Lavoration unload</field>
         <field name="res_model">mrp.production.material</field>
@@ -76,7 +76,7 @@
                <field name= 'parameter_time_misc'  widget="float_time"/>
            </tree>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_mrp_workcenter_history_form_view">
         <field name="name">Workcenter lavoration history</field>
         <field name="model">mrp.workcenter.history</field>
@@ -90,46 +90,46 @@
                        <field name='workcenter_id'/>
                        <field name='single_cycle_duration' widget="float_time"/>
                        <field name='single_cycle_qty'/>
-                       
+
                        <separator string="Line-Product parameters:" colspan="4" />
                        <field name= 'parameter_hammer'/>
                        <field name= 'parameter_grid'/>
                        <field name= 'parameter_speed'/>
                        <field name= 'parameter_temperature'/>
                        <field name= 'parameter_time_misc'  widget="float_time"/>
-                       
+
                        <separator string="Parameter note:" colspan="4"/>
                        <field name= 'parameter_note' nolabel="1" colspan="4"/>
-                   </group>    
-               </sheet>    
+                   </group>
+               </sheet>
            </form>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_mrp_workcenter_history_search_view">
         <field name="name">Search workcenter history</field>
         <field name="model">mrp.workcenter.history</field>
         <field name="arch" type="xml">
             <search string="Workcenter history">
                     <field name="product_id" string="Product" filter_domain="[('product_id','=',self)]"/>
-                    <field name="workcenter_id" string="Workcenter" filter_domain="[('workcenter_id','=',self)]"/> 
+                    <field name="workcenter_id" string="Workcenter" filter_domain="[('workcenter_id','=',self)]"/>
 
                     <group expand="1" string="Group By...">
                         <filter name="group_workcenter" string="Workcenter" icon="terp-partner" context="{'group_by':'workcenter_id'}"/>
                         <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
-                    </group>                    
+                    </group>
             </search>
         </field>
-    </record>    
+    </record>
     <record model="ir.actions.act_window" id="action_view_mrp_workcenter_history_form">
         <field name="name">Workcenter history</field>
-        <field name="res_model">mrp.workcenter.history</field>        
+        <field name="res_model">mrp.workcenter.history</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_mrp_workcenter_history_search_view"/>
     </record>
     <menuitem name="Workcenter history" parent="mrp.menu_view_resource_search_mrp" id="menu_mrp_workcenter_history" action="action_view_mrp_workcenter_history_form" sequence="10" />
-    
-    <!--mrp.workcenter--> 
+
+    <!--mrp.workcenter-->
     <record model="ir.ui.view" id="view_mrp_workcenter_tree_view">
         <field name="name">Workcenter history tree</field>
         <field name="model">mrp.workcenter</field>
@@ -140,7 +140,7 @@
                 <field name="parent_workcenter_id" />
             </field>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_mrp_workcenter_form_view">
         <field name="name">Workcenter history</field>
         <field name="model">mrp.workcenter</field>
@@ -152,8 +152,8 @@
 
             <field name="active" position="after">
                 <field name="cost_product_id" groups="production_line.group_production_admin" />
-                <field name="hour_daily_work" />       
-                <field name="parent_workcenter_id" groups="production_line.group_production_admin" />         
+                <field name="hour_daily_work" />
+                <field name="parent_workcenter_id" groups="production_line.group_production_admin" />
             </field>
 
             <xpath expr="/form/notebook/page[@string='General Information']" position="before">
@@ -168,13 +168,13 @@
                            <field name='parameter_grid'/>
                            <field name='parameter_speed'/>
                            <field name='parameter_temperature'/>
-                           <field name='parameter_time_misc'  widget="float_time"/>                           
-                      </tree>                      
+                           <field name='parameter_time_misc'  widget="float_time"/>
+                      </tree>
                    </field>
                </page>
-            </xpath>            
+            </xpath>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_mrp_workcenter_form_establishment_view">
         <field name="name">Workcenter establishment</field>
         <field name="model">mrp.workcenter</field>
@@ -185,8 +185,8 @@
                 <attribute name="readonly">1</attribute>
             </field>
         </field>
-    </record>        
-    
+    </record>
+
     <!--sale.order-->
     <!--TODO No button!!!!-->
     <!--<record model="ir.ui.view" id="view_sale_order_form_booked">
@@ -196,8 +196,8 @@
         <field name="arch" type="xml">
             <field name="date_booked" position="after">
                 <button colspan="1" name="confirm_delivery" type="object" string="Delivery booked" />
-                <field name="accounting_order" invisible="1" />                
-            </field>        
+                <field name="accounting_order" invisible="1" />
+            </field>
         </field>
     </record>-->
     <record model="ir.ui.view" id="view_sale_order_form_extra_fields">
@@ -209,7 +209,7 @@
                <field name="accounting_state" />
             </xpath>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_sale_order_tree_extra_fields">
         <field name="name">Order accounting</field>
         <field name="model">sale.order</field>
@@ -217,10 +217,10 @@
         <field name="arch" type="xml">
             <field name="state" position="before">
                 <field name="accounting_state" /> <!--TODO replace with q. available-->
-            </field>            
+            </field>
         </field>
-    </record>        
-    
+    </record>
+
     <record model="ir.ui.view" id="view_sale_order_line_tree_state">
         <field name="name">State</field>
         <field name="model">sale.order.line</field>
@@ -228,9 +228,9 @@
         <field name="arch" type="xml">
             <field name="state" position="after">
                 <field name="accounting_state" />
-            </field>            
+            </field>
         </field>
-    </record>   
+    </record>
 
     <!--sale.order.line--> <!--TODO sembra non funzionare -->
     <record model="ir.ui.view" id="view_order_form_production_details">
@@ -240,9 +240,9 @@
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="mrp_production_id" />
-            </field>            
+            </field>
         </field>
-    </record>    
+    </record>
 
     <record model="ir.ui.view" id="view_mrp_production_workcenter_graph_hour">
         <field name="name">Workcenter graph</field>
@@ -263,33 +263,33 @@
         <field name="arch" type="xml">
             <field name="state" position="after">
                 <field name="product"/>
-                <field name="name" string="Lavoration number"/>                
+                <field name="name" string="Lavoration number"/>
                 <field name="accounting_sl_code" string="SL"/>
-                
+
                 <filter icon="terp-go-home" name="only_imported" string="With SL" domain="[('accounting_sl_code','!=',False)]" groups="production_line.group_production_admin"/>
                 <newline/>
 
-                <filter icon="terp-go-home" name="MRP_more_yesterday" string="Passed lavorations" 
+                <filter icon="terp-go-home" name="MRP_more_yesterday" string="Passed lavorations"
                     domain="[('real_date_planned','&gt;=',(context_today()-relativedelta(days=4)).strftime('%%Y-%%m-%%d 00:00:00')),('real_date_planned','&lt;=',context_today().strftime('%%Y-%%m-%%d 23:59:59')),]" context="{'group_by':'workcenter_id'}" />
-                <filter icon="terp-go-home" name="MRP_today-1" string="Yestarday lavorations" 
+                <filter icon="terp-go-home" name="MRP_today-1" string="Yestarday lavorations"
                     domain="[('state','not in',('done','cancel')),('real_date_planned','&gt;=',(context_today()-relativedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00')),('real_date_planned','&lt;=',(context_today()-relativedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59')),]" context="{'group_by':'workcenter_id'}" />
-                <filter icon="terp-go-home" name="MRP_today" string="Today lavorations" 
+                <filter icon="terp-go-home" name="MRP_today" string="Today lavorations"
                     domain="[('state','not in',('done','cancel')),('real_date_planned','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')),('real_date_planned','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59'))]" context="{'group_by':'workcenter_id'}"/>
-                <filter icon="terp-go-home" name="MRP_today+1" string="Tomorrow lavorations" 
+                <filter icon="terp-go-home" name="MRP_today+1" string="Tomorrow lavorations"
                     domain="[('state','not in',('done','cancel')),('real_date_planned','&gt;=',(context_today()+relativedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00')),('real_date_planned','&lt;=',(context_today()+relativedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59')),]" context="{'group_by':'workcenter_id'}" />
-                <filter icon="terp-go-home" name="MRP_more_tomorrow" string="Future lavorations" 
+                <filter icon="terp-go-home" name="MRP_more_tomorrow" string="Future lavorations"
                     domain="[('real_date_planned','&gt;=',(context_today()+relativedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00')),('real_date_planned','&lt;=',(context_today()+relativedelta(days=4)).strftime('%%Y-%%m-%%d 23:59:59')),]" context="{'group_by':'workcenter_id'}" />
-                
+
                 <newline/>
                 <filter icon="terp-go-home" name="only_open" string="Only open" domain="[('state','not in',('done','cancel'))]" />
                 <filter icon="terp-go-home" name="to_close_and_unload" string="To close (confirm unload)" domain="[('load_confirmed','=',True),('state','=','startworking')]" />
 
                 <newline/>
                 <field name="real_date_planned" string="From date" filter_domain="[('real_date_planned','&gt;=',self)]"/>
-                <field name="real_date_planned" string="To date" filter_domain="[('real_date_planned','&lt;=',self)]"/>            
-            </field>     
+                <field name="real_date_planned" string="To date" filter_domain="[('real_date_planned','&lt;=',self)]"/>
+            </field>
         </field>
-    </record> 
+    </record>
 
     <record model="ir.ui.view" id="mrp_production_workcenter_line_calendar_planner_view">
         <field name="name">Lavoration default</field>
@@ -302,7 +302,7 @@
 	            <field name="production_id" />
             </calendar>
         </field>
-    </record>    
+    </record>
 
    <!--Short view for establishment team-->
     <record model="ir.ui.view" id="view_product_product_establishment_lite">
@@ -339,11 +339,11 @@
          				<field name="ean13" readonly="1"/>
 				        <field name="active" readonly="1" />
 				        <field name="description_sale" readonly="1" colspan="4"/>
-				    </group>     
+				    </group>
             	</sheet>
-             </form>           
+             </form>
          </field>
-    </record>   
+    </record>
 
     <record model="ir.ui.view" id="default_mrp_production_workcenter_line_view">
         <field name="name">Lavoration default</field>
@@ -368,9 +368,9 @@
 
             <!--Hide header (and sometimes replace)-->
             <xpath expr="/form/sheet/notebook/page/group/group[@string='Actual Production Date']" position="attributes">
-                <attribute name="groups">production_line.group_production_admin</attribute>                
+                <attribute name="groups">production_line.group_production_admin</attribute>
             </xpath>
-            
+
             <field name="date_planned" position="before">
                 <field name="real_date_planned" />
                 <field name="real_date_planned_end" readonly="1" groups="production_line.group_production_admin" />
@@ -380,14 +380,14 @@
             </field>
             <field name="date_planned_end" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </field>            
+            </field>
             <button name="button_done" position="attributes">
                 <attribute name="invisible">1</attribute>
             </button>
             <button name="button_done" position="after">
                 <button name="%(action_confirm_mrp_production_wizard_form)d" string="Completata" states="startworking" type="action" class="oe_highlight" context="{'default_state':'material'}" />
                 <button name="%(action_confirm_mrp_production_wizard_form)d" string="Carichi" states="done" type="action" class="oe_highlight" context="{'default_state':'product'}"/>
-            </button>    
+            </button>
             <field name="sequence" position="attributes">
                  <attribute name="invisible">1</attribute>
             </field>
@@ -403,7 +403,7 @@
             <field name="cycle" position="attributes">
                 <attribute name="on_change">onchange_cycle_values(cycle,single_cycle_duration,single_cycle_qty,real_date_planned,hour,product_qty)</attribute>
             </field>
-            <field name="cycle" position="after"> 
+            <field name="cycle" position="after">
                 <field name="single_cycle_duration" widget="float_time" on_change="onchange_cycle_values(cycle,single_cycle_duration,single_cycle_qty,real_date_planned,hour,product_qty)" />
                 <field name="single_cycle_qty" on_change="onchange_cycle_values(cycle,single_cycle_duration,single_cycle_qty,real_date_planned,hour,product_qty)" />
             </field>
@@ -416,9 +416,9 @@
                 <field name="real_product_qty" sum="total" states="startworking,done" groups="production_line.group_production_admin" />
             </field>
             <xpath expr="/form/sheet/notebook" position="inside">
-                <page string="Material"> 
-			        <group string="Used material (for all loads)" colspan="4" col="4">				              
-                        <button type="object" colspan="2" name="load_materials_from_bom" string="Reload element from BOM" class="oe_highlight" attrs="{'invisible':[('unload_confirmed','=',True)]}"/> 
+                <page string="Material">
+			        <group string="Used material (for all loads)" colspan="4" col="4">
+                        <button type="object" colspan="2" name="load_materials_from_bom" string="Reload element from BOM" class="oe_highlight" attrs="{'invisible':[('unload_confirmed','=',True)]}"/>
                         <button type="object" colspan="2" name="load_materials_from_production" string="Reload from Production" class="oe_highlight" attrs="{'invisible':[('unload_confirmed','=',True)]}"/>
 
                         <field name="unload_confirmed" string="Material sync in accounting" attrs="{'invisible':[('state','!=','startworking')]}"/>
@@ -430,8 +430,8 @@
                                 <field name="product_id" />
                                 <field name="uom_id" readonly="1" />
                                 <field name="quantity" sum="total"/>
-                                <field name="accounting_qty" readonly="1"/>                                
-                            </tree>                                
+                                <field name="accounting_qty" readonly="1"/>
+                            </tree>
 				        </field>
 				        <group colspan="2" col="2">
     				        <separator string="Lavoration note:" colspan="2" />
@@ -441,18 +441,18 @@
 				            <separator string="Anomalies:" colspan="2" />
     				        <field name="anomalie_note" colspan="2" nolabel="1" />
 				        </group>
-				    </group>                
+				    </group>
                 </page>
                 <page string="Load">
-			        <group string="List of partial load">				              			            
+			        <group string="List of partial load">
                         <group colspan="4" col="4">
 				            <field name="load_ids" nolabel="1" colspan="4" context="{'embedded':True, }" />
-				        </group>    
-				    </group>                  
+				        </group>
+				    </group>
 				 </page>
             </xpath>
         </field>
-    </record>  
+    </record>
 
     <!--Establishment locked elements:-->
     <record model="ir.ui.view" id="default_mrp_production_workcenter_line_establishment_view">
@@ -473,10 +473,10 @@
             </field>
             <field name="production_id" position="attributes">
                 <attribute name="groups">production_line.group_production_admin</attribute>
-            </field>            
+            </field>
             <field name="production_state" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </field>            
+            </field>
             <field name="hour" position="attributes">
                 <attribute name="readonly">1</attribute>
             </field>
@@ -499,35 +499,35 @@
             </field>
             <field name="single_cycle_qty" position="attributes">
                 <attribute name="readonly">1</attribute>
-            </field>-->                
+            </field>-->
             <field name="product" position="attributes">
                 <attribute name="context">{'form_view_ref':'production_line.view_product_product_establishment_lite'}</attribute>
             </field>
             <xpath expr="//page[@string='Material']/group/field/tree/field[@name='product_id']" position="attributes">
                 <attribute name="context">{'form_view_ref':'production_line.view_product_product_establishment_lite'}</attribute>
-            </xpath>            
+            </xpath>
         </field>
    </record>
-        
-    <!--mrp.production.workcenter.load-->    
+
+    <!--mrp.production.workcenter.load-->
     <record model="ir.ui.view" id="default_mrp_production_workcenter_load_search_view">
         <field name="name">Lavoration load</field>
         <field name="model">mrp.production.workcenter.load</field>
         <field name="arch" type="xml">
            <search string="Load list">
                 <field name="line_id" string="Lavoration"/>
-                <field name="recycle_product_id" />                
+                <field name="recycle_product_id" />
                 <field name="package_id" />
                 <field name="accounting_cl_code" />
                 <field name="product_code" />
                 <field name="workcenter_line_id" />
 	            <field name="product_id" />
-                
+
                 <!--<field name="wrong" />
                 <field name="recycle" />
                 <field name="partial" />-->
                 <filter icon="terp-go-home" name="cl_check" string="Production check" domain="[('accounting_cl_code','!=',False)]"  context="{'group_by':('date','product_id','production_id')}"/>
-                <newline/>                
+                <newline/>
                 <filter icon="terp-go-home" name="cl" string="CL sync" domain="[('accounting_cl_code','!=',False)]" />
 
                 <filter icon="terp-go-home" name="wrong" string="Wrong" domain="[('wrong','=',True)]" />
@@ -545,10 +545,10 @@
                     <filter name="group_date" string="Date" icon="terp-accessories-archiver" context="{'group_by':'date'}"/>
                     <filter name="group_package" string="Package" icon="terp-accessories-archiver" context="{'group_by':'package_id'}"/>
                     <filter name="group_recycle_product" string="Recycle product" icon="terp-accessories-archiver" context="{'group_by':'recycle_product_id'}"/>
-                </group>                    
-           </search>                                
+                </group>
+           </search>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="default_mrp_production_workcenter_load_tree_view">
         <field name="name">Lavoration load tree</field>
         <field name="model">mrp.production.workcenter.load</field>
@@ -562,12 +562,12 @@
                 <field name="product_qty" sum="total" />
                 <field name="wrong" />
                 <field name="recycle" />
-                <field name="recycle_product_id" />                
+                <field name="recycle_product_id" />
                 <field name="partial" />
                 <field name="package_id" />
                 <field name="ul_qty" />
                 <field name="pallet_qty" string="Pallets"/>
-           </tree>                                
+           </tree>
         </field>
     </record>
     <record model="ir.ui.view" id="default_mrp_production_workcenter_load_tree_readonly_view">
@@ -588,12 +588,12 @@
                 <field name="product_qty" sum="total"  readonly="1"/>
                 <field name="wrong" readonly="1"/>
                 <field name="recycle" readonly="1"/>
-                <field name="recycle_product_id"  readonly="1"/>                
+                <field name="recycle_product_id"  readonly="1"/>
                 <field name="partial" readonly="1"/>
                 <field name="package_id" readonly="1"/>
                 <field name="ul_qty" readonly="1"/>
                 <field name="pallet_qty" string="Pallets" readonly="1"/>
-           </tree>                                
+           </tree>
         </field>
     </record>
     <record model="ir.ui.view" id="default_mrp_production_workcenter_load_form_view">
@@ -613,7 +613,7 @@
                         <field name="accounting_cost" readonly="1" />
                         <field name="accounting_cost_confirmed" readonly="1" />
 
-                        <field name="product_code" />                                    
+                        <field name="product_code" />
                         <field name="product_qty" sum="total" />
 
                         <separator string="Packaging and palleting:" colspan="4"/>
@@ -622,10 +622,10 @@
 
                         <field name="pallet_product_id" />
                         <field name="pallet_qty" />
-                        
+
                         <separator string="Error lavoration:" colspan="4"/>
                         <field name="recycle" />
-                        <field name="recycle_product_id" />                
+                        <field name="recycle_product_id" />
 
                         <field name="wrong" />
                         <field name="partial" />
@@ -634,11 +634,11 @@
                             <field name="wrong_comment" colspan="4" nolabel="1"/>
                         </group>
                     </group>
-                 </sheet>   
-            </form>                                
+                 </sheet>
+            </form>
         </field>
     </record>
-    
+
     <record model="ir.actions.act_window" id="action_mrp_production_workcenter_load">
         <field name="name">Production load</field>
         <field name="res_model">mrp.production.workcenter.load</field>
@@ -648,7 +648,7 @@
         <field name="context">{}</field>
         <field name="domain">[]</field>
     </record>
-    
+
     <record model="ir.ui.view" id="default_mrp_production_workcenter_line_tree_view">
         <field name="name">Lavoration default</field>
         <field name="model">mrp.production.workcenter.line</field>
@@ -666,7 +666,7 @@
             colors="blue:state == 'startworking';geen:state == 'done';grey:state == 'draft';red:(state in ('pause','cancel'))">
                 <attribute name="colors">green:state == 'done';grey:state == 'cancel';blue:state in ('startworking',);orange:state in ('draft') and real_date_planned&gt;=current_date;red:real_date_planned&lt;current_date and state in ('draft', 'confirmed', 'ready')</attribute>
             </xpath>
-            
+
             <!--Hide header -->
             <field name="qty" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -676,10 +676,10 @@
                 <field name="real_product_qty" sum="total" />
                 <field name="accounting_sl_code" string="SL"/>
                 <field name="load_confirmed" invisible="1" />
-                <!--<field name="lavoration_number" />  -->              
+                <!--<field name="lavoration_number" />  -->
             </field>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="default_mrp_production_workcenter_line_establishment_tree_view">
         <field name="name">Lavoration default establishment</field>
         <field name="model">mrp.production.workcenter.line</field>
@@ -690,9 +690,9 @@
                 <attribute name="create">0</attribute>
                 <attribute name="delete">0</attribute>
             </xpath>
-        </field>    
+        </field>
     </record>
-     
+
     <!--mrp.production-->
     <record model="ir.ui.view" id="default_mrp_production_tree_view">
         <field name="name">Production list default</field>
@@ -703,12 +703,12 @@
             <xpath expr="/tree" position="attributes">
                 <attribute name="colors">colors="blue:accounting_state in ('draft',);green:accounting_state in ('production',);red:accounting_state in ('cancel',);black:accounting_state in ('close',);</attribute>
             </xpath>
-            
+
             <field name="product_qty" position="after">
                 <field name="lavoration_planned" />
                 <field name="lavoration_all_planned" />
                 <field name="total_production_loaded" />
-                <!--<field name="total_production_material_anomaly" />                
+                <!--<field name="total_production_material_anomaly" />
                 <field name="total_production_material" />-->
             </field>
 
@@ -720,7 +720,7 @@
                <field name="accounting_state" />
             </field>
         </field>
-    </record>    
+    </record>
 
     <record model="ir.ui.view" id="mrp_production_anomaly_tree_view">
         <field name="name">Production tree anomaly</field>
@@ -742,7 +742,7 @@
 	            <field name="state" invisible="1" />
             </tree>
         </field>
-    </record>        
+    </record>
 
     <record model="ir.actions.act_window" id="action_mrp_production_anomaly_tree">
         <field name="name">Production with anomaly</field>
@@ -773,8 +773,8 @@
                     <button name="dummy_refresh" type="object" icon="gtk-refresh" string="Refresh" attrs="{'invisible':[('accounting_state','in',('cancel','close'))],}" />
 		            <field name="accounting_state" widget="statusbar" statusbar_visible="draft,production,close,cancel" />
 		            <field name="state" invisible="1" />
-	            </header>       
-            </xpath>            
+	            </header>
+            </xpath>
             <field name="product_qty" position="attributes">
                 <attribute name="on_change">on_change_qty_alert()</attribute>
             </field>
@@ -798,7 +798,7 @@
             <xpath expr="/form/sheet/notebook" position="after">
                 <notebook>
 			        <page string="Prodotti Utilizzati">
-				        <group string="Articoli Prodotti">				
+				        <group string="Articoli Prodotti">
                             <button type="object" colspan="2" name="load_materials_from_bom" string="Load element from BOM" class="oe_highlight"/>
                             <newline />
 					        <field name="bom_material_ids" nolabel="1" colspan="4">
@@ -807,16 +807,16 @@
                                     <field name="uom_id" readonly="1" />
                                     <field name="quantity" sum="total"/>
                                     <field name="accounting_qty" />
-                                </tree>                                
+                                </tree>
 					        </field>
 					    </group>
 				    </page>
 			        <page string="Bolle di lavorazione">
-				        <group string="Bolle di lavorazione">				              
+				        <group string="Bolle di lavorazione">
 					        <field name="workcenter_lines" nolabel="1" context="{'default_production_id':id,}">
 					            <tree string="Workcenter lines" colors="blue:state == 'startworking';geen:state == 'done';grey:state == 'draft';red:(state in ('pause','cancel'))">
                                     <field name="name" />
-                                    <field name="real_date_planned" />                                    
+                                    <field name="real_date_planned" />
                                     <field name="name" invisible="1"/>
                                     <field name="workcenter_id"/>
                                     <field name="product_qty" sum="total"/>
@@ -828,19 +828,19 @@
 				        </group>
 			        </page>
 			        <page string="Loads">
-				        <group string="Loads">				              
+				        <group string="Loads">
 					        <field name="load_ids" nolabel="1" readonly="1">
 					        </field>
 				        </group>
 			        </page>
 			        <page string="Righe ordine evase">
-				        <group string="Articoli Prodotti">				              
+				        <group string="Articoli Prodotti">
 					        <field name="order_lines_ids" nolabel="1">
 					            <tree string="OC line">
-                                    <field name="order_id" />                   
+                                    <field name="order_id" />
                                     <field name="name" />
                                     <field name="partner_id" />
-                                    <field name="date_deadline" />                    
+                                    <field name="date_deadline" />
                                     <field name="product_uom_qty" sum="Total" />
                                     <field name="product_uom" string="UOM"/>
                                     <field name="product_packaging" />
@@ -850,23 +850,23 @@
 					            <form string="OC line">
 					                <group colspan="4" col="4">
                                         <field name="sequence" readonly="1" />
-                                        <field name="order_id" readonly="1" />                   
-                                        
+                                        <field name="order_id" readonly="1" />
+
                                         <field name="name" readonly="1"/>
                                         <field name="partner_id" readonly="1"/>
-                                        
+
                                         <field name="product_uom_qty" readonly="1"/>
                                         <field name="product_uom" readonly="1"/>
 
                                         <field name="product_packaging" />
-                                        <field name="date_deadline" readonly="1"/>                    
+                                        <field name="date_deadline" readonly="1"/>
 
                                         <field name="state" invisible="1" />
-                                    </group>    
+                                    </group>
                                 </form>
 					        </field>
 				        </group>
-				        <group string="Package">				              
+				        <group string="Package">
 					        <field name="package_ids" nolabel="1">
 					            <tree string="Package" editable="bottom">
                                     <field name="production_id" invisible="1"/>
@@ -885,8 +885,8 @@
 					        </field>
 				        </group>
 			        </page>
-                </notebook>		
-            </xpath>            
+                </notebook>
+            </xpath>
         </field>
     </record>
 
@@ -900,16 +900,16 @@
             <search string="OC line">
                     <field name="partner_id" string="Partner" filter_domain="[('partner_id','=',self)]"/>
                     <field name="product_id" string="Product" filter_domain="[('product_id','=',self)]"/>
-                    <field name="order_id" string="Order" filter_domain="[('order_id','=',self)]"/> 
+                    <field name="order_id" string="Order" filter_domain="[('order_id','=',self)]"/>
 
                     <separator string="Situation:"/>
                     <filter icon="terp-go-home" name="covered_with_store" string="Covered with store" domain="[('use_accounting_qty','=',True)]"/>
                     <filter icon="terp-go-home" name="covered_with_production" string="Covered with production" domain="[('mrp_production_id','!=',False)]"/>
                     <filter icon="terp-go-home" name="uncovered" string="Uncovered" domain="[('mrp_production_id','=',False),('use_accounting_qty','=',False)]"/>
-                    
+
                     <separator string="Package:"/>
                     <filter icon="terp-go-home" name="unpackaged" string="Without package" domain="[('product_packaging','=',False)]"/>
-                    
+
                     <separator string="Manage Production:"/>
                     <!--<filter icon="terp-go-home" name="to_produce" string="Not to produce" domain="[('to_produce','=',True),('mrp_production_id','=',False)]" />-->
                     <filter icon="terp-go-home" name="Production1" string="Produce (month 0)" domain="['|',('date_deadline','=',False),('date_deadline','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')),('mrp_production_id','=',False),('use_accounting_qty','=',False)]" context="{'group_by':'product_id'}"/><!--('to_produce','=',True),-->
@@ -925,7 +925,7 @@
                         <filter name="group_partner" string="Partner" icon="terp-partner" context="{'group_by':'partner_id'}"/>
                         <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
                         <filter name="group_deadline" string="Deadline" icon="terp-accessories-archiver" context="{'group_by':'date_deadline'}"/>
-                    </group>                    
+                    </group>
             </search>
         </field>
     </record>
@@ -934,17 +934,17 @@
         <field name="model">sale.order.line</field>
         <field name="priority" eval="20"/>
         <field name="arch" type="xml">
-            <tree string="OC line" colors="red:accounting_state=='deleted';black:mandatory_delivery;blue:mrp_production_id"> <!--TODO ;green:to_produce==False--> 
+            <tree string="OC line" colors="red:accounting_state=='deleted';black:mandatory_delivery;blue:mrp_production_id"> <!--TODO ;green:to_produce==False-->
                     <field name="production_line" invisible="1" />
                     <field name="name" />
                     <field name="product_id" />
                     <field name="partner_id" />
                     <!--<field name="duelist_uncovered" invisible="1" />
                     <button name="button_duelist_uncovered" type="object" string="uncovered present" icon="gtk-dialog-error" attrs="{'invisible':[('duelist_uncovered','=',False)]}" />-->
-                    <field name="order_id" />                   
+                    <field name="order_id" />
                     <field name="mrp_production_id" />
-                    <field name="state_info" />                                    
-                    <field name="date_deadline" />                    
+                    <field name="state_info" />
+                    <field name="date_deadline" />
                     <field name="date_delivery" />
                     <field name="mandatory_delivery" invisible="1" />
                     <field name="product_uom" />
@@ -953,8 +953,8 @@
                     <button name="close_with_accounting_store" type="object" string="Use mag." icon="gtk-go-forward" attrs="{'invisible':['|',('use_accounting_qty','=',True),('mrp_production_id','!=',False),]}"/>
                     <field name="use_accounting_qty" invisible="1"/>
                     <!--<field name="accounting_qty" />-->
-                    <field name="qty_available" />                    
-                    <field name="virtual_available" />                    
+                    <field name="qty_available" />
+                    <field name="virtual_available" />
                     <field name="state" invisible="1" />
                     <field name="to_produce" invisible="1" />
                     <field name="accounting_state"/>
@@ -970,38 +970,38 @@
               <sheet string="OC line">
                 <group colspan="4" col="4">
                     <separator string="Header:" colspan="4" />
-                    <field name="order_id" /> 
-                    <field name="date_deadline" />                    
-                </group>   
-                <group colspan="4" col="4">                
+                    <field name="order_id" />
+                    <field name="date_deadline" />
+                </group>
+                <group colspan="4" col="4">
                     <separator string="Line:" colspan="4" />
                     <field name="sequence" />
                     <field name="product_packaging" />
-                    
+
                     <field name="product_id" />
-                    <field name="product_uom_qty" />                    
-                </group>   
-                <group colspan="4" col="6">                
+                    <field name="product_uom_qty" />
+                </group>
+                <group colspan="4" col="6">
                     <field name="accounting_qty" readonly="1"/>
                     <button name="close_with_accounting_store" type="object" string="Use mag." icon="gtk-go-forward" attrs="{'invisible':['|',('use_accounting_qty','=',True),('mrp_production_id','!=',False),]}"/>
                     <field name="use_accounting_qty" />
-                </group>   
+                </group>
                 <group colspan="4" col="4">
                     <field name="state" invisible="1"/>
                     <separator string="Description:" colspan="4" />
                     <field name="name"  />
                     <separator string="Production:" colspan="4" />
-                    <field name="mrp_production_id" domain="[('product_id','=',product_id)]" readonly="1"/> 
+                    <field name="mrp_production_id" domain="[('product_id','=',product_id)]" readonly="1"/>
                     <button name="%(action_assign_mrp_production_wizard_form)d" string="Assign lavoration" type="action" context="{'product_id':product_id}"/>
-                </group>   
+                </group>
                 <group>
                   <separator string="Note" colspan="4"/>
-                </group>   
-              </sheet>  
+                </group>
+              </sheet>
             </form>
         </field>
     </record>
-    
+
     <!-- For SALE MANAGER (delivery) ####################################### -->
     <record model="ir.ui.view" id="view_sale_order_line_search_sale">
         <field name="name">Search OC line</field>
@@ -1011,8 +1011,8 @@
             <search string="OC line">
                 <field name="partner_id" string="Partner" filter_domain="[('partner_id','=',self)]"/>
                 <field name="product_id" string="Product" filter_domain="[('product_id','=',self)]"/>
-                <field name="order_id" string="Order" filter_domain="[('order_id','=',self)]"/>  
-         
+                <field name="order_id" string="Order" filter_domain="[('order_id','=',self)]"/>
+
                 <filter icon="terp-go-home" name="NextM1" string="Deadline month 0" domain="['|',('date_deadline','=',False),('date_deadline','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01'))]" />
                 <filter icon="terp-go-home" name="NextM2" string="Deadline month 1" domain="['|',('date_deadline','=',False),('date_deadline','&lt;',(context_today()+relativedelta(months=2)).strftime('%%Y-%%m-01'))]" />
                 <filter icon="terp-go-home" name="NextM3" string="Deadline month 2" domain="['|',('date_deadline','=',False),('date_deadline','&lt;',(context_today()+relativedelta(months=3)).strftime('%%Y-%%m-01'))]" />
@@ -1024,10 +1024,10 @@
                     <filter name="group_order" string="Order" icon="terp-partner" context="{'group_by':'order_id'}"/>
                     <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
                     <filter name="group_deadline" string="Deadline" icon="terp-partner" context="{'group_by':'date_deadline'}"/>
-                </group>                    
+                </group>
             </search>
         </field>
-    </record>    
+    </record>
     <record model="ir.ui.view" id="view_sale_order_line_tree_sale">
         <field name="name">OC line</field>
         <field name="model">sale.order.line</field>
@@ -1039,8 +1039,8 @@
                     <field name="partner_id" />
                     <!--<field name="duelist_uncovered" invisible="1" />
                     <button name="button_duelist_uncovered" type="object" string="uncovered present" icon="gtk-dialog-error" attrs="{'invisible':[('duelist_uncovered','=',False)]}" />-->
-                    <field name="order_id" />                   
-                    <field name="date_deadline" />                    
+                    <field name="order_id" />
+                    <field name="date_deadline" />
                     <field name="date_delivery" />
                     <field name="mandatory_delivery" />
                     <field name="product_id" />
@@ -1049,12 +1049,12 @@
                     <button name="close_with_accounting_store" type="object" string="Use mag." icon="gtk-go-forward" attrs="{'invisible':['|',('use_accounting_qty','=',True),('mrp_production_id','!=',False),]}"/>
                     <field name="use_accounting_qty" invisible="1"/>
                     <field name="accounting_qty" />
-                    <field name="mrp_production_id" />                                       
-                    <field name="state_info" />                                    
+                    <field name="mrp_production_id" />
+                    <field name="state_info" />
                     <field name="state" invisible="1"/>
             </tree>
         </field>
-    </record>    
+    </record>
     <record model="ir.actions.act_window" id="action_view_sale_order_line_sale">   <!--ALL LINE FROM ACCOUNTING NOT DELETED -->
         <field name="name">OC sales analysis</field>
         <field name="res_model">sale.order.line</field>
@@ -1100,7 +1100,7 @@
         <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form'}</field>
     </record>
     <!--ALL PRODUCTION LINE FROM ACCOUNTING NOT DELETED Month 0-->
-    <record model="ir.actions.act_window" id="action_view_sale_order_line_d10">   
+    <record model="ir.actions.act_window" id="action_view_sale_order_line_d10">
         <field name="name">OC line analysis</field>
         <field name="res_model">sale.order.line</field>
         <field name="view_type">form</field>
@@ -1128,7 +1128,7 @@
         <field name="view_mode">tree,form,graph,calendar</field>
         <field name="search_view_id" ref="view_sale_order_line_search"/>
         <field name="view_id" ref="view_sale_order_line_tree"/>
-        <field name="domain">[('order_state','not in',('draft','sent','cancel')),('supply_method','=','produce'),('mrp_production_id','=',False)]</field> 
+        <field name="domain">[('order_state','not in',('draft','sent','cancel')),('supply_method','=','produce'),('mrp_production_id','=',False)]</field>
         <field name="context">{'form_view_ref':'production_line.view_sale_order_line_form','search_default_Production3':True}</field>
     </record>
 
@@ -1139,9 +1139,9 @@
         <field name="arch" type="xml">
            <field name="name" position="after">
                 <filter icon="terp-go-home" name="only_open" string="Only open" domain="[('accounting_state','in',('draft','production'))]" />
-           </field>    
+           </field>
         </field>
-    </record>   
+    </record>
 
     <record model="ir.actions.act_window" id="action_view_mrp_production">
         <field name="name">Production order open</field>
@@ -1155,7 +1155,7 @@
         <field name="res_model">mrp.production</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form,calendar</field>
-        <field name="context">{'search_default_only_open':1}</field>        
+        <field name="context">{'search_default_only_open':1}</field>
     </record>
     <record model="ir.actions.act_window" id="action_view_mrp_production_incomplete">
         <field name="name">Production order open</field>
@@ -1238,26 +1238,26 @@
          <field name="groups_id" eval="[(6,0,[ref('group_production_admin'),ref('group_production_comunication')])]"/>
        </record>
 
-      <!-- Establishment:  -->      
-       <menuitem name="Establishment" id="root_establishment" sequence="0" 
-           groups="group_production_production"/> 
-          <menuitem name="Production" parent="root_establishment" 
-              id="menu_root_establishment" 
-              sequence="10" />         
-              <menuitem name="Lavoration TODO" parent="menu_root_establishment" 
-                  id="menu_root_establishment_todo" 
+      <!-- Establishment:  -->
+       <menuitem name="Establishment" id="root_establishment" sequence="0"
+           groups="group_production_production"/>
+          <menuitem name="Production" parent="root_establishment"
+              id="menu_root_establishment"
+              sequence="10" />
+              <menuitem name="Lavoration TODO" parent="menu_root_establishment"
+                  id="menu_root_establishment_todo"
                   action="action_view_lavoration_today_todo" sequence="10" />
-                  <menuitem name="Passed" parent="menu_root_establishment_todo" 
-                      id="menu_root_establishment_todo-1" 
+                  <menuitem name="Passed" parent="menu_root_establishment_todo"
+                      id="menu_root_establishment_todo-1"
                       action="action_view_lavoration_today_todo-1" sequence="10" />
-                  <menuitem name="Future" parent="menu_root_establishment_todo" 
-                      id="menu_root_establishment_todo+1" 
+                  <menuitem name="Future" parent="menu_root_establishment_todo"
+                      id="menu_root_establishment_todo+1"
                       action="action_view_lavoration_today_todo+1" sequence="20" />
-          <menuitem name="Report" parent="root_establishment" 
-              id="menu_root_establishment_report" 
-              sequence="20" />         
-                  <menuitem name="Weekly planner" parent="menu_root_establishment_report" 
-                      id="menu_root_establishment_report_week_plan" 
+          <menuitem name="Report" parent="root_establishment"
+              id="menu_root_establishment_report"
+              sequence="20" />
+                  <menuitem name="Weekly planner" parent="menu_root_establishment_report"
+                      id="menu_root_establishment_report_week_plan"
                       action="action_mrp_print_lavoration_week_wizard_view" sequence="10" />
 
        <!-- Production block -->
@@ -1304,6 +1304,6 @@
            <menuitem name="End product load" parent="menu_base_production_root_production_control" id="menu_base_production_root_production_control_load_product" action="action_mrp_production_workcenter_load" sequence="30" />
 
     <!--TODO delete original menuitem -->
-    <!--<menuitem name="Work Orders" parent="mrp.menu_mrp_manufacturing" id="menu_mrp_production_wc_order" action="mrp_production_wc_action_form" sequence="2"/>-->        
+    <!--<menuitem name="Work Orders" parent="mrp.menu_mrp_manufacturing" id="menu_mrp_production_wc_order" action="mrp_production_wc_action_form" sequence="2"/>-->
   </data>
 </openerp>

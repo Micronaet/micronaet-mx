@@ -35,43 +35,43 @@ from openerp import SUPERUSER_ID
 from openerp import tools
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round as round
-from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
-    DEFAULT_SERVER_DATETIME_FORMAT, 
-    DATETIME_FORMATS_MAP, 
+from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
+    DEFAULT_SERVER_DATETIME_FORMAT,
+    DATETIME_FORMATS_MAP,
     float_compare)
 
 
 _logger = logging.getLogger(__name__)
 
 class ResPartner(orm.Model):
-    ''' Extra field for partner
-    '''    
+    """ Extra field for partner
+    """
     _inherit = 'res.partner'
-    
+
     _columns = {
-        'incoterm_id':fields.many2one(
-            'stock.incoterms', 'Default incoterm', ondelete='set null'),        
+        'incoterm_id': fields.many2one(
+            'stock.incoterms', 'Default incoterm', ondelete='set null'),
         }
-    
+
 
 class SaleOrder(orm.Model):
-    ''' Extra field for order
-    '''    
-    _inherit = 'sale.order'    
-    
+    """ Extra field for order
+    """
+    _inherit = 'sale.order'
+
     # -------------------------------------------------------------------------
     #                                  Button events:
     # -------------------------------------------------------------------------
     def button_force_all_deadline_date(self, cr, uid, ids, context=None):
-        ''' Force sale order date on all lines
-        '''
+        """ Force sale order date on all lines
+        """
         order_proxy = self.browse(cr, uid, ids, context=context)[0]
-        
+
         line_ids = [line.id for line in order_proxy.order_line]
         self.pool.get('sale.order.line').write(cr, uid, line_ids, {
             'date_deadline': order_proxy.date_deadline,
             }, context=context)
-            
+
         return True
 
     # -------------------------------------------------------------------------
@@ -79,18 +79,18 @@ class SaleOrder(orm.Model):
     # -------------------------------------------------------------------------
     # onchange:
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
-        ''' Override standard procedure for add extra account field:        
-        '''
+        """ Override standard procedure for add extra account field:
+        """
         # Call original procedure:
         res = super(SaleOrder, self).onchange_partner_id(
             cr, uid, ids, partner_id, context=context)
         if 'value' not in res:
             res['value'] = {}
-        
+
         # Append extra value:
         if not partner_id: # reset:
             res['value'].update({
-                'incoterm': False,                
+                'incoterm': False,
                 'carrier_id': False,
                 'carriage_condition_id': False,
                 'goods_description_id': False,
@@ -102,42 +102,42 @@ class SaleOrder(orm.Model):
             return res
 
         partner_pool = self.pool.get('res.partner')
-        partner_proxy = partner_pool.browse(cr, uid, partner_id, 
+        partner_proxy = partner_pool.browse(cr, uid, partner_id,
             context=context)
-        
+
         res['value'].update({
             'incoterm': partner_proxy.incoterm_id.id,
             'carrier_id': partner_proxy.default_carrier_id.id,
             'carriage_condition_id': partner_proxy.carriage_condition_id.id,
             'goods_description_id': partner_proxy.goods_description_id.id,
-            'transportation_reason_id': 
+            'transportation_reason_id':
                 partner_proxy.transportation_reason_id.id,
-            'payment_term_id': partner_proxy.property_payment_term.id,            
-            
+            'payment_term_id': partner_proxy.property_payment_term.id,
+
             # Alert:
             'uncovered_payment': partner_proxy.duelist_uncovered,
             })
-        # Set default account for partner    
+        # Set default account for partner
         if partner_proxy.bank_ids:
             res['value']['bank_account_id'] = partner_proxy.bank_ids[0].id
-            
+
         return res
 
     _columns = {
         # ---------------------------------------------------------------------
         # TODO sale_booked module:
         # QUOTATION:
-        'date_valid': fields.date('Validity date', 
+        'date_valid': fields.date('Validity date',
             help='Max date for validity of offer'),
-        
+
         # ORDER:
-        'date_confirm': fields.date('Date confirm', 
+        'date_confirm': fields.date('Date confirm',
             help='Order confirm by the customer'), # TODO yet present in order?
-        'date_deadline': fields.date('Order deadline', 
+        'date_deadline': fields.date('Order deadline',
             help='Delivery term for customer'),
         # Fixed by delivery team:
-        'date_booked': fields.date('Booked date', 
-            help='Delivery was booked and fixed!'),            
+        'date_booked': fields.date('Booked date',
+            help='Delivery was booked and fixed!'),
         'date_booked_confirmed': fields.boolean('Booked confirmed',
             help='Booked confirmed for this date'),
         'date_delivery': fields.date('Load / Availability',
@@ -148,20 +148,20 @@ class SaleOrder(orm.Model):
                 '(2 cases depend on incoterms)'),
         # ---------------------------------------------------------------------
 
-        # TODO used?    
-        #'date_previous_deadline': fields.date(
-        #    'Previous deadline', 
+        # TODO used?
+        # 'date_previous_deadline': fields.date(
+        #    'Previous deadline',
         #    help="If during sync deadline is modified this field contain old "
-        #        "value before update"),         
+        #        "value before update"),
         # TODO remove:
-        # Replaced with date_booked!!!    
-        #'date_delivery': fields.date('Delivery', 
+        # Replaced with date_booked!!!
+        # 'date_delivery': fields.date('Delivery',
         #    help='Contain delivery date, when present production plan work '
         #        'with this instead of deadline value, if forced production '
         #        'cannot be moved'),
 
         # Account extra field saved in sale.order:
-        'default_carrier_id': fields.many2one('delivery.carrier', 'Carrier', 
+        'default_carrier_id': fields.many2one('delivery.carrier', 'Carrier',
             domain=[('is_vector', '=', True)]),
         'carriage_condition_id': fields.many2one(
             'stock.picking.carriage_condition', 'Carriage condition'),
@@ -170,68 +170,67 @@ class SaleOrder(orm.Model):
         'transportation_reason_id': fields.many2one(
             'stock.picking.transportation_reason', 'Transportation reason'),
         'payment_term_id': fields.many2one(
-            'account.payment.term', 'Payment term'),            
+            'account.payment.term', 'Payment term'),
         'bank_account_id': fields.many2one(
             'res.partner.bank', 'Partner bank account'),
         'bank_account_company_id': fields.many2one(
             'res.partner.bank', 'Company bank account'),
-        
+
         # Alert:
-        'uncovered_payment': fields.boolean('Uncovered payment'),    
-        'uncovered_alert': fields.char('Alert', size=64, readonly=True), 
+        'uncovered_payment': fields.boolean('Uncovered payment'),
+        'uncovered_alert': fields.char('Alert', size=64, readonly=True),
         }
-        
+
     _defaults = {
         'uncovered_alert': lambda *x: 'Alert: Uncovered payment!!!',
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
                 DEFAULT_SERVER_DATE_FORMAT),
-        }   
-     
+        }
+
 
 class SaleOrderLine(orm.Model):
-    ''' Extra field for order line
-    '''    
+    """ Extra field for order line
+    """
     _inherit = 'sale.order.line'
-    
+
     # ----------------
     # Function fields:
     # ----------------
-    def _function_get_delivered(self, cr, uid, ids, fields, args, 
+    def _function_get_delivered(self, cr, uid, ids, fields, args,
             context=None):
-        ''' Fields function for calculate delivered elements in picking orders
-        '''
+        """ Fields function for calculate delivered elements in picking orders
+        """
         res = {}
         move_pool = self.pool.get('stock.move')
-        
-        for line in self.browse(cr, uid, ids, context=context):            
+
+        for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = 0.0
             move_ids = move_pool.search(cr, uid, [
-                ('sale_line_id', '=', line.id)], context=context)                
+                ('sale_line_id', '=', line.id)], context=context)
             for move in move_pool.browse(cr, uid, move_ids, context=context):
                 if move.picking_id.ddt_number: # was marked as DDT
-                    # TODO check UOM!!! for 
+                    # TODO check UOM!!! for
                     res[line.id] += move.product_qty
         return res
-        
+
     _columns = {
         'gr_weight': fields.float('Gross weight'),
-        'colls': fields.integer('Colls'), 
-        #states={'draft': [('readonly', False)]}),
-        
+        'colls': fields.integer('Colls'),
+        # states={'draft': [('readonly', False)]}),
+
         'date_deadline': fields.date('Deadline'),
         'date_delivery': fields.related( # TODO use booked!!!!
             'order_id', 'date_delivery', type='date', string='Date delivery'),
-            
+
         'alias_id':fields.many2one(
             'product.product', 'Marked as product', ondelete='set null'),
 
         'delivered_qty': fields.function(
             _function_get_delivered, method=True, type='float', readonly=True,
-            string='Delivered', store=False, 
-            help='Quantity delivered with DDT out'),            
+            string='Delivered', store=False,
+            help='Quantity delivered with DDT out'),
         }
     _defaults = {
         'colls': lambda *x: 1,
-        }    
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+        }
