@@ -38,7 +38,7 @@ sale_shop()
 
 class sale_order(osv.osv):
     _inherit = "sale.order"
-    
+
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
             default = {}
@@ -47,7 +47,7 @@ class sale_order(osv.osv):
             'picking_ids': [],
         })
         return super(sale_order, self).copy(cr, uid, id, default, context=context)
-    
+
     def shipping_policy_change(self, cr, uid, ids, policy, context=None):
         if not policy:
             return {}
@@ -113,7 +113,7 @@ class sale_order(osv.osv):
             else:
                 res[order.id] = tmp[order.id]['total'] and (100.0 * tmp[order.id]['picked'] / tmp[order.id]['total']) or 0.0
         return res
-    
+
     _columns = {
           'state': fields.selection([
             ('draft', 'Draft Quotation'),
@@ -140,12 +140,12 @@ class sale_order(osv.osv):
             ], 'Create Invoice', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
             help="""On demand: A draft invoice can be created from the sales order when needed. \nOn delivery order: A draft invoice can be created from the delivery order when the products have been delivered. \nBefore delivery: A draft invoice is created from the sales order and must be paid before the products can be delivered."""),
         'picking_ids': fields.one2many(
-            'stock.picking.out', 'sale_id', 'Related Picking', 
-            #readonly=True, 
+            'stock.picking.out', 'sale_id', 'Related Picking',
+            #readonly=True,
             help="This is a list of delivery orders that has been generated for this sales order."),
         'shipped': fields.boolean('Delivered', readonly=True, help="It indicates that the sales order has been delivered. This field is updated only after the scheduler(s) have been launched."),
         'picked_rate': fields.function(_picked_rate, string='Picked', type='float'),
-        'invoice_quantity': fields.selection([('order', 'Ordered Quantities'), ('procurement', 'Shipped Quantities')], 'Invoice on', 
+        'invoice_quantity': fields.selection([('order', 'Ordered Quantities'), ('procurement', 'Shipped Quantities')], 'Invoice on',
                                              help="The sales order will automatically create the invoice proposition (draft invoice).\
                                               You have to choose  if you want your invoice based on ordered ", required=True, readonly=True, states={'draft': [('readonly', False)]}),
     }
@@ -168,9 +168,9 @@ class sale_order(osv.osv):
         return osv.osv.unlink(self, cr, uid, unlink_ids, context=context)
 
     def action_view_delivery(self, cr, uid, ids, context=None):
-        '''
+        """
         This function returns an action that display existing delivery orders of given sales order ids. It can either be a in a list or in a form view, if there is only one delivery order to show.
-        '''
+        """
         mod_obj = self.pool.get('ir.model.data')
         act_obj = self.pool.get('ir.actions.act_window')
 
@@ -241,7 +241,7 @@ class sale_order(osv.osv):
         """ Convert date values expressed in user's timezone to
         server-side UTC timestamp, assuming a default arbitrary
         time of 12:00 AM - because a time is needed.
-    
+
         :param str userdate: date string in in user time zone
         :return: UTC datetime string for server-side use
         """
@@ -342,7 +342,7 @@ class sale_order(osv.osv):
         context = context or {}
         # Create on date deadline if present:
         date = context.get(
-            'force_date_deadline', 
+            'force_date_deadline',
             self.date_to_datetime(cr, uid, order.date_order, context))
         pick_name = self.pool.get('ir.sequence').get(
             cr, uid, 'stock.picking.out')
@@ -391,11 +391,11 @@ class sale_order(osv.osv):
                     product_uos_qty -= move.product_uos_qty
                 if product_qty > 0 or product_uos_qty > 0:
                     move_obj.write(cr, uid, [move_id], {
-                        'product_qty': product_qty, 
+                        'product_qty': product_qty,
                         'product_uos_qty': product_uos_qty,
                         })
                     proc_obj.write(cr, uid, [proc_id], {
-                        'product_qty': product_qty, 
+                        'product_qty': product_qty,
                         'product_uos_qty': product_uos_qty,
                         })
                 else:
@@ -403,7 +403,7 @@ class sale_order(osv.osv):
                     proc_obj.unlink(cr, uid, [proc_id])
         return True
 
-    def _get_date_planned(self, cr, uid, order, line, start_date, 
+    def _get_date_planned(self, cr, uid, order, line, start_date,
             context=None):
         start_date = self.date_to_datetime(cr, uid, start_date, context)
         date_planned = datetime.strptime(
@@ -415,44 +415,44 @@ class sale_order(osv.osv):
                     DEFAULT_SERVER_DATETIME_FORMAT)
         return date_planned
 
-    def _create_pickings_and_procurements(self, cr, uid, order, order_lines, 
+    def _create_pickings_and_procurements(self, cr, uid, order, order_lines,
             picking_id=False, context=None):
-        """ Create the required procurements to supply sales order lines, also 
-            connecting the procurements to appropriate stock moves in order to 
+        """ Create the required procurements to supply sales order lines, also
+            connecting the procurements to appropriate stock moves in order to
             bring the goods to the sales order's requested location.
-            If ``picking_id`` is provided, the stock moves will be added to it, 
-            otherwise a standard outgoing picking will be created to wrap the 
-            stock moves, as returned 
+            If ``picking_id`` is provided, the stock moves will be added to it,
+            otherwise a standard outgoing picking will be created to wrap the
+            stock moves, as returned
             by :meth:`~._prepare_order_picking`.
 
-            Modules that wish to customize the procurements or partition the 
-            stock moves over multiple stock pickings may override this method 
-            and call ``super()`` with different subsets of ``order_lines`` 
+            Modules that wish to customize the procurements or partition the
+            stock moves over multiple stock pickings may override this method
+            and call ``super()`` with different subsets of ``order_lines``
             and/or preset ``picking_id`` values.
 
-            :param browse_record order: sales order to which the order lines 
+            :param browse_record order: sales order to which the order lines
                 belong
-            :param list(browse_record) order_lines: sales order line records to 
+            :param list(browse_record) order_lines: sales order line records to
                 procure
-            :param int picking_id: optional ID of a stock picking to which the 
-                created stock moves will be added. A new picking will be 
+            :param int picking_id: optional ID of a stock picking to which the
+                created stock moves will be added. A new picking will be
                 created if ommitted.
             :return: True
         """
         context = context or {}
-        
+
         # Procedure work only called from wizard, no picking will be created:
         if not context.get('from_wizard', False) or not picking_id:
             return True
         # ---------------------------------------------------------------------
-            
+
         #picking_obj.create(cr, uid, self._prepare_order_picking( cr, uid, order, context=context))
-            
+
         move_obj = self.pool.get('stock.move')
         picking_obj = self.pool.get('stock.picking')
         #procurement_obj = self.pool.get('procurement.order')
         #proc_ids = []
-        
+
         # ---------------------------------------------------------------------
         #                    TODO Split depend on deadline date
         # ---------------------------------------------------------------------
@@ -461,7 +461,7 @@ class sale_order(osv.osv):
                 continue
 
             if line.product_id:
-                if line.product_id.type in ('product', 'consu'): # not service                                
+                if line.product_id.type in ('product', 'consu'): # not service
                     move_id = move_obj.create(
                         cr, uid, self._prepare_order_line_move(
                             cr, uid, order, line, picking_id, date_planned,
@@ -473,11 +473,11 @@ class sale_order(osv.osv):
                 # TODO Servono?? **********************************************
                 #proc_id = procurement_obj.create(
                 #    cr, uid, self._prepare_order_line_procurement(
-                #        cr, uid, order, line, move_id, date_planned, 
+                #        cr, uid, order, line, move_id, date_planned,
                 #        context=context))
                 #proc_ids.append(proc_id)
                 #line.write({'procurement_id': proc_id})
-                
+
                 # TODO Check:
                 #self.ship_recreate(cr, uid, order, line, move_id, proc_id)
 
@@ -551,18 +551,18 @@ class sale_order_line(osv.osv):
                 res[line.id] = 1
         return res
 
-    _columns = { 
-        'delay': fields.float('Delivery Lead Time', required=True, 
-            help="Number of days between the order confirmation and the shipping of the products to the customer", 
+    _columns = {
+        'delay': fields.float('Delivery Lead Time', required=True,
+            help="Number of days between the order confirmation and the shipping of the products to the customer",
             readonly=True, states={'draft': [('readonly', False)]}),
         'procurement_id': fields.many2one('procurement.order', 'Procurement'),
-        'property_ids': fields.many2many('mrp.property', 
-            'sale_order_line_property_rel', 'order_id', 'property_id', 
+        'property_ids': fields.many2many('mrp.property',
+            'sale_order_line_property_rel', 'order_id', 'property_id',
             'Properties', readonly=True, states={'draft': [('readonly', False)]}),
         'product_packaging': fields.many2one('product.packaging', 'Packaging'),
-        'move_ids': fields.one2many('stock.move', 'sale_line_id', 
+        'move_ids': fields.one2many('stock.move', 'sale_line_id',
             'Inventory Moves', readonly=True),
-        'number_packages': fields.function(_number_packages, type='integer', 
+        'number_packages': fields.function(_number_packages, type='integer',
             string='Number Packages'),
         }
     _defaults = {
@@ -592,7 +592,7 @@ class sale_order_line(osv.osv):
                 if move_line.state != 'cancel':
                     raise osv.except_osv(
                         _('Cannot cancel sales order line!'),
-                        _('You must first cancel stock moves attached to this sales order line.'))   
+                        _('You must first cancel stock moves attached to this sales order line.'))
         return res
 
     def copy_data(self, cr, uid, id, default=None, context=None):
@@ -605,21 +605,22 @@ class sale_order_line(osv.osv):
     def product_packaging_change(
             self, cr, uid, ids, pricelist, product, qty=0, uom=False,
             partner_id=False, packaging=False, flag=False, context=None):
-        ''' Package block change (default first in product pack)
-        '''
+        """ Package block change (default first in product pack)
+        """
         if not product:
             return {'value': {'product_packaging': False}}
 
         product_obj = self.pool.get('product.product')
         product_uom_obj = self.pool.get('product.uom')
         pack_obj = self.pool.get('product.packaging')
-        
+
         warning = {}
         result = {}
         warning_msgs = ''
         if flag:
             # NOTE: No stock information in super call (sale module)
-            res = self.product_id_change(cr, uid, ids, pricelist=pricelist,
+            res = self.product_id_change(
+                cr, uid, ids, pricelist=pricelist,
                 product=product, qty=qty, uom=uom, partner_id=partner_id,
                 packaging=packaging, flag=False, context=context)
             # warning_msgs = res.get('warning') and res['warning']['message']
@@ -660,21 +661,21 @@ class sale_order_line(osv.osv):
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
-            lang=False, update_tax=True, date_order=False, packaging=False, 
+            lang=False, update_tax=True, date_order=False, packaging=False,
             fiscal_position=False, flag=False, context=None):
-        ''' On change product_id in sale.order.line
-        '''    
+        """ On change product_id in sale.order.line
+        """
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
         partner_obj = self.pool.get('res.partner')
         product_obj = self.pool.get('product.product')
         warning = {}
-        
+
         res = super(sale_order_line, self).product_id_change(
             cr, uid, ids, pricelist, product, qty=qty,
-            uom=uom, qty_uos=qty_uos, uos=uos, name=name, 
-            partner_id=partner_id, lang=lang, update_tax=update_tax, 
-            date_order=date_order, packaging=packaging, 
+            uom=uom, qty_uos=qty_uos, uos=uos, name=name,
+            partner_id=partner_id, lang=lang, update_tax=update_tax,
+            date_order=date_order, packaging=packaging,
             fiscal_position=fiscal_position, flag=flag, context=context)
 
         if not product:
@@ -698,14 +699,14 @@ class sale_order_line(osv.osv):
         # Calling product_packaging_change function after updating UoM
         # (update packaging information and UOM
         res_packing = self.product_packaging_change(
-            cr, uid, ids, pricelist, product, qty, uom, partner_id, packaging, 
+            cr, uid, ids, pricelist, product, qty, uom, partner_id, packaging,
             context=context)
 
-        res['value'].update(res_packing.get('value', {}))        
+        res['value'].update(res_packing.get('value', {}))
         compare_qty = float_compare(
-            product_obj.virtual_available, 
+            product_obj.virtual_available,
             qty, precision_rounding=uom2.rounding)
-            
+
         # TODO remove warning message:
         #warning_msgs = res_packing.get(
         #    'warning') and res_packing['warning']['message'] or ''

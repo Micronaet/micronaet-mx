@@ -124,11 +124,11 @@ class confirm_mrp_production_wizard(osv.osv_memory):
             self, cr, uid, ids, package_id, product_id, total, context=None):
         """ Get selected package_id and calculate total package
         """
+        pack_pool = self.pool.get('product.packaging')
         res = {}
         res['value'] = {}
 
         if package_id and product_id and total:
-            pack_pool = self.pool.get('product.packaging')
             pack_ids = pack_pool.search(cr, uid, [
                 ('product_id', '=', product_id),
                 ('ul', '=', package_id)], context=context)
