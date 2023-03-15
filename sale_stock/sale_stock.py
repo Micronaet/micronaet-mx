@@ -609,7 +609,6 @@ class sale_order_line(osv.osv):
         """
         if not product:
             return {'value': {'product_packaging': False}}
-
         product_obj = self.pool.get('product.product')
         product_uom_obj = self.pool.get('product.uom')
         pack_obj = self.pool.get('product.packaging')

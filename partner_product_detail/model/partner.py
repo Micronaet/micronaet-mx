@@ -123,6 +123,7 @@ class SaleOrderLine(orm.Model):
 
         if 'value' not in res:
             res['value'] = {}
+
         # Reset if partner or product not present:
         if not partner_id or not product:
             res['value'].update({
@@ -167,6 +168,7 @@ class SaleOrderLine(orm.Model):
                         res['warning'].get('message'))
                     del(res['warning'])
                 break
+        pdb.set_trace()
         return res
 
     def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
