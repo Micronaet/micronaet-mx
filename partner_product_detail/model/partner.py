@@ -168,7 +168,11 @@ class SaleOrderLine(orm.Model):
                         res['warning'].get('message'))
                     del(res['warning'])
                 break
-        pdb.set_trace()
+        if 'warning' in res:
+            _logger.error(
+                'Remove warning message: \n%s' %
+                res['warning'].get('message'))
+            del (res['warning'])
         return res
 
     def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
