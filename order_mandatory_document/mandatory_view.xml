@@ -23,9 +23,9 @@
             <field name="name">Order docs</field>
             <field name="model">sale.order.docs</field>
             <field name="arch" type="xml">
-                <tree string="Order docs">
-                    <field name="name" />
+                <tree string="Order docs" colors="blue: mandatory==True">
                     <field name="sequence" />
+                    <field name="name" />
                     <field name="mandatory" />
                     <field name="note" />
                 </tree>
@@ -66,12 +66,12 @@
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page" position="after">
-                    <page string="Extra docs">
+                    <page string="Documenti extra">
                         <group colspan="4" col="4">
                             <button name="load_from_partner" string="Load from partner" type="object" />
                             <button name="load_from_list" string="Load from list" type="object" />
                             <field name="order_docs_ids" colspan="4" nolabel="1">
-                                <tree editable="bottom" colspan="4" colors="green: present == True">
+                                <tree editable="bottom" colspan="4" colors="green: present == True" fonts="bold: mandatory == True">
                                     <field name="sequence" />
                                     <field name="mandatory" />
                                     <field name="present" />
@@ -106,7 +106,7 @@
                     <page string="Order docs" attrs="{'invisible': [('is_company','=',False)]}">
                         <button name="load_from_list" string="Load from list" type="object" />
                         <field name="order_docs_ids" colspan="4" nolabel="1">
-                            <tree editable="bottom" colspan="4" >
+                            <tree editable="bottom" colspan="4" fonts="bold: mandatory == True">
                                 <field name="sequence" />
                                 <field name="mandatory" />
                                 <field name="docs_id" />
@@ -136,13 +136,13 @@
             <field name="context">{}</field>
             <field name="domain">[]</field>
         </record>
+
         <menuitem
             parent="base.menu_base_config"
             id="menu_sale_oder_docs_form"
             action="action_sale_oder_docs"
             sequence="50"
             />
-
     </data>
 </openerp>
 
