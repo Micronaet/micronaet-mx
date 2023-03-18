@@ -38,6 +38,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+
 class SaleOrderDocs(osv.osv):
     """ Document that will be attached to order
     """
@@ -46,11 +47,13 @@ class SaleOrderDocs(osv.osv):
     _order = 'sequence,name'
 
     _columns = {
-        'name': fields.char('Document name', size=100, required=True),
-        'sequence': fields.integer('Seq.'),
-        'mandatory': fields.boolean('Mandatory', help='Always mandatory'),
+        'name': fields.char('Nome documento', size=100, required=True),
+        'sequence': fields.integer('Ord.'),
+        'mandatory': fields.boolean(
+            'Obbligatorio', help='Sempre obbligatorio'),
         'note': fields.text('Note'),
         }
+
 
 class SaleOrderDocsOrder(osv.osv):
     """ Document mandatory attached to order
@@ -61,7 +64,7 @@ class SaleOrderDocsOrder(osv.osv):
     _order = 'sequence,docs_id'
 
     _columns = {
-        'sequence': fields.integer('Seq.'),
+        'sequence': fields.integer('Ord.'),
         'order_id': fields.many2one('sale.order', 'Ordine'),
         'docs_id': fields.many2one('sale.order.docs', 'Documento'),
         'mandatory': fields.boolean('Obbligatori per ordine'),
@@ -80,9 +83,9 @@ class SaleOrderDocsPartner(osv.osv):
 
     _columns = {
         'sequence': fields.integer('Seq.'),
-        'partner_id': fields.many2one('res.partner', 'Order'),
-        'docs_id': fields.many2one('sale.order.docs', 'Document'),
-        'mandatory': fields.boolean('Mandatory for customer'),
+        'partner_id': fields.many2one('res.partner', 'Ordine'),
+        'docs_id': fields.many2one('sale.order.docs', 'Documento'),
+        'mandatory': fields.boolean('Obbligatorio per il cliente'),
         'note': fields.text('Note'),
         }
 
@@ -120,7 +123,7 @@ class SaleOder(osv.osv):
                 ('partner_id', '=', partner_id)], context=context)
             item_proxy = partner_pool.browse(
                 cr, uid, partner_ids, context=context)
-        else: # 'document'
+        else:  # 'document'
             docs_ids = docs_pool.search(cr, uid, [], context=context)
             item_proxy = docs_pool.browse(cr, uid, docs_ids, context=context)
 
@@ -185,15 +188,16 @@ class SaleOder(osv.osv):
         return res
 
     _columns = {
-        'order_docs_ids': fields.one2many('sale.order.docs.order', 'order_id',
-            'Mandatory document'),
+        'order_docs_ids': fields.one2many(
+            'sale.order.docs.order', 'order_id',
+            'Documenti obbligatori'),
         'extra_doc_status': fields.function(
             _get_extra_doc_status, method=True,
             type='char', size='40', string='Docs',
             store=False, multi=True),
         'extra_doc_error': fields.function(
             _get_extra_doc_status, method=True,
-            type='boolean', string='Docs error',
+            type='boolean', string='Errori doc.',
             store=False, multi=True),
         }
 
@@ -202,7 +206,6 @@ class ResPartner(osv.osv):
     """ Document that will be attached to order
     """
     _inherit = 'res.partner'
-
 
     # ------------------------
     # Override onchange event:
@@ -245,5 +248,5 @@ class ResPartner(osv.osv):
 
     _columns = {
         'order_docs_ids': fields.one2many(
-            'sale.order.docs.partner', 'partner_id', 'Mandatory document'),
+            'sale.order.docs.partner', 'partner_id', 'Documenti obbligatori'),
         }
