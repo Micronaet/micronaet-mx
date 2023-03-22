@@ -44,46 +44,6 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 
-class StockIncoterms(orm.Model):
-    """ Extra field for incoterm
-    """
-    _inherit = 'stock.incoterms'
-
-    def scheduled_import_account_incoterm_reference(
-            self, cr, uid, fullname, context=None):
-        """" Import reference for account terms
-        """
-        fullname = os.path.expanduser(fullname)
-        if not os.path.isfile(fullname):
-            _logger.error('Incoterms file not found: %s' % fullname)
-            return False
-        for line in open(fullname, 'r'):
-            row = line.strip().split(';')
-            try:
-                code = row[0]
-                account_ref = int(row[1])
-                if not code:
-                    _logger.error('Incoterms code not found: %s' % line)
-                    continue
-
-                incoterm_ids = self.search(cr, uid, [
-                    ('code', '=', code),
-                ], context=context)
-                if incoterm_ids:
-                    self.write(cr, uid, incoterm_ids, {
-                        'accont_ref': account_ref,
-                    }, context=context)
-                    _logger.info('Incoterms updated: %s' % code)
-                else:
-                    _logger.error('Incoterms not updated: %s' % code)
-            except:
-                _logger.error('Incoterms not found: %s' % line)
-
-    _columns = {
-        'account_ref': fields.integer('Rif. contabile'),
-    }
-
-
 class ResPartner(orm.Model):
     """ Extra field for partner
     """
