@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!--stock.incoterms-->
+        <!-- stock.incoterms -->
         <record id="stock_incoterms_account_ref_tree_inherit" model="ir.ui.view">
             <field name="name">stock.incoterms.tree</field>
             <field name="model">stock.incoterms</field>
@@ -12,14 +12,19 @@
                 </field>
             </field>
         </record>
-        <record id="stock_incoterms_account_ref_form_inherit" model="ir.ui.view">
+        <record id="stock_incoterms_account_ref_form" model="ir.ui.view">
             <field name="name">stock.incoterms.form</field>
             <field name="model">stock.incoterms</field>
-            <field name="inherit_id" ref="stock.view_incoterms_form"/>
             <field name="arch" type="xml">
-                <field name="name" position="after">
-                    <field name="account_ref"/>
-                </field>
+                <form string="Incoterms" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="account_ref"/>
+                        </group>
+                    </sheet>
+                </form>
             </field>
         </record>
 
