@@ -54,7 +54,7 @@ class StockIncoterms(osv.osv):
                 ], context=context)
                 if incoterm_ids:
                     self.write(cr, uid, incoterm_ids, {
-                        'accont_ref': account_ref,
+                        'account_ref': account_ref,
                     }, context=context)
                     _logger.info('Incoterms updated: %s' % code)
                 else:
