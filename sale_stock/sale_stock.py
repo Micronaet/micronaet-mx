@@ -28,6 +28,7 @@ from openerp.tools.translate import _
 import pytz
 from openerp import SUPERUSER_ID
 
+
 class sale_shop(osv.osv):
     _inherit = "sale.shop"
     _columns = {
@@ -35,6 +36,7 @@ class sale_shop(osv.osv):
     }
 
 sale_shop()
+
 
 class sale_order(osv.osv):
     _inherit = "sale.order"
@@ -46,7 +48,8 @@ class sale_order(osv.osv):
             'shipped': False,
             'picking_ids': [],
         })
-        return super(sale_order, self).copy(cr, uid, id, default, context=context)
+        return super(sale_order, self).copy(
+            cr, uid, id, default, context=context)
 
     def shipping_policy_change(self, cr, uid, ids, policy, context=None):
         if not policy:
@@ -72,7 +75,7 @@ class sale_order(osv.osv):
                 vals.update({'invoice_quantity': 'order'})
             if vals['order_policy'] == 'picking':
                 vals.update({'invoice_quantity': 'procurement'})
-        order =  super(sale_order, self).create(cr, uid, vals, context=context)
+        order = super(sale_order, self).create(cr, uid, vals, context=context)
         return order
 
     # This is False
@@ -98,8 +101,8 @@ class sale_order(osv.osv):
             if item['move_state'] == 'cancel':
                 continue
 
-            if item['picking_type'] == 'in':#this is a returned picking
-                tmp[item['sale_order_id']]['total'] -= item['nbr'] or 0.0 # Deducting the return picking qty
+            if item['picking_type'] == 'in':  # this is a returned picking
+                tmp[item['sale_order_id']]['total'] -= item['nbr'] or 0.0  # Deducting the return picking qty
                 if item['procurement_state'] == 'done' or item['move_state'] == 'done':
                     tmp[item['sale_order_id']]['picked'] -= item['nbr'] or 0.0
             else:
@@ -125,11 +128,14 @@ class sale_order(osv.osv):
             ('shipping_except', 'Shipping Exception'),
             ('invoice_except', 'Invoice Exception'),
             ('done', 'Done'),
-            ], 'Status', readonly=True,help="Gives the status of the quotation or sales order.\
+            ], 'Status', readonly=True, help="Gives the status of the quotation or sales order.\
               \nThe exception status is automatically set when a cancel operation occurs \
               in the invoice validation (Invoice Exception) or in the picking list process (Shipping Exception).\nThe 'Waiting Schedule' status is set when the invoice is confirmed\
-               but waiting for the scheduler to run on the order date.", select=True),
-        'incoterm': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
+               but waiting for the scheduler to run on the order date.",
+              select=True),
+        'incoterm': fields.many2one(
+            'stock.incoterms', 'Incoterm',
+            help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
         'picking_policy': fields.selection([('direct', 'Deliver each product when available'), ('one', 'Deliver all products at once')],
             'Shipping Policy', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
             help="""Pick 'Deliver each product when available' if you allow partial delivery."""),
@@ -141,7 +147,7 @@ class sale_order(osv.osv):
             help="""On demand: A draft invoice can be created from the sales order when needed. \nOn delivery order: A draft invoice can be created from the delivery order when the products have been delivered. \nBefore delivery: A draft invoice is created from the sales order and must be paid before the products can be delivered."""),
         'picking_ids': fields.one2many(
             'stock.picking.out', 'sale_id', 'Related Picking',
-            #readonly=True,
+            # readonly=True,
             help="This is a list of delivery orders that has been generated for this sales order."),
         'shipped': fields.boolean('Delivered', readonly=True, help="It indicates that the sales order has been delivered. This field is updated only after the scheduler(s) have been launched."),
         'picked_rate': fields.function(_picked_rate, string='Picked', type='float'),
@@ -177,11 +183,11 @@ class sale_order(osv.osv):
         result = mod_obj.get_object_reference(cr, uid, 'stock', 'action_picking_tree')
         id = result and result[1] or False
         result = act_obj.read(cr, uid, [id], context=context)[0]
-        #compute the number of delivery orders to display
+        # compute the number of delivery orders to display
         pick_ids = []
         for so in self.browse(cr, uid, ids, context=context):
             pick_ids += [picking.id for picking in so.picking_ids]
-        #choose the view_mode accordingly
+        # choose the view_mode accordingly
         if len(pick_ids) > 1:
             result['domain'] = "[('id','in',["+','.join(map(str, pick_ids))+"])]"
         else:

@@ -59,7 +59,6 @@
             </field>
         </record>
 
-
         <record model="ir.ui.view" id="view_sale_order_docs_order_form">
             <field name="name">Order extra docs</field>
             <field name="model">sale.order</field>

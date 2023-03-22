@@ -28,7 +28,8 @@
 Manage sales quotations and orders
 ==================================
 
-This module makes the link between the sales and warehouses management applications.
+This module makes the link between the sales and warehouses management 
+applications.
 
 Preferences
 -----------
@@ -47,17 +48,19 @@ You can choose flexible invoicing methods:
     'images': ['images/deliveries_to_invoice.jpeg'],
     'depends': ['sale', 'stock', 'procurement'],
     'init_xml': [],
-    'update_xml': ['security/sale_stock_security.xml',
-                   'security/ir.model.access.csv',
-                   'company_view.xml',
-                   'sale_stock_view.xml',
-                   'sale_stock_workflow.xml',
-                   'stock_view.xml',
-                   'res_config_view.xml',
-                   'report/sale_report_view.xml',
-                   'process/sale_stock_process.xml',
-                   ],
-   'data': ['sale_stock_data.xml'],
+   'data': [
+       'security/sale_stock_security.xml',
+       'security/ir.model.access.csv',
+       'company_view.xml',
+       'sale_stock_view.xml',
+       'sale_stock_workflow.xml',
+       'stock_view.xml',
+       'res_config_view.xml',
+       'report/sale_report_view.xml',
+       'process/sale_stock_process.xml',
+       'sale_stock_data.xml',
+       'scheduler.xml',
+   ],
    'demo_xml': ['sale_stock_demo.xml'],
     'test': ['test/cancel_order_sale_stock.yml',
              'test/picking_order_policy.yml',
@@ -66,6 +69,4 @@ You can choose flexible invoicing methods:
              ],
     'installable': True,
     'auto_install': True,
-    
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
