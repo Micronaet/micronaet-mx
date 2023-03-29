@@ -133,6 +133,7 @@ class SaleOrderLine(orm.Model):
                 'product_packaging': False,
                 'pallet_weight': False,
                 'load_qty': False,  # todo remove?
+                'tax_id': False
                 # todo
                 })
             return res
@@ -161,6 +162,7 @@ class SaleOrderLine(orm.Model):
                 except:
                     pass
 
+        pdb.set_trace()
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
                 name = item.alias_name or item.alias_id.name or \
