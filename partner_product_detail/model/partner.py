@@ -162,6 +162,7 @@ class SaleOrderLine(orm.Model):
                     tax_block = [(6, 0, (fiscal.force_account_tax_id.id, ))]
                 except:
                     pass
+
         res['value'].update({
             'tax_id': tax_block,
             })
