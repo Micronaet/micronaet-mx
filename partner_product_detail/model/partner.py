@@ -139,10 +139,27 @@ class SaleOrderLine(orm.Model):
 
         # Used pool:
         partner_pool = self.pool.get('res.partner')
+        fiscal_pool = self.pool.get('account.fiscal.position')
 
         # Update field instead:
         partner_proxy = partner_pool.browse(
             cr, uid, partner_id, context=context)
+
+        # ---------------------------------------------------------------------
+        # VAT Management (patch!):
+        # ---------------------------------------------------------------------
+        tax_block = False
+        if fiscal_position:
+            fiscal_id = fiscal_position or \
+                        partner_proxy.property_account_position.id
+            if fiscal_id:
+                fiscal = \
+                    fiscal_pool.browse(cr, uid, fiscal_id, context=context)
+                try:
+                    tax_id = fiscal.tax_ids[0].tax_dest_id.id
+                    tax_block = [(6, 0, (tax_id, ))]
+                except:
+                    pass
 
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
@@ -159,6 +176,7 @@ class SaleOrderLine(orm.Model):
                     # todo also pallet_weight for company if not present?
 
                     'load_qty': item.load_qty,  # todo remove?
+                    'tax_id': tax_block,
                 }
                 res['value'].update(data)
 
