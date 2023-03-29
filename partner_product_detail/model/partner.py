@@ -161,8 +161,11 @@ class SaleOrderLine(orm.Model):
                     tax_block = [(6, 0, (tax_id, ))]
                 except:
                     pass
+        res['value'].update({
+            'tax_id': tax_block,
+            })
 
-        pdb.set_trace()
+        # Update with pricelist partner values:
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
                 name = item.alias_name or item.alias_id.name or \
@@ -176,9 +179,7 @@ class SaleOrderLine(orm.Model):
                     'pallet_weight':
                         item.pallet_weight or partner_proxy.pallet_weight,
                     # todo also pallet_weight for company if not present?
-
                     'load_qty': item.load_qty,  # todo remove?
-                    'tax_id': tax_block,
                 }
                 res['value'].update(data)
 
