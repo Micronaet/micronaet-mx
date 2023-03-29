@@ -156,9 +156,10 @@ class SaleOrderLine(orm.Model):
             if fiscal_id:
                 fiscal = \
                     fiscal_pool.browse(cr, uid, fiscal_id, context=context)
+
                 try:
-                    tax_id = fiscal.tax_ids[0].tax_dest_id.id
-                    tax_block = [(6, 0, (tax_id, ))]
+                    # tax_id = fiscal.tax_ids[0].tax_dest_id.id
+                    tax_block = [(6, 0, (fiscal.force_account_tax_id.id, ))]
                 except:
                     pass
         res['value'].update({
