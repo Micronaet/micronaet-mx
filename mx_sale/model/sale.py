@@ -89,7 +89,7 @@ class SaleOrder(orm.Model):
             res['value'] = {}
 
         # Append extra value:
-        if not partner_id: # reset:
+        if not partner_id:  # reset:
             res['value'].update({
                 'incoterm': False,
                 'carrier_id': False,
