@@ -164,6 +164,8 @@ class SaleOrderLine(orm.Model):
                         tax_block = [
                             (6, 0, (tax_id, ))
                             ]
+                    else:
+                        _logger.error('No VAT setup for this order!')
 
                 except:
                     pass
