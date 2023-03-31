@@ -164,15 +164,16 @@ class SaleOrderLine(orm.Model):
                         tax_block = [
                             (6, 0, (tax_id, ))
                             ]
-                    else:
-                        _logger.error('No VAT setup for this order!')
 
                 except:
                     pass
 
-        res['value'].update({
-            'tax_id': tax_block,
-            })
+        if tax_block:
+            res['value'].update({
+                'tax_id': tax_block,
+                })
+        else:
+            _logger.error('No VAT setup for this order!')
 
         # Update with pricelist partner values:
         for item in partner_proxy.pricelist_product_ids:
