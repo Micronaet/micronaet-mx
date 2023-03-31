@@ -23,8 +23,8 @@
             <field name="name">Order docs</field>
             <field name="model">sale.order.docs</field>
             <field name="arch" type="xml">
-                <tree string="Order docs" colors="blue: mandatory==True">
-                    <field name="sequence" />
+                <tree string="Ordini Extra" editable="bottom" colspan="4" fonts="bold: mandatory == True">
+                    <field name="sequence" widget="handle"/>
                     <field name="name" />
                     <field name="mandatory" />
                     <field name="note" />
@@ -127,7 +127,7 @@
             </field>
         </record>
         <record model="ir.actions.act_window" id="action_sale_oder_docs">
-            <field name="name">Sale order docs</field>
+            <field name="name">Documenti extra</field>
             <field name="res_model">sale.order.docs</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
