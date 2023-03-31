@@ -23,7 +23,7 @@
             <field name="name">Order docs</field>
             <field name="model">sale.order.docs</field>
             <field name="arch" type="xml">
-                <tree string="Ordini Extra" editable="bottom" colspan="4" fonts="bold: mandatory == True">
+                <tree string="Ordini Extra" editable="bottom" fonts="bold: mandatory == True">
                     <field name="sequence" widget="handle"/>
                     <field name="name" />
                     <field name="mandatory" />
@@ -106,7 +106,7 @@
                         <button name="load_from_list" string="Load from list" type="object" />
                         <field name="order_docs_ids" colspan="4" nolabel="1">
                             <tree editable="bottom" colspan="4" fonts="bold: mandatory == True">
-                                <field name="sequence" widget="handle"/>
+                                <field name="sequence" widget="handle" />
                                 <field name="mandatory" />
                                 <field name="docs_id" />
                                 <field name="note" />
