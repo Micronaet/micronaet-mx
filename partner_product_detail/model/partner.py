@@ -140,6 +140,7 @@ class SaleOrderLine(orm.Model):
 
         # Used pool:
         partner_pool = self.pool.get('res.partner')
+        product_pool = self.pool.get('product.product')
         fiscal_pool = self.pool.get('account.fiscal.position')
 
         # Update field instead:
@@ -175,9 +176,8 @@ class SaleOrderLine(orm.Model):
         else:
             _logger.error('No VAT setup for this order!')
 
-        # Update with pricelist partner values:
+        # CASE 1: Update with pricelist partner values:
         for item in partner_proxy.pricelist_product_ids:
-            pdb.set_trace()
             if item.product_id.id == product:
                 name = item.alias_name or item.alias_id.name or \
                        item.product_id.name
@@ -192,19 +192,25 @@ class SaleOrderLine(orm.Model):
                     # todo also pallet_weight for company if not present?
                     'load_qty': item.load_qty,  # todo remove?
                 }
-                res['value'].update(data)
-
-                if 'warning' in res:
-                    _logger.error(
-                        'Remove warning message: \n%s' %
-                        res['warning'].get('message'))
-                    del(res['warning'])
                 break
+
+        # CASE 2: Product not in partner pricelist:
+        else:   # Data not found:
+            product_proxy = product_pool.browse(
+                cr, uid, product, context=context)
+            data = {
+                'name': product_proxy.name,
+            }
+
+        # -----------------------------------------------------------------
+        # Update returned values:
+        # -----------------------------------------------------------------
+        res['value'].update(data)
         if 'warning' in res:
             _logger.error(
                 'Remove warning message: \n%s' %
                 res['warning'].get('message'))
-            del (res['warning'])
+            del(res['warning'])
         return res
 
     def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
