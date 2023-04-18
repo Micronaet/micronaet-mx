@@ -713,9 +713,9 @@ class sale_order_line(osv.osv):
             qty, precision_rounding=uom2.rounding)
 
         # TODO remove warning message:
-        #warning_msgs = res_packing.get(
+        # warning_msgs = res_packing.get(
         #    'warning') and res_packing['warning']['message'] or ''
-        #if (product_obj.type == 'product') and int(compare_qty) == -1 \
+        # if (product_obj.type == 'product') and int(compare_qty) == -1 \
         #        and (product_obj.procure_method=='make_to_stock'):
         #    warn_msg = _(
         #        'You plan to sell %.2f %s but you only have %.2f %s available !\nThe real stock is %.2f %s. (without reservations)') % (
@@ -724,8 +724,8 @@ class sale_order_line(osv.osv):
         #            max(0,product_obj.qty_available), uom2.name,
         #            )
         #    warning_msgs += _("Not enough stock ! : ") + warn_msg + "\n\n"
-        #update of warning messages
-        #if warning_msgs:
+        # update of warning messages
+        # if warning_msgs:
         #    warning = {
         #        'title': _('Configuration Error!'),
         #        'message' : warning_msgs

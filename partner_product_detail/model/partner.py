@@ -177,6 +177,7 @@ class SaleOrderLine(orm.Model):
 
         # Update with pricelist partner values:
         for item in partner_proxy.pricelist_product_ids:
+            pdb.set_trace()
             if item.product_id.id == product:
                 name = item.alias_name or item.alias_id.name or \
                        item.product_id.name
