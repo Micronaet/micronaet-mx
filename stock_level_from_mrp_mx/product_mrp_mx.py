@@ -504,7 +504,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             # -----------------------------------------------------------------
             product = load.package_id.linked_product_id
             if product not in product_obsolete:
-                product_obsolete[product] = True  # Default obsolete
+                product_obsolete[product] = True  # Set as default obsolete
 
             # Check product obsolete (partic. or default):
             if date > date_limit.get(product, date_limit['product']):

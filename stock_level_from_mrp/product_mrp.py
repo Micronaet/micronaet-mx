@@ -65,7 +65,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             context=None):
         """ Upload product with dictionary loaded:
             product_obsolete: Not used for now in ID (mark product as obsolete)
-            context parameters: clean_remain >> Reset all remain product m(x)
+            context parameters: clean_remain  >>  Reset all remain product m(x)
         """
         if context is None:
             context = {}
@@ -203,6 +203,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         product_obsolete = {}
         product_medium = {}
+
+        # Log files:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = open(os.path.expanduser('~/log/medium/unload.log'), 'w')
         log_f.write('ID|Code|Job|MRP|Date\n')
@@ -346,6 +348,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         product_obsolete = {}
         product_medium = {}
+
+        # Log to file:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = open(os.path.expanduser('~/log/medium/unload.log'), 'w')
         log_f.write('ID|Code|Job|MRP|Date\n')

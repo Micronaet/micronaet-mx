@@ -178,12 +178,12 @@ class SaleOrder(orm.Model):
             'res.partner.bank', 'Company bank account'),
 
         # Alert:
-        'uncovered_payment': fields.boolean('Uncovered payment'),
+        'uncovered_payment': fields.boolean('Pagamenti scoperti'),
         'uncovered_alert': fields.char('Alert', size=64, readonly=True),
         }
 
     _defaults = {
-        'uncovered_alert': lambda *x: 'Alert: Uncovered payment!!!',
+        'uncovered_alert': lambda *x: 'Attenzione: Pagamento scaduto!!!',
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
                 DEFAULT_SERVER_DATE_FORMAT),
