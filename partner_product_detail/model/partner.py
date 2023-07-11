@@ -239,10 +239,10 @@ class SaleOrderLine(orm.Model):
             'price': line.price_unit,
             'pallet_weight': line.pallet_weight,
             'packaging_id': line.product_packaging.id,
+            'date': line.create_date,
         }
 
         if setup_ids:  # Update setup:
-            data['date'] = line.create_date
             if context.get('force_only_mrp'):  # MRP not update price!
                 _logger.warning('Updating only MRP data!')
                 del (data['price'])
