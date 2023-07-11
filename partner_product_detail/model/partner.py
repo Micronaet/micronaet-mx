@@ -242,6 +242,7 @@ class SaleOrderLine(orm.Model):
         }
 
         if setup_ids:  # Update setup:
+            data['date'] = line.create_date
             if context.get('force_only_mrp'):  # MRP not update price!
                 _logger.warning('Updating only MRP data!')
                 del (data['price'])
