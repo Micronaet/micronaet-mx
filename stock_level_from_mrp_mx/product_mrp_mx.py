@@ -291,7 +291,7 @@ class ResCompany(osv.osv):
             default_format=excel_format['header_wrap'])
         excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
         excel_pool.row_height(ws_name, [row], height=38)
-
+        row += 1  # Jump header
         for mode, product_filter, test in ws_list:
             # -----------------------------------------------------------------
             # Product selection:
@@ -309,7 +309,6 @@ class ResCompany(osv.osv):
                 context=context)
 
             # todo add also package data!!!
-            row += 1
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
