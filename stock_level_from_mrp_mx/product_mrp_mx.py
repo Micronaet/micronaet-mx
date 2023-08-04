@@ -236,58 +236,63 @@ class ResCompany(osv.osv):
         excel_format = {}
         removed_ids = []
 
-        for ws_name, product_filter, test in ws_list:
-            excel_pool.create_worksheet(name=ws_name)
+        ws_name = 'ROP'
+        excel_pool.create_worksheet(name=ws_name)
 
-            excel_pool.column_width(ws_name, width)
-            # excel_pool.row_height(ws_name, row_list, height=10)
-            excel_pool.freeze_panes(ws_name, 1, 2)
-            excel_pool.column_hidden(ws_name, [4, 5, 10])
+        excel_pool.column_width(ws_name, width)
+        # excel_pool.row_height(ws_name, row_list, height=10)
+        excel_pool.freeze_panes(ws_name, 1, 2)
+        excel_pool.column_hidden(ws_name, [4, 5, 10])
 
-            # -----------------------------------------------------------------
-            # Generate format used (first time only):
-            # -----------------------------------------------------------------
-            if not excel_format:
-                excel_pool.set_format(header_size=10, text_size=10)
-                excel_format['title'] = excel_pool.get_format(key='title')
-                excel_format['header'] = excel_pool.get_format(key='header')
-                excel_format['header_wrap'] = excel_pool.get_format(
-                    key='header_wrap')
-                excel_format['text'] = excel_pool.get_format(key='text')
-                excel_format['right'] = excel_pool.get_format(key='text_right')
-                excel_format['number'] = excel_pool.get_format(key='number')
+        # -----------------------------------------------------------------
+        # Generate format used (first time only):
+        # -----------------------------------------------------------------
+        excel_pool.set_format(header_size=10, text_size=10)
+        excel_format['title'] = excel_pool.get_format(key='title')
+        excel_format['header'] = excel_pool.get_format(key='header')
+        excel_format['header_wrap'] = excel_pool.get_format(
+            key='header_wrap')
+        excel_format['text'] = excel_pool.get_format(key='text')
+        excel_format['right'] = excel_pool.get_format(key='text_right')
+        excel_format['number'] = excel_pool.get_format(key='number')
 
-                excel_format['white'] = {
-                    'text': excel_pool.get_format(key='text'),
-                    'right': excel_pool.get_format(key='text_right'),
-                    'number': excel_pool.get_format(key='number'),
-                }
-                excel_format['orange'] = {
-                    'text': excel_pool.get_format(key='bg_orange'),
-                    'right': excel_pool.get_format(key='bg_orange_right'),
-                    'number': excel_pool.get_format(key='bg_orange_number'),
-                }
-                excel_format['yellow'] = {
-                    'text': excel_pool.get_format(key='bg_yellow'),
-                    'right': excel_pool.get_format(key='bg_yellow_right'),
-                    'number': excel_pool.get_format(key='bg_yellow_number'),
-                }
-                excel_format['red'] = {
-                    'text': excel_pool.get_format(key='bg_red'),
-                    'right': excel_pool.get_format(key='bg_red_right'),
-                    'number': excel_pool.get_format(key='bg_red_number'),
-                }
+        excel_format['white'] = {
+            'text': excel_pool.get_format(key='text'),
+            'right': excel_pool.get_format(key='text_right'),
+            'number': excel_pool.get_format(key='number'),
+        }
+        excel_format['orange'] = {
+            'text': excel_pool.get_format(key='bg_orange'),
+            'right': excel_pool.get_format(key='bg_orange_right'),
+            'number': excel_pool.get_format(key='bg_orange_number'),
+        }
+        excel_format['yellow'] = {
+            'text': excel_pool.get_format(key='bg_yellow'),
+            'right': excel_pool.get_format(key='bg_yellow_right'),
+            'number': excel_pool.get_format(key='bg_yellow_number'),
+        }
+        excel_format['red'] = {
+            'text': excel_pool.get_format(key='bg_red'),
+            'right': excel_pool.get_format(key='bg_red_right'),
+            'number': excel_pool.get_format(key='bg_red_number'),
+        }
+        excel_format['grey'] = {
+            'text': excel_pool.get_format(key='bg_grey'),
+            'right': excel_pool.get_format(key='bg_grey_right'),
+            'number': excel_pool.get_format(key='bg_grey_number'),
+        }
 
-            # -----------------------------------------------------------------
-            # Write title / header
-            # -----------------------------------------------------------------
-            row = 0
-            excel_pool.write_xls_line(
-                ws_name, row, header,
-                default_format=excel_format['header_wrap'])
-            excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
-            excel_pool.row_height(ws_name, [row], height=38)
+        # -----------------------------------------------------------------
+        # Write title / header
+        # -----------------------------------------------------------------
+        row = 0
+        excel_pool.write_xls_line(
+            ws_name, row, header,
+            default_format=excel_format['header_wrap'])
+        excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
+        excel_pool.row_height(ws_name, [row], height=38)
 
+        for mode, product_filter, test in ws_list:
             # -----------------------------------------------------------------
             # Product selection:
             # -----------------------------------------------------------------
@@ -295,7 +300,7 @@ class ResCompany(osv.osv):
             product_ids = product_pool.search(
                 cr, uid, product_filter, context=context)
 
-            if ws_name == ws_not_present and removed_ids:
+            if mode == ws_not_present and removed_ids:
                 # Add also removed from other loop
                 product_ids = list(set(product_ids).union(set(removed_ids)))
 
@@ -308,17 +313,20 @@ class ResCompany(osv.osv):
             for product in sorted(products, key=lambda x: (
                     self.get_type(x.default_code, x.uom_id.name),
                     x.default_code)):
-                if ws_name == ws_not_present:
+                # Field used:
+                default_code = product.default_code
+                account_qty = int(product.accounting_qty)
+
+                if mode == ws_not_present:
                     save_log(
                         'pre_not_used',
-                        '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                        '>> %s|%s|%s' % (mode, default_code, account_qty),
                     )
 
                 if not eval(test):
                     continue
 
                 # Filter code:
-                default_code = product.default_code
                 if not default_code:
                     _logger.error('Product %s has no code' % product.name)
                     continue
@@ -326,12 +334,10 @@ class ResCompany(osv.osv):
                     product.default_code, product.uom_id.name)
 
                 # Remove REC and SER product (go in last page):
-                if ws_name != ws_not_present and product_type == 'REC' or \
+                if mode != ws_not_present and product_type == 'REC' or \
                         default_code.startswith('SER'):
                     removed_ids.append(product.id)
                     continue
-
-                account_qty = int(product.accounting_qty)
 
                 # Supplier Order data:
                 order_data = move_db.get(default_code, {})
@@ -341,7 +347,10 @@ class ResCompany(osv.osv):
 
                 order_account_qty += int(account_qty + 0.0)  # todo get order!
                 min_stock_level = int(product.min_stock_level)
-                if account_qty < min_stock_level < order_account_qty:
+                if mode == ws_not_present:
+                    state = _(u'Sin movimentos')
+                    color_format = excel_format['grey']
+                elif account_qty < min_stock_level < order_account_qty:
                     state = _(u'En cobertura')
                     color_format = excel_format['yellow']
                 elif account_qty < min_stock_level:
@@ -393,15 +402,15 @@ class ResCompany(osv.osv):
                 # -------------------------------------------------------------
                 # Logging mode:
                 # -------------------------------------------------------------
-                if ws_name == ws_not_present:
+                if mode == ws_not_present:
                     save_log(
                         'not_used',
-                        '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                        '>> %s|%s|%s' % (mode, default_code, account_qty),
                     )
                 else:
                     save_log(
                         'used',
-                        '>> %s|%s|%s' % (ws_name, default_code, account_qty),
+                        '>> %s|%s|%s' % (mode, default_code, account_qty),
                     )
 
                 if order_comment:
