@@ -126,27 +126,37 @@ class SaleOrder(orm.Model):
 
     _columns = {
         # ---------------------------------------------------------------------
-        # TODO sale_booked module:
+        # todo sale_booked module:
         # QUOTATION:
-        'date_valid': fields.date('Validity date',
+        'date_valid': fields.date(
+            'Validity date',
             help='Max date for validity of offer'),
 
+        # ---------------------------------------------------------------------
         # ORDER:
-        'date_confirm': fields.date('Date confirm',
-            help='Order confirm by the customer'), # TODO yet present in order?
-        'date_deadline': fields.date('Order deadline',
+        # ---------------------------------------------------------------------
+        # todo yet present in order?
+        'date_confirm': fields.date(
+            'Date confirm',
+            help='Order confirm by the customer'),
+        'date_deadline': fields.date(
+            'Order deadline',
             help='Delivery term for customer'),
         # Fixed by delivery team:
-        'date_booked': fields.date('Booked date',
+        'date_booked': fields.date(
+            'Booked date',
             help='Delivery was booked and fixed!'),
-        'date_booked_confirmed': fields.boolean('Booked confirmed',
+        'date_booked_confirmed': fields.boolean(
+            'Booked confirmed',
             help='Booked confirmed for this date'),
-        'date_delivery': fields.date('Load / Availability',
+        'date_delivery': fields.date(
+            'Load / Availability',
             help='For ex works is availability date, other clause is '
-                'load date'),
-        'date_delivery_confirmed': fields.boolean('Delivery confirmed',
+                 'load date'),
+        'date_delivery_confirmed': fields.boolean(
+            'Delivery confirmed',
             help='Delivery confirmed, product available '
-                '(2 cases depend on incoterms)'),
+                 '(2 cases depend on incoterms)'),
         # ---------------------------------------------------------------------
 
         # TODO used?
@@ -186,7 +196,7 @@ class SaleOrder(orm.Model):
         'uncovered_alert': lambda *x: 'Attenzione: Pagamento scaduto!!!',
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
-                DEFAULT_SERVER_DATE_FORMAT),
+            DEFAULT_SERVER_DATE_FORMAT),
         }
 
 
