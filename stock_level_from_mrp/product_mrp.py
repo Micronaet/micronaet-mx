@@ -123,6 +123,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # 'stock_obsolete': product_obsolete.get(product, False),
             }, context=context)
 
+        pdb.set_trace()
         if clean_remain:
             product_ids = product_pool.search(cr, uid, [
                 ('id', 'not in', done_product_ids),
