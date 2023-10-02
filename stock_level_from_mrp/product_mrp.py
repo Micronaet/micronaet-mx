@@ -144,6 +144,9 @@ class MrpProductionWorkcenterLine(osv.osv):
         for product in product_obsolete:
             try:
                 is_obsolete = product_obsolete[product]
+                product_id = product.id
+                if type(product_id) != int:
+                    continue
             except:
                 continue
 
