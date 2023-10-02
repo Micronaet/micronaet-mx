@@ -140,7 +140,6 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.log'), 'w')
         log_obs_f.write('ID|Codice\n')
         # Clean and mark as obsolete the dict passed
-        pdb.set_trace()
         for product in product_obsolete:
             try:
                 is_obsolete = product_obsolete[product]
