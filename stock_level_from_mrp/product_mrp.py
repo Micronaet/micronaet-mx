@@ -142,7 +142,12 @@ class MrpProductionWorkcenterLine(osv.osv):
         # Clean and mark as obsolete the dict passed
         pdb.set_trace()
         for product in product_obsolete:
-            if product_obsolete[product]:
+            try:
+                is_obsolete = product_obsolete[product]
+            except:
+                continue
+
+            if is_obsolete:
                 product_pool.write(cr, uid, [product.id], {
                     'medium_origin': False,
                     'medium_stock_qty': False,
