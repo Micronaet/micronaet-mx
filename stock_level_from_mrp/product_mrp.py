@@ -136,6 +136,23 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'max_stock_level': False,
                 'ready_stock_level': False,
             }, context=context)
+
+        log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.log'), 'w')
+        log_obs_f.write('ID|Codice\n')
+        # Clean and mark as obsolete the dict passed
+        for product in product_obsolete:
+            product_pool.write(cr, uid, [product.id], {
+                'medium_origin': False,
+                'medium_stock_qty': False,
+                'min_stock_level': False,
+                'max_stock_level': False,
+                'ready_stock_level': False,
+                'stock_obsolete': True,
+            }, context=context)
+            log_obs_f.write('%s|%s\n' % (
+                product.id,
+                product.default_code,
+            ))
         return True
 
     def get_form_date(self, now, days):

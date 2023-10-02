@@ -440,6 +440,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         _logger.info('Updating medium from MRP (final product) MX')
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
+        product_pool = self.pool.get('product.product')
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
@@ -550,11 +551,18 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     load.product_qty,
                     date > date_limit.get('product', date_limit['product']),
                 ))
+
         # Update medium in product:
         self.update_product_medium_from_dict(
             cr, uid, product_medium, stock_level_days,
             product_obsolete,  # manage obsolete in this function,
             context=context)
+
+        # Reset mediom for product not in range period:
+        #for product in product_obsolete:
+        #    product_pool.write(cr, uid, [product.id], {
+        #        ''
+        #    }, context=context)
 
         # Call original method for raw materials:
         return super(MrpProductionWorkcenterLineOverride, self).\
