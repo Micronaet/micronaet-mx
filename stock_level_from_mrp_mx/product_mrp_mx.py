@@ -437,7 +437,8 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         """ Update product level from production (this time also product)
             MX Mode:
         """
-        _logger.info('Updating medium from MRP (final product)')
+        pdb.set_trace()
+        _logger.info('Updating medium from MRP (final product) MX')
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
 

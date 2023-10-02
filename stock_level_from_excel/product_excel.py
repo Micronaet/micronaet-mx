@@ -55,7 +55,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         with open(fullname, 'wb') as f:
             f.write(attachment_data)
 
-    # Override so update after update MRP:
+    # Override so read before Excel file and after updated with MRP:
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production
         """
