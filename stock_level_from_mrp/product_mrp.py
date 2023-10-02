@@ -140,6 +140,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.log'), 'w')
         log_obs_f.write('ID|Codice\n')
         # Clean and mark as obsolete the dict passed
+        pdb.set_trace()
         for product in product_obsolete:
             product_pool.write(cr, uid, [product.id], {
                 'medium_origin': False,
@@ -149,6 +150,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'ready_stock_level': False,
                 'stock_obsolete': True,
             }, context=context)
+
             log_obs_f.write('%s|%s\n' % (
                 product.id,
                 product.default_code,
