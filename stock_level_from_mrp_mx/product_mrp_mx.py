@@ -495,7 +495,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 product_obsolete[product] = True  # Default obsolete
 
             # Check product obsolete (partic or default):
-            if date > date_limit.get(product, date_limit['product']):
+            if date > date_limit.get('product', date_limit['product']):
                 product_obsolete[product] = False
             quantity = load.product_qty
             if product in product_medium:
@@ -516,7 +516,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 product_obsolete[product] = True  # Set as default obsolete
 
             # Check product obsolete (partic. or default):
-            if date > date_limit.get(product, date_limit['product']):
+            if date > date_limit.get('product', date_limit['product']):
                 product_obsolete[product] = False
 
             quantity = load.ul_qty
@@ -534,7 +534,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 product_obsolete[product] = True  # Default obsolete
 
             # Check product obsolete (partic. or default):
-            if date > date_limit.get(product, date_limit['product']):
+            if date > date_limit.get('product', date_limit['product']):
                 product_obsolete[product] = False
 
             quantity = load.pallet_qty
@@ -549,7 +549,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     load.product_id.id,
                     load.product_id.default_code or '',
                     load.product_qty,
-                    date > date_limit.get(product, date_limit['product']),
+                    date > date_limit.get('product', date_limit['product']),
                 ))
         # Update medium in product:
         self.update_product_medium_from_dict(
