@@ -123,7 +123,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # 'stock_obsolete': product_obsolete.get(product, False),
             }, context=context)
 
-        pdb.set_trace()
         if clean_remain:
             product_ids = product_pool.search(cr, uid, [
                 ('id', 'not in', done_product_ids),
@@ -141,6 +140,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.log'), 'w')
         log_obs_f.write('ID|Codice\n')
         # Clean and mark as obsolete the dict passed
+        pdb.set_trace()
         for product in product_obsolete:
             try:
                 is_obsolete = product_obsolete[product]

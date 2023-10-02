@@ -470,7 +470,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         self.get_product_stock_days_force(cr, uid, date_limit, context=context)
 
         load_ids = load_pool.search(cr, uid, [
-            ('date', '>=', date_limit['mrp']),
+            # ('date', '>=', date_limit['mrp']),  # remove for hide old prod.
             ('date', '<', date_limit['now']),
             ('recycle', '=', False),
             ], context=context)
@@ -495,8 +495,12 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 product_obsolete[product] = True  # Default obsolete
 
             # Check product obsolete (partic or default):
-            if date > date_limit.get('product', date_limit['product']):
-                product_obsolete[product] = False
+            if date < date_limit.get('product', date_limit['product']):
+                # Obsolete Job, not considered
+                continue
+
+            product_obsolete[product] = False
+
             quantity = load.product_qty
             if product in product_medium:
                 product_medium[product] += quantity
@@ -557,12 +561,6 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             cr, uid, product_medium, stock_level_days,
             product_obsolete,  # manage obsolete in this function,
             context=context)
-
-        # Reset mediom for product not in range period:
-        #for product in product_obsolete:
-        #    product_pool.write(cr, uid, [product.id], {
-        #        ''
-        #    }, context=context)
 
         # Call original method for raw materials:
         return super(MrpProductionWorkcenterLineOverride, self).\
