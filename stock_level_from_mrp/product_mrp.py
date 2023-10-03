@@ -151,7 +151,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             if is_obsolete:
                 product_pool.write(cr, uid, [product.id], {
-                    'medium_origin': False,
+                    'medium_origin': 'mrp',
                     'medium_stock_qty': False,
                     'min_stock_level': False,
                     'max_stock_level': False,
