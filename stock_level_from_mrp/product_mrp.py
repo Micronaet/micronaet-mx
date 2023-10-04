@@ -379,9 +379,15 @@ class MrpProductionWorkcenterLine(osv.osv):
         # Log to file:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = open(os.path.expanduser('~/log/medium/unload.log'), 'w')
+        log_pack_f = open(os.path.expanduser(
+            '~/log/medium/unload_pack.log'), 'w')
         log_f.write('ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
+
+            # -----------------------------------------------------------------
+            # Unload material from SL:
+            # -----------------------------------------------------------------
             for material in job.bom_material_ids:
                 product = material.product_id
                 default_code = product.default_code or ' '
@@ -408,6 +414,47 @@ class MrpProductionWorkcenterLine(osv.osv):
                     job.production_id.name,
                     job.real_date_planned,
                 ))
+
+            # -----------------------------------------------------------------
+            # Unload package and pallet from CL:
+            # -----------------------------------------------------------------
+            for cl in job.load_ids:
+                # A. Package:
+                try:
+                    package = cl.package_id.linked_product_id
+                    package_qty = cl.ul_qty
+                    if package_qty > 0:
+                        if package in product_medium:
+                            product_medium[package] += package_qty
+                        else:
+                            product_medium[package] = package_qty
+
+                        log_pack_f.write('%s|%s|%s|%s|%s\n' % (
+                            package.id,
+                            package.default_code,
+                            job.name,
+                            job.production_id.name,
+                            job.real_date_planned,
+                        ))
+                except:
+                    _logger.error('Error checking package product')
+
+                # B. Pallet:
+                pallet = cl.pallet_product_id
+                pallet_qty = cl.pallet_qty
+                if pallet_qty > 0.0:
+                    if pallet in product_medium:
+                        product_medium[pallet] += pallet_qty
+                    else:
+                        product_medium[pallet] = pallet_qty
+
+                    log_pack_f.write('%s|%s|%s|%s|%s\n' % (
+                        pallet.id,
+                        pallet.default_code,
+                        job.name,
+                        job.production_id.name,
+                        job.real_date_planned,
+                    ))
 
         return self.update_product_medium_from_dict(
             cr, uid, product_medium, stock_level_days,
