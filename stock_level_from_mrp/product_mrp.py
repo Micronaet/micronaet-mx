@@ -423,7 +423,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 try:
                     package = cl.package_id.linked_product_id
                     package_qty = cl.ul_qty
-                    if package_qty > 0:
+                    if package and package_qty:
                         if package in product_medium:
                             product_medium[package] += package_qty
                         else:
@@ -442,7 +442,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # B. Pallet:
                 pallet = cl.pallet_product_id
                 pallet_qty = cl.pallet_qty
-                if pallet_qty > 0.0:
+                if pallet and pallet_qty:
                     if pallet in product_medium:
                         product_medium[pallet] += pallet_qty
                     else:
