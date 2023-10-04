@@ -381,7 +381,10 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_f = open(os.path.expanduser('~/log/medium/unload.log'), 'w')
         log_pack_f = open(os.path.expanduser(
             '~/log/medium/unload_pack.log'), 'w')
-        log_f.write('ID|Code|Job|MRP|Date\n')
+
+        # Header:
+        log_f.write('ID|Code|Job|MRP|Date|Q.\n')
+        log_pack_f.write('ID|Code|Job|MRP|Date|Q.\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
 
@@ -407,12 +410,13 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s|%s\n' % (
+                log_f.write('%s|%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
                     job.name,
                     job.production_id.name,
                     job.real_date_planned,
+                    quantity,
                 ))
 
             # -----------------------------------------------------------------
@@ -429,12 +433,13 @@ class MrpProductionWorkcenterLine(osv.osv):
                         else:
                             product_medium[package] = package_qty
 
-                        log_pack_f.write('%s|%s|%s|%s|%s\n' % (
+                        log_pack_f.write('%s|%s|%s|%s|%s|%s\n' % (
                             package.id,
                             package.default_code,
                             job.name,
                             job.production_id.name,
                             job.real_date_planned,
+                            package_qty,
                         ))
                 except:
                     _logger.error('Error checking package product')
@@ -448,12 +453,13 @@ class MrpProductionWorkcenterLine(osv.osv):
                     else:
                         product_medium[pallet] = pallet_qty
 
-                    log_pack_f.write('%s|%s|%s|%s|%s\n' % (
+                    log_pack_f.write('%s|%s|%s|%s|%s|%s\n' % (
                         pallet.id,
                         pallet.default_code,
                         job.name,
                         job.production_id.name,
                         job.real_date_planned,
+                        pallet_qty,
                     ))
 
         return self.update_product_medium_from_dict(
