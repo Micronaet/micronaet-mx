@@ -429,7 +429,10 @@ class ResCompany(osv.osv):
 
         # Hidden row:
         if hidden_row:
-            excel_pool.preset_filter_column(ws_name, 'A', 'x != "EXCL"')
+            excel_pool.filter_column_list('A', [
+                'IT', 'COMP', 'MP', 'PT', 'REC',
+            ])
+            # excel_pool.preset_filter_column(ws_name, 'A', 'x != "EXCL"')
             excel_pool.row_hidden(ws_name, hidden_row)
 
         if save_mode:
