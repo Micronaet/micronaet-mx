@@ -298,9 +298,9 @@ class ResCompany(osv.osv):
             ws_name, row, header,
             default_format=excel_format['header_wrap'])
         excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
-        excel_pool.preset_filter_column(ws_name, 'A', 'x != "EXCL"')
         excel_pool.row_height(ws_name, [row], height=38)
         row += 1  # Jump header
+        hidden_row = []
         for mode, product_filter, test in ws_list:
             # -----------------------------------------------------------------
             # Product selection:
@@ -405,7 +405,7 @@ class ResCompany(osv.osv):
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=color_format['text'])
                 if mode == 'EXCL':
-                    excel_pool.row_hidden(ws_name, [row])
+                    hidden_row.append(row)
 
                 # -------------------------------------------------------------
                 # Logging mode:
@@ -426,6 +426,11 @@ class ResCompany(osv.osv):
                         ws_name, row, order_col, order_comment,
                         parameters=parameters)
                 row += 1
+
+        # Hidden row:
+        if hidden_row:
+            excel_pool.preset_filter_column(ws_name, 'A', 'x != "EXCL"')
+            excel_pool.row_hidden(ws_name, hidden_row)
 
         if save_mode:
             return excel_pool.save_file_as(save_mode)
