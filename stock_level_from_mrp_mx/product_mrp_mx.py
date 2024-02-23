@@ -298,6 +298,7 @@ class ResCompany(osv.osv):
             ws_name, row, header,
             default_format=excel_format['header_wrap'])
         excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
+        excel_pool.preset_filter_column(ws_name, 'A', 'x != "EXCL"')
         excel_pool.row_height(ws_name, [row], height=38)
         row += 1  # Jump header
         for mode, product_filter, test in ws_list:
