@@ -404,7 +404,7 @@ class ResCompany(osv.osv):
 
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=color_format['text'])
-                if mode == 'EXCL':
+                if product_type == 'EXCL':
                     hidden_row.append(row)
 
                 # -------------------------------------------------------------
