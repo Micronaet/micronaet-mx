@@ -403,6 +403,8 @@ class ResCompany(osv.osv):
 
                 excel_pool.write_xls_line(
                     ws_name, row, line, default_format=color_format['text'])
+                if mode == 'EXCL':
+                    excel_pool.row_hidden(ws_name, [row])
 
                 # -------------------------------------------------------------
                 # Logging mode:
