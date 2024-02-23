@@ -67,11 +67,17 @@ class ResCompany(osv.osv):
     _columns = {
     }
 
-    def get_type(self, code, uom):
+    def get_type(self, product):  # code, uom):
         """ Extract type from code
         """
-        code = (code or '').strip().upper()
-        uom = (uom or '').upper()
+        if product.not_in_status:
+            return 'EXCL'
+
+        code = product.default_code or ''
+        uom = product.uom_id.name or ''
+
+        code = code.strip().upper()
+        uom = uom.upper()
 
         if not code:
             return _('Not assigned')
@@ -220,7 +226,8 @@ class ResCompany(osv.osv):
             (
                 'ROP',
                 [('medium_stock_qty', '>', gap)],  # todo remove domain not use
-                'product.medium_stock_qty > 0.0',  # test
+                # test:
+                'product.medium_stock_qty > 0.0 and not product.not_in_status',
                 ),
             # ('Niveles Manuales', [
             #    ('manual_stock_level', '=', True),
@@ -229,7 +236,8 @@ class ResCompany(osv.osv):
             (
                 ws_not_present,
                 [],  # [('medium_stock_qty', '<=', gap)],   # todo remove
-                'product.min_stock_level <= 0.0',  # test
+                # test:
+                'product.min_stock_level <= 0.0 or product.not_in_status',
                 ),
             )
         # Create all pages:
@@ -310,8 +318,7 @@ class ResCompany(osv.osv):
 
             # todo add also package data!!!
             for product in sorted(products, key=lambda x: (
-                    self.get_type(x.default_code, x.uom_id.name),
-                    x.default_code)):
+                    self.get_type(x), x.default_code)):
                 # Field used:
                 default_code = product.default_code
                 account_qty = int(product.accounting_qty)
@@ -329,8 +336,7 @@ class ResCompany(osv.osv):
                 if not default_code:
                     _logger.error('Product %s has no code' % product.name)
                     continue
-                product_type = self.get_type(
-                    product.default_code, product.uom_id.name)
+                product_type = self.get_type(product)
 
                 # Remove REC and SER product (go in last page):
                 if mode != ws_not_present and product_type == 'REC' or \
