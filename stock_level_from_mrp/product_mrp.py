@@ -60,6 +60,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 now, product.mrp_stock_level_force)
         return True
 
+    # 18/03/2024 Overridden in Sapnaet
     def update_product_medium_from_dict(
             self, cr, uid, product_medium, stock_level_days, product_obsolete,
             context=None):
