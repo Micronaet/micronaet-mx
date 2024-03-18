@@ -171,6 +171,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         from_dt = now - timedelta(days=days)
         return '%s 00:00:00' % from_dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
+    # Note: 18/03/2024 Overridden from Sapnaet Module
     def update_product_level_from_production_IT(
             self, cr, uid, context=None):
         """ Update product level from production (only raw materials)
@@ -212,7 +213,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             'material': self.get_form_date(now, mrp_stock_level_mp),
             'product': self.get_form_date(now, mrp_stock_level_pf),
         }
-        # MRP stock level extra parameters:
+        # MRP stock level extra parameters: (product param force company)
         self.get_product_stock_days_force(cr, uid, date_limit, context=context)
 
         # ---------------------------------------------------------------------
