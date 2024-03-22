@@ -1398,6 +1398,8 @@ class stock_picking(osv.osv):
 
 
 class stock_production_lot(osv.osv):
+    _name = 'stock.production.lot'
+    _description = 'Serial Number'
 
     def name_get(self, cr, uid, ids, context=None):
         if not ids or not ids[0]:
@@ -1424,9 +1426,6 @@ class stock_production_lot(osv.osv):
         else:
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context)
-
-    _name = 'stock.production.lot'
-    _description = 'Serial Number'
 
     def _get_stock(self, cr, uid, ids, field_name, arg, context=None):
         """ Gets stock of products for locations
@@ -1542,17 +1541,21 @@ stock_production_lot_revision()
 # Fields:
 #   location_dest_id is only used for predicting futur stocks
 #
-class stock_move(osv.osv):
 
-    def _getSSCC(self, cr, uid, context=None):
-        cr.execute('select id from stock_tracking where create_uid=%s order by id desc limit 1', (uid,))
-        res = cr.fetchone()
-        return (res and res[0]) or False
+
+class stock_move(osv.osv):
+    """ Stock move
+    """
 
     _name = "stock.move"
     _description = "Stock Move"
     _order = 'date_expected desc, id'
     _log_create = False
+
+    def _getSSCC(self, cr, uid, context=None):
+        cr.execute('select id from stock_tracking where create_uid=%s order by id desc limit 1', (uid,))
+        res = cr.fetchone()
+        return (res and res[0]) or False
 
     def action_partial_move(self, cr, uid, ids, context=None):
         if context is None: context = {}
@@ -1561,7 +1564,7 @@ class stock_move(osv.osv):
         partial_id = self.pool.get("stock.partial.move").create(
             cr, uid, {}, context=context)
         return {
-            'name':_("Products to Process"),
+            'name': _("Products to Process"),
             'view_mode': 'form',
             'view_id': False,
             'view_type': 'form',
@@ -1573,7 +1576,6 @@ class stock_move(osv.osv):
             'domain': '[]',
             'context': context
         }
-
 
     def name_get(self, cr, uid, ids, context=None):
         res = []
