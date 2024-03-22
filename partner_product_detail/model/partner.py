@@ -54,10 +54,11 @@ class ResPartnerPricelistProduct(orm.Model):
     _order = 'product_id'
 
     _columns = {
-        'product_id': fields.many2one('product.product', 'Product'),
+        'product_id': fields.many2one('product.product', 'Dare'),
+        # 22/03/2024: Non più utilizzata su richiesta Cassandra
         'alias_id': fields.many2one('product.product', 'Alias'),
         'alias_name': fields.char(
-            'Alias testo', size=50,
+            'Descriz. prodotto', size=50,
             help='Forzatura testuale del prodotto alias qualora non esistesse'
                  'il prodotto fisico',
         ),
@@ -66,7 +67,7 @@ class ResPartnerPricelistProduct(orm.Model):
         # 'sell': fields.boolean('Sell rule'),
         # 'cost': fields.float('Cost', digits=(16, 2)), # for purchase?
         'price': fields.float('Prezzo', digits=(16, 2)),
-        # TODO Currency
+        # todo Currency
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
 
@@ -128,7 +129,7 @@ class SaleOrderLine(orm.Model):
         if not partner_id or not product:
             res['value'].update({
                 'name': '',
-                'alias_id': False,
+                # 'alias_id': False,
                 'price_unit': False,
                 'product_packaging': False,
                 'pallet_weight': False,
@@ -179,11 +180,11 @@ class SaleOrderLine(orm.Model):
         # CASE 1: Update with pricelist partner values:
         for item in partner_proxy.pricelist_product_ids:
             if item.product_id.id == product:
-                name = item.alias_name or item.alias_id.name or \
-                       item.product_id.name
+                # item.alias_id.name or \
+                name = item.alias_name or item.product_id.name
                 data = {
                     'name': name,
-                    'alias_id': item.alias_id.id,
+                    # 'alias_id': item.alias_id.id,
                     'price_unit': item.price,
                     # todo use first if not present in customization?
                     'product_packaging': item.packaging_id.id,
@@ -233,7 +234,7 @@ class SaleOrderLine(orm.Model):
         data = {
             'partner_id': partner_id,
             'product_id': product_id,
-            'alias_id': line.alias_id.id,
+            # 'alias_id': line.alias_id.id,
             'alias_name': name if line.product_id.name != name
             else '',
             'price': line.price_unit,
