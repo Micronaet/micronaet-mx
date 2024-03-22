@@ -234,7 +234,8 @@ class SaleOrderLine(orm.Model):
         'date_delivery': fields.related( # TODO use booked!!!!
             'order_id', 'date_delivery', type='date', string='Date delivery'),
 
-        'alias_id':fields.many2one(
+        # todo remove:
+        'alias_id': fields.many2one(
             'product.product', 'Marked as product', ondelete='set null'),
 
         'delivered_qty': fields.function(
@@ -242,6 +243,7 @@ class SaleOrderLine(orm.Model):
             string='Delivered', store=False,
             help='Quantity delivered with DDT out'),
         }
+
     _defaults = {
         'colls': lambda *x: 1,
         }
