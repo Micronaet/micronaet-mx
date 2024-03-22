@@ -71,7 +71,10 @@ class ResPartnerPricelistProduct(orm.Model):
         'partner_id': fields.many2one('res.partner', 'Partner'),
         'note': fields.text('Note'),
 
-        'pallet_weight': fields.integer('Peso pallet'),
+        'pallet_weight': fields.integer(
+            'Max pallet',
+            help='Indica il peso massimo a cui caricare il pallet '
+                 'quando si prepara per questo prodotto'),
         'packaging_id': fields.many2one(
             'product.packaging', 'Imballo',
             ondelete='set null'),
@@ -255,10 +258,10 @@ class SaleOrderLine(orm.Model):
 
     _columns = {
         'pallet_weight': fields.integer(
-            'Peso pallet',
-            help='Caricare per questo prodotto il pallet con questi Kg'),
+            'Max pallet',
+            help='Indica il peso massimo a cui caricare il pallet '
+                 'quando si prepara per questo prodotto'),
 
         # todo remove?
         'load_qty': fields.float('Load q.ty', digits=(16, 2)),
         }
-
