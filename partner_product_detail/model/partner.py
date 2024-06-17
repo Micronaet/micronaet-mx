@@ -155,7 +155,6 @@ class SaleOrderLine(orm.Model):
         # Check if order confirm (means no update!)
         # ---------------------------------------------------------------------
         accounting_order = False
-        '''
         try:
             if ids:
                 line = self.browse(cr, uid, ids, context=context)[0]
@@ -163,7 +162,6 @@ class SaleOrderLine(orm.Model):
                 accounting_order = order.accounting_order
         except:
             pass  # In case of error consider not confirmed!
-        '''
 
         # ---------------------------------------------------------------------
         # VAT Management (patch!):
@@ -215,7 +213,11 @@ class SaleOrderLine(orm.Model):
                     break
 
         # CASE 2: Product not in partner pricelist:
-        if 'name' not in res['value']:  # Update name if not present (needed?)
+        # Update name if not present (needed?)
+        if 'name' in res['value']:
+            if accounting_order:
+                del res['value']['name']  # Not updated name
+        else:
             product_proxy = product_pool.browse(
                 cr, uid, product, context=context)
             data = {
