@@ -152,6 +152,18 @@ class SaleOrderLine(orm.Model):
             cr, uid, partner_id, context=context)
 
         # ---------------------------------------------------------------------
+        # Check if order confirm (means no update!)
+        # ---------------------------------------------------------------------
+        accounting_order = False
+        try:
+            if ids:
+                line = self.browse(cr, uid, ids, context=context)[0]
+                order = line.order_id
+                accounting_order = order.accounting_order
+        except:
+            pass  # In case of error consider not confirmed!
+
+        # ---------------------------------------------------------------------
         # VAT Management (patch!):
         # ---------------------------------------------------------------------
         tax_block = False
@@ -169,7 +181,6 @@ class SaleOrderLine(orm.Model):
                         tax_block = [
                             (6, 0, (tax_id, ))
                             ]
-
                 except:
                     pass
 
@@ -181,35 +192,40 @@ class SaleOrderLine(orm.Model):
             _logger.error('No VAT setup for this order!')
 
         # CASE 1: Update with pricelist partner values:
-        for item in partner_proxy.pricelist_product_ids:
-            if item.product_id.id == product:
-                # item.alias_id.name or \
-                name = item.alias_name or item.product_id.name
-                data = {
-                    'name': name,
-                    # 'alias_id': item.alias_id.id,
-                    'price_unit': item.price,
-                    # todo use first if not present in customization?
-                    'product_packaging': item.packaging_id.id,
-                    'pallet_weight':
-                        item.pallet_weight or partner_proxy.pallet_weight,
-                    # todo also pallet_weight for company if not present?
-                    'load_qty': item.load_qty,  # todo remove?
-                }
-                break
+        data = {}
+        if not accounting_order:
+            _logger.warning('Order not confirm, so update default data')
+            for item in partner_proxy.pricelist_product_ids:
+                if item.product_id.id == product:
+                    # item.alias_id.name or \
+                    name = item.alias_name or item.product_id.name
+                    data = {
+                        'name': name,
+                        # 'alias_id': item.alias_id.id,
+                        'price_unit': item.price,
+                        # todo use first if not present in customization?
+                        'product_packaging': item.packaging_id.id,
+                        'pallet_weight':
+                            item.pallet_weight or partner_proxy.pallet_weight,
+                        # todo also pallet_weight for company if not present?
+                        'load_qty': item.load_qty,  # todo remove?
+                    }
+                    break
 
         # CASE 2: Product not in partner pricelist:
-        else:   # Data not found:
+        if 'name' not in res['value']:  # Update name if not present (needed?)
             product_proxy = product_pool.browse(
                 cr, uid, product, context=context)
             data = {
                 'name': product_proxy.name,
             }
 
-        # -----------------------------------------------------------------
+        # ---------------------------------------------------------------------
         # Update returned values:
-        # -----------------------------------------------------------------
-        res['value'].update(data)
+        # ---------------------------------------------------------------------
+        if data:
+            res['value'].update(data)
+
         if 'warning' in res:
             _logger.error(
                 'Remove warning message: \n%s' %
