@@ -155,6 +155,7 @@ class SaleOrderLine(orm.Model):
         # Check if order confirm (means no update!)
         # ---------------------------------------------------------------------
         accounting_order = False
+        '''
         try:
             if ids:
                 line = self.browse(cr, uid, ids, context=context)[0]
@@ -162,6 +163,7 @@ class SaleOrderLine(orm.Model):
                 accounting_order = order.accounting_order
         except:
             pass  # In case of error consider not confirmed!
+        '''
 
         # ---------------------------------------------------------------------
         # VAT Management (patch!):
