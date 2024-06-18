@@ -216,9 +216,8 @@ class SaleOrderLine(orm.Model):
         # Update name if not present (needed?)
         if 'name' in res['value']:
             # Clean "[code] name" (removed code part)
-            data = {
-                'name': (res['value']['name'] or '').split('] ')[-1],
-            }
+            data['name'] = (res['value']['name'] or '').split('] ')[-1]
+        '''    
         else:
             #    if accounting_order:
             #        del res['value']['name']  # Not updated name
@@ -229,6 +228,7 @@ class SaleOrderLine(orm.Model):
                 'name': (product_proxy.name or '').split('] ')[-1],
             }
             _logger.info('Data: %s' % (data, ))
+        '''
 
         # ---------------------------------------------------------------------
         # Update returned values:
