@@ -227,7 +227,7 @@ class SaleOrderLine(orm.Model):
             product_proxy = product_pool.browse(
                 cr, uid, product, context=context)
             data = {
-                'name': (product_proxy.name or '').split(']')[-1],
+                'name': (product_proxy.name or '').split('] ')[-1],
             }
             _logger.info('Data: %s' % (data,))
 
