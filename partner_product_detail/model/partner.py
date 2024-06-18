@@ -239,7 +239,8 @@ class SaleOrderLine(orm.Model):
 
         # Clean "[code] name" (removed code part)
         if 'name' in res['value']:
-            res['value']['name'] = res['value']['name'].split('] ')[-1]
+            res['value']['name'] = \
+                res['value']['name'].split('] ')[-1].split('\n')[0]
 
         if 'warning' in res:
             _logger.error(
