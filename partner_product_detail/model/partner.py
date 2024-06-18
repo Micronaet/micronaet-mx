@@ -124,8 +124,6 @@ class SaleOrderLine(orm.Model):
             partner_id=partner_id, lang=lang, update_tax=update_tax,
             date_order=date_order, packaging=packaging,
             fiscal_position=fiscal_position, flag=flag, context=context)
-        if uid == 1:
-            pdb.set_trace()
         if 'value' not in res:
             res['value'] = {}
 
