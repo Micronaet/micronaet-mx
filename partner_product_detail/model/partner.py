@@ -124,6 +124,7 @@ class SaleOrderLine(orm.Model):
             partner_id=partner_id, lang=lang, update_tax=update_tax,
             date_order=date_order, packaging=packaging,
             fiscal_position=fiscal_position, flag=flag, context=context)
+
         if 'value' not in res:
             res['value'] = {}
 
@@ -138,7 +139,7 @@ class SaleOrderLine(orm.Model):
                 'load_qty': False,  # todo remove?
                 'tax_id': False
                 # todo
-                })
+            })
             return res
 
         # Used pool:
@@ -159,6 +160,7 @@ class SaleOrderLine(orm.Model):
                 line = self.browse(cr, uid, ids, context=context)[0]
                 order = line.order_id
                 accounting_order = order.accounting_order
+
         except:
             pass  # In case of error consider not confirmed!
 
@@ -177,29 +179,29 @@ class SaleOrderLine(orm.Model):
                     # tax_id = fiscal.tax_ids[0].tax_dest_id.id
                     tax_id = fiscal.force_account_tax_id.id
                     if tax_id:
-                        tax_block = [
-                            (6, 0, (tax_id, ))
-                            ]
+                        tax_block = [(6, 0, (tax_id,))]
                 except:
                     pass
 
         if tax_block:
             res['value'].update({
                 'tax_id': tax_block,
-                })
+            })
         else:
             _logger.error('No VAT setup for this order!')
 
         # CASE 1: Update with pricelist partner values:
-        data = {}
-        if not accounting_order:
-            _logger.warning('Order not confirm, so update default data')
-            for item in partner_proxy.pricelist_product_ids:
-                if item.product_id.id == product:
-                    # item.alias_id.name or \
-                    name = item.alias_name or item.product_id.name
-                    data = {
-                        'name': name,
+        for item in partner_proxy.pricelist_product_ids:
+            if item.product_id.id == product:
+                # item.alias_id.name or \
+                name = item.alias_name or item.product_id.name
+                data = {
+                    'name': name,
+                }
+                if accounting_order:
+                    _logger.error('Accounting order no extra info!')
+                else:
+                    data.update({
                         # 'alias_id': item.alias_id.id,
                         'price_unit': item.price,
                         # todo use first if not present in customization?
@@ -208,43 +210,32 @@ class SaleOrderLine(orm.Model):
                             item.pallet_weight or partner_proxy.pallet_weight,
                         # todo also pallet_weight for company if not present?
                         'load_qty': item.load_qty,  # todo remove?
-                    }
-                    break
+                    })
+                break
 
         # CASE 2: Product not in partner pricelist:
-        # Update name if not present (needed?)
-        '''    
-        if 'name' in res['value']:
-            # Clean "[code] name" (removed code part)
-            data['name'] = (res['value']['name'] or '').split('] ')[-1]
-        else:
-            #    if accounting_order:
-            #        del res['value']['name']  # Not updated name
-            #else:
+        else:  # Data not found:
             product_proxy = product_pool.browse(
                 cr, uid, product, context=context)
             data = {
-                'name': (product_proxy.name or '').split('] ')[-1],
+                'name': product_proxy.name,
             }
-            _logger.info('Data: %s' % (data, ))
-        '''
 
-        # ---------------------------------------------------------------------
+        # -----------------------------------------------------------------
         # Update returned values:
-        # ---------------------------------------------------------------------
-        if data:
-            res['value'].update(data)
-
-        # Clean "[code] name" (removed code part)
-        if 'name' in res['value']:
-            res['value']['name'] = \
-                res['value']['name'].split('] ')[-1].split('\n')[0]
+        # -----------------------------------------------------------------
+        res['value'].update(data)
+        # Clean package if account order:
+        if accounting_order:
+            if 'product_packaging' in res['value']:
+                del res['value']['product_packaging']
 
         if 'warning' in res:
             _logger.error(
                 'Remove warning message: \n%s' %
                 res['warning'].get('message'))
-            del(res['warning'])
+            del (res['warning'])
+        # _logger.warning(res)
         return res
 
     def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
