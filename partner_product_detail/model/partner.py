@@ -214,15 +214,16 @@ class SaleOrderLine(orm.Model):
 
         # CASE 2: Product not in partner pricelist:
         # Update name if not present (needed?)
-        if 'name' in res['value']:
-            if accounting_order:
-                del res['value']['name']  # Not updated name
-        else:
+        if 'name' not in res['value']:
+            #    if accounting_order:
+            #        del res['value']['name']  # Not updated name
+            #else:
             product_proxy = product_pool.browse(
                 cr, uid, product, context=context)
             data = {
                 'name': (product_proxy.name or '').split(']')[-1],
             }
+            _logger.info('Data: %s' % (data,))
 
         # ---------------------------------------------------------------------
         # Update returned values:
