@@ -214,6 +214,8 @@ class SaleOrderLine(orm.Model):
 
         # CASE 2: Product not in partner pricelist:
         # Update name if not present (needed?)
+        if uid == 1:
+            pdb.set_trace()
         if 'name' not in res['value']:
             #    if accounting_order:
             #        del res['value']['name']  # Not updated name
