@@ -214,10 +214,10 @@ class SaleOrderLine(orm.Model):
 
         # CASE 2: Product not in partner pricelist:
         # Update name if not present (needed?)
+        '''    
         if 'name' in res['value']:
             # Clean "[code] name" (removed code part)
             data['name'] = (res['value']['name'] or '').split('] ')[-1]
-        '''    
         else:
             #    if accounting_order:
             #        del res['value']['name']  # Not updated name
@@ -235,6 +235,10 @@ class SaleOrderLine(orm.Model):
         # ---------------------------------------------------------------------
         if data:
             res['value'].update(data)
+
+        # Clean "[code] name" (removed code part)
+        if 'name' in res['value']:
+            res['value']['name'] = res['value']['name'].split('] ')[-1]
 
         if 'warning' in res:
             _logger.error(
