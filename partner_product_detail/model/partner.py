@@ -216,7 +216,11 @@ class SaleOrderLine(orm.Model):
         # Update name if not present (needed?)
         if uid == 1:
             pdb.set_trace()
-        if 'name' not in res['value']:
+        if 'name' in res['value']:
+            data = {
+                'name': (res['value']['name'] or '').split(']')[-1],
+            }
+        else:
             #    if accounting_order:
             #        del res['value']['name']  # Not updated name
             #else:
