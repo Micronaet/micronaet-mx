@@ -214,11 +214,10 @@ class SaleOrderLine(orm.Model):
 
         # CASE 2: Product not in partner pricelist:
         # Update name if not present (needed?)
-        if uid == 1:
-            pdb.set_trace()
         if 'name' in res['value']:
+            # Clean "[code] name" (removed code part)
             data = {
-                'name': (res['value']['name'] or '').split(']')[-1],
+                'name': (res['value']['name'] or '').split('] ')[-1],
             }
         else:
             #    if accounting_order:
@@ -229,7 +228,7 @@ class SaleOrderLine(orm.Model):
             data = {
                 'name': (product_proxy.name or '').split('] ')[-1],
             }
-            _logger.info('Data: %s' % (data,))
+            _logger.info('Data: %s' % (data, ))
 
         # ---------------------------------------------------------------------
         # Update returned values:
