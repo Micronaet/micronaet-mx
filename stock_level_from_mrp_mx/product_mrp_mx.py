@@ -575,6 +575,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 ))
 
         # Write log medium
+        '''
         try:
             log_f = open(os.path.expanduser('~/load_medium.csv'), 'w')
             for product in product_medium:
@@ -584,6 +585,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 ))
         except:
             _logger.error('Error write medium log file')
+        '''
 
         # Update medium in product:
         pdb.set_trace()
