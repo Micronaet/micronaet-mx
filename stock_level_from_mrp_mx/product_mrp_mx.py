@@ -491,6 +491,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             ('date', '<', date_limit['now']),
             ('recycle', '=', False),
             ], context=context)
+
         _logger.warning('Load found: %s Period: [>=%s <%s]' % (
             len(load_ids),
             date_limit['mrp'],
@@ -572,6 +573,17 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     load.product_qty,
                     date > date_limit.get('product', date_limit['product']),
                 ))
+
+        # Write log medium
+        try:
+            log_f = open(os.path.expanduser('~/load_medium.csv'), 'w')
+            for product in product_medium:
+                log_f.write('%s|%s\n' % (
+                    product.default_code or '',
+                    product_medium[product],
+                ))
+        except:
+            _logger.error('Error write medium log file')
 
         # Update medium in product:
         self.update_product_medium_from_dict(
