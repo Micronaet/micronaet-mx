@@ -206,6 +206,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 log_f.write(
                    '%s|Prodotto saltato finisce per X\n' % default_code)
                 continue
+
             if default_code in product_medium:
                 log_f.write('%s|Prodotto doppio\n' % default_code)
                 _logger.error('Product double: %s' % default_code)
