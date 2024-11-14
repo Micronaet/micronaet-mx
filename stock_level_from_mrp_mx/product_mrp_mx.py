@@ -457,7 +457,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         _logger.info('Updating medium from MRP (final product) MX')
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
-        product_pool = self.pool.get('product.product')
+        # product_pool = self.pool.get('product.product')
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
@@ -506,7 +506,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             date = load.date
 
             # -----------------------------------------------------------------
-            # Product:
+            # Load Product:
             # -----------------------------------------------------------------
             product = load.product_id  # production_id.product_id
             if product not in product_obsolete:
@@ -565,28 +565,16 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s|%s|%s\n' % (
-                    date,
-                    load.production_id.name,
-                    load.product_id.id,
-                    load.product_id.default_code or '',
-                    load.product_qty,
-                    date > date_limit.get('product', date_limit['product']),
-                ))
 
-        # Write log medium
-        '''
-        try:
-            log_f = open(os.path.expanduser('~/load_medium.csv'), 'w')
-            for product in product_medium:
-                log_f.write('%s|%s\n' % (
-                    product.default_code or '',
-                    product_medium[product],
-                ))
-        except:
-            _logger.error('Error write medium log file')
-        pdb.set_trace()
-        '''
+            # Log file:
+            log_f.write('%s|%s|%s|%s|%s|%s\n' % (
+                date,
+                load.production_id.name,
+                load.product_id.id,
+                load.product_id.default_code or '',
+                load.product_qty,
+                date > date_limit.get('product', date_limit['product']),
+            ))
 
         # Update medium in product:
         self.update_product_medium_from_dict(
