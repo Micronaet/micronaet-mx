@@ -81,9 +81,6 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         done_product_ids = []
         for product in product_medium:
-            _logger.info(product.default_code)
-            if product.default_code == 'S940M3--X':
-                pdb.set_trace()
             done_product_ids.append(product.id)
             total = product_medium[product]
             if product.manual_stock_level:
