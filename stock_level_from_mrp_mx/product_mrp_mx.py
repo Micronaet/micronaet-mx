@@ -585,10 +585,10 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 ))
         except:
             _logger.error('Error write medium log file')
+        pdb.set_trace()
         '''
 
         # Update medium in product:
-        pdb.set_trace()
         self.update_product_medium_from_dict(
             cr, uid, product_medium, stock_level_days,
             product_obsolete,  # manage obsolete in this function,
