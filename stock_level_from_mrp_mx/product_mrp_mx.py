@@ -520,7 +520,6 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
 
             product_obsolete[product] = False
 
-            mode = 'LOAD'
             quantity = load.product_qty
             if product in product_medium:
                 product_medium[product] += quantity
@@ -545,7 +544,6 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
 
             quantity = load.ul_qty
             if product and quantity:
-                mode = 'PACK'
                 if product in product_medium:
                     product_medium[product] += quantity
                 else:
@@ -564,15 +562,13 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
 
             quantity = load.pallet_qty
             if product and quantity:
-                mode = 'PALLET'
                 if product in product_medium:
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
 
             # Log file:
-            log_f.write('%s|%s|%s|%s|%s|%s|%s\n' % (
-                mode,
+            log_f.write('%s|%s|%s|%s|%s|%s\n' % (
                 date,
                 load.production_id.name,
                 load.product_id.id,
