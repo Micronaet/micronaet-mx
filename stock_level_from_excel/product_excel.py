@@ -202,10 +202,10 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # Starting all obsolete after removed:
                 product_obsolete[default_code] = True
 
-            #if default_code.endswith('X'):
-            #    log_f.write(
-            #       '%s|Prodotto saltato finisce per X\n' % default_code)
-            #    continue
+            if default_code.endswith('X'):
+                log_f.write(
+                   '%s|Prodotto saltato finisce per X\n' % default_code)
+                continue
             if default_code in product_medium:
                 log_f.write('%s|Prodotto doppio\n' % default_code)
                 _logger.error('Product double: %s' % default_code)
