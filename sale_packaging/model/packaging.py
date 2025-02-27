@@ -43,32 +43,37 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+
 class ProductUl(orm.Model):
-    ''' Add package in product ul
-    '''    
+    """ Add package in product ul
+    """
     _inherit = 'product.ul'
- 
-    _columns = {        
-        'return_package': fields.boolean('Package return', 
+
+    _columns = {
+        'return_package': fields.boolean(
+            'Package return',
             help='Will be returned'),
         }
 
+
 class SaleOrderLine(orm.Model):
-    ''' Add package info in sale line
-    '''    
+    """ Add package info in sale line
+    """
     _inherit = 'sale.order.line'
- 
-    _columns = {        
-        'return_package': fields.boolean('Package return', 
+
+    _columns = {
+        'return_package': fields.boolean(
+            'Package return',
             help='Will be returned'),
         'package_qty': fields.integer('Pack leave'),
         'package_returned_qty': fields.integer('Pack returned'),
-        'return_package_ok': fields.boolean('Ok returned', 
+        'return_package_ok': fields.boolean(
+            'Ok returned',
             help='If checked order line is marked as returned'
-                'alse if not all element are back'),
+                 'alse if not all element are back'),
         'package_note': fields.char('Return note', size=64),
         }
 
     _defaults = {
-        'return_package': lambda *x: True, # TODO remove use onchange
+        'return_package': lambda *x: True,  # todo remove use onchange
         }

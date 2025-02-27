@@ -97,13 +97,14 @@ print('[INFO] Sending using "%s" connection [%s:%s]' % (
     ))
 
 if odoo_mailer.smtp_encryption in ('ssl', 'starttls'):
-    smtp_server = smtplib.SMTP(odoo_mailer.smtp_host, odoo_mailer.smtp_port)
+    smtp_server = smtplib.SMTP_SSL(
+        odoo_mailer.smtp_host, odoo_mailer.smtp_port)
 else:
     print('[ERR] Connect only SMTP SSL server!')
     sys.exit()
 
-smtp_server.ehlo()  # open the connection
-smtp_server.starttls()
+# smtp_server.ehlo()  # open the connection
+# smtp_server.starttls()
 smtp_server.login(odoo_mailer.smtp_user, odoo_mailer.smtp_pass)
 
 # Extract 2 files
