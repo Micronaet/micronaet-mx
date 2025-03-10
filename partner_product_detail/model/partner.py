@@ -211,11 +211,11 @@ class SaleOrderLine(orm.Model):
                         'load_qty': item.load_qty,
 
                         # Sapnaet fields (wrong position here!)
-                        'note_packaging': item.note_packaging,
-                        'note_delivery': item.note_delivery,
-                        'note_accounting': item.note_accounting,
+                        # 'note_packaging': item.note_packaging,
+                        # 'note_delivery': item.note_delivery,
+                        # 'note_accounting': item.note_accounting,
 
-                    # todo also pallet_weight for company if not present?
+                        # todo also pallet_weight for company if not present?
                         # todo use first if not present in customization?
                         # 'alias_id': item.alias_id.id,
                     })
