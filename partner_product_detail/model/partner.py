@@ -219,7 +219,7 @@ class SaleOrderLine(orm.Model):
                         # todo use first if not present in customization?
                         # 'alias_id': item.alias_id.id,
                     })
-                    _logger.warning(res)
+                    _logger.warning(data)
                 break
 
         # CASE 2: Product not in partner pricelist:
