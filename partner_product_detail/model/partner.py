@@ -117,6 +117,8 @@ class SaleOrderLine(orm.Model):
             fiscal_position=False, flag=False, context=None):
         """ Override function for set up extra fields as partner customization
         """
+        _logger.warning('Product change: partner_product_detail '
+                        'Integration Pricelist and pack data')
         context = context or {}
         res = super(SaleOrderLine, self).product_id_change(
             cr, uid, ids, pricelist=pricelist, product=product, qty=qty,
