@@ -37,6 +37,7 @@ class sale_shop(osv.osv):
 
 sale_shop()
 
+_logger = logging.getLogger(__name__)
 
 class sale_order(osv.osv):
     _inherit = "sale.order"
