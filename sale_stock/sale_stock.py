@@ -676,7 +676,7 @@ class sale_order_line(osv.osv):
 
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
-        partner_obj = self.pool.get('res.partner')
+        # partner_obj = self.pool.get('res.partner')
         product_obj = self.pool.get('product.product')
         warning = {}
 
@@ -691,7 +691,9 @@ class sale_order_line(osv.osv):
             res['value'].update({'product_packaging': False})
             return res
 
-        # update of result obtained in super function
+        # ---------------------------------------------------------------------
+        # Update delay, type, pack data
+        # ---------------------------------------------------------------------
         product_obj = product_obj.browse(cr, uid, product, context=context)
         res['value']['delay'] = (product_obj.sale_delay or 0.0)
         res['value']['type'] = product_obj.procure_method

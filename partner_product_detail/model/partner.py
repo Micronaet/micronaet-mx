@@ -204,14 +204,15 @@ class SaleOrderLine(orm.Model):
                     _logger.error('Accounting order no extra info!')
                 else:
                     data.update({
-                        # 'alias_id': item.alias_id.id,
                         'price_unit': item.price,
-                        # todo use first if not present in customization?
                         'product_packaging': item.packaging_id.id,
                         'pallet_weight':
                             item.pallet_weight or partner_proxy.pallet_weight,
+                        'load_qty': item.load_qty,
+
                         # todo also pallet_weight for company if not present?
-                        'load_qty': item.load_qty,  # todo remove?
+                        # todo use first if not present in customization?
+                        # 'alias_id': item.alias_id.id,
                     })
                 break
 
@@ -233,11 +234,10 @@ class SaleOrderLine(orm.Model):
                 del res['value']['product_packaging']
 
         if 'warning' in res:
-            _logger.error(
-                'Remove warning message: \n%s' %
-                res['warning'].get('message'))
+            _logger.warning(
+                'Remove warning message: %s' %
+                res['warning'].get('message').replace('\n', ' '))
             del (res['warning'])
-        # _logger.warning(res)
         return res
 
     def set_sale_line_as_default_for_partner(self, cr, uid, ids, context=None):
