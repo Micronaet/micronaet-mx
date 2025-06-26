@@ -63,18 +63,8 @@ class MrpProductionWorkcenterLine(osv.osv):
             """ Extract ISO date
             """
             months = {
-                'GEN': '01',
-                'FEB': '02',
-                'MAR': '03',
-                'APR': '04',
-                'MAG': '05',
-                'GIU': '06',
-                'LUG': '07',
-                'AGO': '08',
-                'SET': '09',
-                'OCT': '10',
-                'NOV': '11',
-                'DEC': '12',
+                'GEN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04', 'MAG': '05', 'GIU': '06',
+                'LUG': '07', 'AGO': '08', 'SET': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12',
                 'DIC': '12',
             }
             if not value:
@@ -82,8 +72,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             # Preformat for Excel date:
             if type(value) in (float, int):
-                value = str(xlrd.xldate.xldate_as_datetime(
-                    value, wb.datemode))[:10]
+                value = str(xlrd.xldate.xldate_as_datetime(value, wb.datemode))[:10]
                 return value
 
             value = value.strip()
@@ -114,9 +103,9 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_pool = self.pool.get('product.product')
         company_pool = self.pool.get('res.company')
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # A. Update marketed product:
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # Fixed parameters:
         columns_position = {
             'date': 1,  # INVOICE (B)
@@ -132,22 +121,19 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # Dynamic parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
-        company = company_pool.browse(
-           cr, uid, company_ids, context=context)[0]
+        company = company_pool.browse(cr, uid, company_ids, context=context)[0]
         stock_level_days = company.stock_level_mm_days
         # todo use it:
         stock_level_obsolete_days = company.stock_level_obsolete_days
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # Generate file:
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         dropbox_link = context.get('dropbox_link')
         if not dropbox_link:
-            _logger.error(
-                'Setup the scheduled command with dropbox_link parameter')
+            _logger.error('Setup the scheduled command with dropbox_link parameter')
         now = datetime.now()
-        now_log = str(now)[:19].replace(
-            '/', '_').replace(':', '_').replace('-', '_')
+        now_log = str(now)[:19].replace('/', '_').replace(':', '_').replace('-', '_')
         temp_filename = '/tmp/account_status_%s.xlsx' % now_log
         self.get_file(dropbox_link, temp_filename)
         if not temp_filename:
@@ -158,53 +144,49 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         from_date = now - timedelta(days=stock_level_days)
         from_obsolete_date = now - timedelta(days=stock_level_days)
-        now_text = '%s 00:00:00' % now.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
-        from_text = '%s 00:00:00' % from_date.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
-        from_obsolete_text = '%s 00:00:00' % from_obsolete_date.strftime(
-             DEFAULT_SERVER_DATE_FORMAT)
+        now_text = '%s 00:00:00' % now.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        from_text = '%s 00:00:00' % from_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        from_obsolete_text = '%s 00:00:00' % from_obsolete_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
+        # --------------------------------------------------------------------------------------------------------------
         # A1. Search product marketed:
+        # --------------------------------------------------------------------------------------------------------------
         log_f = open('/tmp/odoo_select_%s.log' % now_log, 'w')
         cr.execute('''
             SELECT id from product_product 
             WHERE default_code is not null AND
-                  SUBSTRING (default_code, 1, 1) IN (
-                      'D', 'E', 'F', 'G', 'H', 'L', 'M', 
-                      'O', 'P', 'R', 'S', 'X') AND 
+                  SUBSTRING (default_code, 1, 1) IN ('D', 'E', 'F', 'G', 'H', 'L', 'M', 'O', 'P', 'R', 'S', 'X') AND 
                   SUBSTRING (default_code, 1, 3) NOT IN ('OLD', 'SER');
             ''')
         product_ids = [record[0] for record in cr.fetchall()]
 
-        log_f.write('Selezionati prodotti iniziano per '
-                    'D, E, F, G, H, L, M, O, P, R, S, X\n'
-                    'Rimosso quelli che iniziano per OLD e SER\n\n')
+        log_f.write(
+            'Selezionati prodotti iniziano per D, E, F, G, H, L, M, O, P, R, S, X\n'
+            'Rimosso quelli che iniziano per OLD e SER\n\n')
+
         _logger.warning('Imported product #%s [%s - %s]' % (
             len(product_ids),
             from_text,
             now_log,
             ))
 
+        # --------------------------------------------------------------------------------------------------------------
         # A2. Prepare dict for medium
+        # --------------------------------------------------------------------------------------------------------------
         product_medium = {}
         product_obsolete = {}
-        for product in product_pool.browse(
-                cr, uid, product_ids, context=context):
-
+        for product in product_pool.browse(cr, uid, product_ids, context=context):
             default_code = product.default_code
             if not default_code:
                 log_f.write('%s|Codice prodotto non trovato\n' % default_code)
                 _logger.error('Product %s has no code' % product.name)
                 continue
 
-            if default_code not in product_obsolete:
-                # Starting all obsolete after removed:
+            if default_code not in product_obsolete:  # Starting all as obsolete (after will be removed):
                 product_obsolete[default_code] = True
 
             if default_code.endswith('X'):
-                log_f.write(
-                   '%s|Prodotto saltato finisce per X\n' % default_code)
+                log_f.write('%s|Prodotto saltato finisce per X\n' % default_code)
                 continue
 
             if default_code in product_medium:
@@ -215,7 +197,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                 product_medium[default_code] = [0.0, product]
         log_f.close()
 
+        # --------------------------------------------------------------------------------------------------------------
         # A3. Load data from Excel:
+        # --------------------------------------------------------------------------------------------------------------
         try:
             wb = xlrd.open_workbook(temp_filename)
         except:
@@ -224,14 +208,15 @@ class MrpProductionWorkcenterLine(osv.osv):
             )
             return False
 
+        # --------------------------------------------------------------------------------------------------------------
         # A3. Load data from Excel:
+        # --------------------------------------------------------------------------------------------------------------
         log_f = open('/tmp/excel_data_%s.log' % now_log, 'w')
         ws = wb.sheet_by_name(sheet_name)
         _logger.info('Read XLS file: %s' % temp_filename)
         start = False
         for row in range(ws.nrows):
-            date = get_excel_date(
-                ws.cell(row, columns_position['date']).value, wb)
+            date = get_excel_date(ws.cell(row, columns_position['date']).value, wb)
             default_code = ws.cell(row, columns_position['default_code']).value
             if not start and date == start_test:
                 _logger.info('%s. Line not used: Start line' % (row + 1))
@@ -245,9 +230,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                     row + 1, date))
                 continue
 
-            if not(start and date and default_code in product_medium):
-                log_f.write('%s|%s|%s||Prod. non in lista\n' % (
-                    row+1, date, default_code))
+            if not(start and date and (default_code in product_medium)):
+                log_f.write('%s|%s|%s||Prod. non in lista\n' % (row+1, date, default_code))
 
                 _logger.info(
                     '%s. Line not used (no start or no product watched: %s' % (
@@ -259,27 +243,22 @@ class MrpProductionWorkcenterLine(osv.osv):
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
             if type(qty) not in (float, int):
-                log_f.write('%s|%s|%s|%s|Q. non usata (non numerica)\n' % (
-                    row+1, date, default_code, qty))
-                _logger.error(
-                    '%s. Line not used (qty not float: %s' % (
-                        row + 1,
-                        qty,
-                    ))
+                log_f.write('%s|%s|%s|%s|Q. non usata (non numerica)\n' % (row+1, date, default_code, qty))
+                _logger.error('%s. Line not used (qty not float: %s' % (row + 1, qty))
                 continue
 
             if date > from_obsolete_text:  # Not obsolete:
                 product_obsolete[default_code] = False
 
             product_medium[default_code][0] += qty
-            _logger.info('%s. Line used %s - %s' % (
-                row + 1, default_code, qty,))
+            _logger.info('%s. Line used %s - %s' % (row + 1, default_code, qty,))
             log_f.write('%s|%s|%s|%s|Usato %s\n' % (
-                row + 1, date, default_code, qty,
-                '(obsoleto)' if product_obsolete[default_code] else ''))
+                row + 1, date, default_code, qty, '(obsoleto)' if product_obsolete[default_code] else ''))
         log_f.close()
 
+        # --------------------------------------------------------------------------------------------------------------
         # A4. Update product medium
+        # --------------------------------------------------------------------------------------------------------------
         _logger.warning('Product found: %s' % len(product_medium))
 
         log_f = open('/tmp/excel_medium_%s.log' % now_log, 'w')
@@ -325,11 +304,12 @@ class MrpProductionWorkcenterLine(osv.osv):
                 }, context=context)
 
         _logger.info('Update marketed product: %s' % len(product_medium))
-        # ---------------------------------------------------------------------
+
+        # --------------------------------------------------------------------------------------------------------------
         # B. Update original procedure from MRP:
-        # ---------------------------------------------------------------------
-        return super(MrpProductionWorkcenterLine, self).\
-            update_product_level_from_production(cr, uid, ids, context=context)
+        # --------------------------------------------------------------------------------------------------------------
+        return super(MrpProductionWorkcenterLine, self).update_product_level_from_production(
+            cr, uid, ids, context=context)
 
 
 class ResCompany(osv.osv):
