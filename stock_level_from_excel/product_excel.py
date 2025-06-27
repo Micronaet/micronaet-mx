@@ -262,7 +262,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         for key in product_medium:
             total, product = product_medium[key]
             default_code = product.default_code
-            if default_code.startswith('S1103'):
+            if default_code == 'S1103T--X':
                 pdb.set_trace()
             if product.manual_stock_level:
                 continue
