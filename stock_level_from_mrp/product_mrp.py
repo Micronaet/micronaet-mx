@@ -396,7 +396,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     continue
 
                 # Mark as obsolete always (remove if used after!)
-                if product.id = 869:
+                if product.id == 869:
                     pdb.set_trace()
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
