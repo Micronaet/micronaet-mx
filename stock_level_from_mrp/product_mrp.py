@@ -60,8 +60,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
     # 18/03/2024 Overridden in Sapnaet
     def update_product_medium_from_dict(
-            self, cr, uid, product_medium, stock_level_days, product_obsolete,
-            context=None):
+            self, cr, uid, product_medium, stock_level_days, product_obsolete, context=None):
         """ Upload product with dictionary loaded:
             product_obsolete: Not used for now in ID (mark product as obsolete)
             context parameters: clean_remain  >>  Reset all remain product m(x)
@@ -100,20 +99,17 @@ class MrpProductionWorkcenterLine(osv.osv):
             product_pool.write(cr, uid, [product.id], {
                 'medium_origin': 'mrp',
                 'medium_stock_qty': medium_stock_qty,
-                'min_stock_level':
-                    product.day_min_level * medium_stock_qty,
+                'min_stock_level': product.day_min_level * medium_stock_qty,
                 # product_pool.round_integer_order(
                 #    product.day_min_level * medium_stock_qty,
                 #    approx=product.approx_integer,
                 #    mode=product.approx_mode),
-                'max_stock_level':
-                    product.day_max_level * medium_stock_qty,
+                'max_stock_level': product.day_max_level * medium_stock_qty,
                 # product_pool.round_integer_order(
                 #    product.day_max_level * medium_stock_qty,
                 #    approx=product.approx_integer,
                 #    mode=product.approx_mode),
-                'ready_stock_level':
-                    product.day_max_ready_level * medium_stock_qty,
+                'ready_stock_level': product.day_max_ready_level * medium_stock_qty,
                 # product_pool.round_integer_order(
                 #    product.day_max_ready_level * medium_stock_qty,
                 #    approx=product.approx_integer,
@@ -126,8 +122,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             product_ids = product_pool.search(cr, uid, [
                 ('id', 'not in', done_product_ids),
             ], context=context)
-            _logger.warning('Clean remain product resetting medium (# %s' %
-                            len(product_ids))
+            _logger.warning('Clean remain product resetting medium (# %s' % len(product_ids))
             product_pool.write(cr, uid, product_ids, {
                 'medium_origin': False,
                 'medium_stock_qty': False,
