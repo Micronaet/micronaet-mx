@@ -118,10 +118,12 @@ class MrpProductionWorkcenterLine(osv.osv):
                 # 'stock_obsolete': product_obsolete.get(product, False),
             }, context=context)
 
+        pdb.set_trace()
         if clean_remain:
             product_ids = product_pool.search(cr, uid, [
                 ('id', 'not in', done_product_ids),
             ], context=context)
+
             _logger.warning('Clean remain product resetting medium (# %s' % len(product_ids))
             product_pool.write(cr, uid, product_ids, {
                 'medium_origin': False,
@@ -133,7 +135,9 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.csv'), 'w')
         log_obs_f.write('ID|Codice\n')
+
         # Clean and mark as obsolete the dict passed
+        pdb.set_trace()
         for product in product_obsolete:
             try:
                 is_obsolete = product_obsolete[product]
@@ -326,8 +330,10 @@ class MrpProductionWorkcenterLine(osv.osv):
             NOTE: This procedure was kept but maybe is used only in MX:
                   Use new procedure created for IT: update_product_level_from_production_it
         """
-        pdb.set_trace()
-        _logger.info('Updating medium from MRP (raw material)')
+        if context is None:
+            context = {}
+
+        _logger.info('Updating medium from MRP (raw material only) MX Proceddure!')
         company_pool = self.pool.get('res.company')
 
         # Get parameters:
@@ -390,6 +396,8 @@ class MrpProductionWorkcenterLine(osv.osv):
                 if product.product_type == 'PT':
                     _logger.error('Not used, unload product: %s' % default_code)
                     continue
+
+                # Mark as obsolete always (remove if used after!)
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
 
@@ -402,6 +410,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
+
                 log_f.write('%s|%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
