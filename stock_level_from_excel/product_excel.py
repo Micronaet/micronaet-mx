@@ -232,13 +232,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             if not(start and date and (default_code in product_medium)):
                 log_f.write('%s|%s|%s||Prod. non in lista\n' % (row+1, date, default_code))
-
-                _logger.info(
-                    '%s. Line not used (no start or no product watched: %s' % (row + 1, default_code))
+                _logger.info('%s. Line not used (no start or no product watched: %s' % (row + 1, default_code))
                 continue
-
-            if default_code.startswith('S1103'):
-                pdb.set_trace()
 
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
@@ -263,6 +258,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         log_f = open('/tmp/excel_medium_%s.log' % now_log, 'w')
         log_f.write('Codice|Totale|Giorni|Media|Mix|Max|Ready\n')
+        pdb.set_trace()
         for key in product_medium:
             total, product = product_medium[key]
             default_code = product.default_code
