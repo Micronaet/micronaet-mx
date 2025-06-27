@@ -454,16 +454,18 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         """ Update product level from production (this time also product)
             MX Mode:
         """
-        pdb.set_trace()
         _logger.info('Updating medium from MRP (final product) MX')
+        # todo 27/06/2025: jump this procedure, maybe is obsolete!
+        return super(MrpProductionWorkcenterLineOverride, self).update_product_level_from_production(
+            cr, uid, ids, context=context)
+
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
         # product_pool = self.pool.get('product.product')
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
-        company = company_pool.browse(
-            cr, uid, company_ids, context=context)[0]
+        company = company_pool.browse(cr, uid, company_ids, context=context)[0]
         stock_level_days = company.stock_level_days
         if not stock_level_days:
             raise osv.except_osv(
@@ -501,14 +503,14 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
 
         product_obsolete = {}
         product_medium = {}
-        log_f = open(os.path.expanduser('~/load.log'), 'w')
+        log_f = open(os.path.expanduser('~/pf_load.csv'), 'w')
         log_f.write('Modo|Data|MRP|ID|Code|Q.|Obs\n')
         for load in load_pool.browse(cr, uid, load_ids, context=context):
             date = load.date
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Load Product:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             product = load.product_id  # production_id.product_id
             if product not in product_obsolete:
                 product_obsolete[product] = True  # Default obsolete
@@ -526,14 +528,14 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
             else:
                 product_medium[product] = quantity
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Recycle:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # recycle_product_id  # TODO not used
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Package:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             product = load.package_id.linked_product_id
             if product not in product_obsolete:
                 product_obsolete[product] = True  # Set as default obsolete
@@ -549,9 +551,9 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
                 else:
                     product_medium[product] = quantity
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Pallet:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             product = load.pallet_product_id
             if product not in product_obsolete:
                 product_obsolete[product] = True  # Default obsolete
