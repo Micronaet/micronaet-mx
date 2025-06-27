@@ -459,6 +459,9 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         return super(MrpProductionWorkcenterLineOverride, self).update_product_level_from_production(
             cr, uid, ids, context=context)
 
+        # ==============================================================================================================
+        # RIMOSSA QUESTA PARTE SOTTO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # ==============================================================================================================
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
         # product_pool = self.pool.get('product.product')

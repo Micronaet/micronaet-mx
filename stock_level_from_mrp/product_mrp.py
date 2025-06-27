@@ -331,7 +331,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         if context is None:
             context = {}
 
-        _logger.info('Updating medium from MRP (raw material only) MX Proceddure!')
+        _logger.info('Updating medium from MRP (raw material only) MX Procedure!')
         company_pool = self.pool.get('res.company')
 
         # Get parameters:
