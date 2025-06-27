@@ -219,7 +219,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         for row in range(ws.nrows):
             date = get_excel_date(ws.cell(row, columns_position['date']).value, wb)
             default_code = ws.cell(row, columns_position['default_code']).value
-            if default_code.startswith('S1103%'):
+            if default_code.startswith('S1103'):
                 pdb.set_trace()
 
             if not start and date == start_test:
@@ -265,7 +265,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         for key in product_medium:
             total, product = product_medium[key]
             default_code = product.default_code
-            if default_code.startswith('S1103%'):
+            if default_code.startswith('S1103'):
                 pdb.set_trace()
             if product.manual_stock_level:
                 continue
