@@ -260,9 +260,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                     job.real_date_planned,
                 ))
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         #                            FINAL PRODUCT:
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         load_ids = load_pool.search(cr, uid, [
             ('date', '>=', date_limit['mrp']),
             ('date', '<', date_limit['now']),
@@ -316,9 +316,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                     mode,
                 ))
 
+        # Italy procedure:
         return self.update_product_medium_from_dict(
-            cr, uid, product_medium, stock_level_days,
-            product_obsolete, context=context)
+            cr, uid, product_medium, stock_level_days, product_obsolete, context=context)
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Update product level from production (only raw materials, package and pallet from SL document)
@@ -396,8 +396,6 @@ class MrpProductionWorkcenterLine(osv.osv):
                     continue
 
                 # Mark as obsolete always (remove if used after!)
-                if product.id == 869:
-                    pdb.set_trace()
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
 

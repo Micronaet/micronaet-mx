@@ -454,6 +454,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         """ Update product level from production (this time also product)
             MX Mode:
         """
+        pdb.set_trace()
         _logger.info('Updating medium from MRP (final product) MX')
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
@@ -502,8 +503,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         product_medium = {}
         log_f = open(os.path.expanduser('~/load.log'), 'w')
         log_f.write('Modo|Data|MRP|ID|Code|Q.|Obs\n')
-        for load in load_pool.browse(
-                cr, uid, load_ids, context=context):
+        for load in load_pool.browse(cr, uid, load_ids, context=context):
             date = load.date
 
             # -----------------------------------------------------------------
@@ -579,10 +579,9 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
 
         # Update medium in product:
         self.update_product_medium_from_dict(
-            cr, uid, product_medium, stock_level_days,
-            product_obsolete,  # manage obsolete in this function,
+            cr, uid, product_medium, stock_level_days, product_obsolete,  # manage obsolete in this function,
             context=context)
 
         # Call original method for raw materials:
-        return super(MrpProductionWorkcenterLineOverride, self).\
-            update_product_level_from_production(cr, uid, ids, context=context)
+        return super(MrpProductionWorkcenterLineOverride, self).update_product_level_from_production(
+            cr, uid, ids, context=context)
