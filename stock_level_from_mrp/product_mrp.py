@@ -326,6 +326,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             NOTE: This procedure was kept but maybe is used only in MX:
                   Use new procedure created for IT: update_product_level_from_production_it
         """
+        pdb.set_trace()
         _logger.info('Updating medium from MRP (raw material)')
         company_pool = self.pool.get('res.company')
 
@@ -386,8 +387,6 @@ class MrpProductionWorkcenterLine(osv.osv):
             for material in job.bom_material_ids:
                 product = material.product_id
                 default_code = product.default_code or ' '
-                if default_code == 'S1103T--X':
-                    pdb.set_trace()
                 if product.product_type == 'PT':
                     _logger.error('Not used, unload product: %s' % default_code)
                     continue
