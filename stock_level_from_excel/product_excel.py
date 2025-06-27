@@ -185,9 +185,10 @@ class MrpProductionWorkcenterLine(osv.osv):
             if default_code not in product_obsolete:  # Starting all as obsolete (after will be removed):
                 product_obsolete[default_code] = True
 
-            if default_code.endswith('X'):
-                log_f.write('%s|Prodotto saltato finisce per X\n' % default_code)
-                continue
+            # 27/06/2025 Medium alwasy calculated from Account file (MRP is an old management!)
+            # if default_code.endswith('X'):
+            #    log_f.write('%s|Prodotto saltato finisce per X\n' % default_code)
+            #    continue
 
             if default_code in product_medium:
                 log_f.write('%s|Prodotto doppio\n' % default_code)
@@ -198,7 +199,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_f.close()
 
         # --------------------------------------------------------------------------------------------------------------
-        # A3. Load data from Excel:
+        #                                       Load data from Excel:
         # --------------------------------------------------------------------------------------------------------------
         try:
             wb = xlrd.open_workbook(temp_filename)
@@ -224,20 +225,15 @@ class MrpProductionWorkcenterLine(osv.osv):
                 continue
 
             if date < from_text or date > now_text:  # Out of period range:
-                log_f.write('%s|%s|%s||Prod. fuori range di data\n' % (
-                    row+1, date, default_code))
-                _logger.info('%s. Line not used out of range %s' % (
-                    row + 1, date))
+                log_f.write('%s|%s|%s||Prod. fuori range di data\n' % (row+1, date, default_code))
+                _logger.info('%s. Line not used out of range %s' % (row + 1, date))
                 continue
 
             if not(start and date and (default_code in product_medium)):
                 log_f.write('%s|%s|%s||Prod. non in lista\n' % (row+1, date, default_code))
 
                 _logger.info(
-                    '%s. Line not used (no start or no product watched: %s' % (
-                        row + 1,
-                        default_code,
-                    ))
+                    '%s. Line not used (no start or no product watched: %s' % (row + 1, default_code))
                 continue
 
             # Load data for medium

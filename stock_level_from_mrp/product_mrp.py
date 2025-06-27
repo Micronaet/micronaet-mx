@@ -54,10 +54,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         product_ids = product_pool.search(cr, uid, [
             ('mrp_stock_level_force', '>', 0),
         ], context=context)
-        for product in product_pool.browse(
-                cr, uid, product_ids, context=context):
-            data[product] = self.get_form_date(
-                now, product.mrp_stock_level_force)
+        for product in product_pool.browse(cr, uid, product_ids, context=context):
+            data[product] = self.get_form_date(now, product.mrp_stock_level_force)
         return True
 
     # 18/03/2024 Overridden in Sapnaet
@@ -173,8 +171,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         return '%s 00:00:00' % from_dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
 
     # Note: 18/03/2024 Overridden from Sapnaet Module
-    def update_product_level_from_production_IT(
-            self, cr, uid, context=None):
+    def update_product_level_from_production_IT(self, cr, uid, context=None):
         """ Update product level from production (only raw materials)
             No obsolete management
             05/03/2022
@@ -327,20 +324,19 @@ class MrpProductionWorkcenterLine(osv.osv):
             product_obsolete, context=context)
 
     def update_product_level_from_production(self, cr, uid, ids, context=None):
-        """ Update product level from production (only raw materials)
+        """ Update product level from production (only raw materials, package and pallet from SL document)
             No obsolete management
 
             05/03/2022
             NOTE: This procedure was kept but maybe is used only in MX:
-            create update_product_level_from_production_it for Italy
+                  Use new procedure created for IT: update_product_level_from_production_it
         """
         _logger.info('Updating medium from MRP (raw material)')
         company_pool = self.pool.get('res.company')
 
         # Get parameters:
         company_ids = company_pool.search(cr, uid, [], context=context)
-        company = company_pool.browse(
-            cr, uid, company_ids, context=context)[0]
+        company = company_pool.browse(cr, uid, company_ids, context=context)[0]
         stock_level_days = company.stock_level_days
         if not stock_level_days:
             raise osv.except_osv(
@@ -381,8 +377,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # Log to file:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = open(os.path.expanduser('~/log/medium/unload.csv'), 'w')
-        log_pack_f = open(os.path.expanduser(
-            '~/log/medium/unload_pack.csv'), 'w')
+        log_pack_f = open(os.path.expanduser('~/log/medium/unload_pack.csv'), 'w')
 
         # Header:
         log_f.write('ID|Code|Job|MRP|Date|Q.\n')
@@ -390,15 +385,14 @@ class MrpProductionWorkcenterLine(osv.osv):
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Unload material from SL:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             for material in job.bom_material_ids:
                 product = material.product_id
                 default_code = product.default_code or ' '
                 if product.product_type == 'PT':
-                    _logger.error(
-                        'Not used, unload product: %s' % default_code)
+                    _logger.error('Not used, unload product: %s' % default_code)
                     continue
                 if product not in product_obsolete:
                     product_obsolete[product] = True  # Default obsolete
@@ -421,9 +415,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                     quantity,
                 ))
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Unload package and pallet from CL:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             for cl in job.load_ids:
                 # A. Package:
                 try:
@@ -465,8 +459,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     ))
 
         return self.update_product_medium_from_dict(
-            cr, uid, product_medium, stock_level_days,
-            product_obsolete, context=context)
+            cr, uid, product_medium, stock_level_days, product_obsolete, context=context)
 
 
 class ResCompany(osv.osv):
@@ -638,16 +631,14 @@ class ResCompany(osv.osv):
         """ Button from company
         """
         return self.pool.get('mrp.production.workcenter.line'
-            ).update_product_level_from_production(
-                cr, uid, ids, context=context)
+            ).update_product_level_from_production(cr, uid, ids, context=context)
 
     def update_product_level_from_production_IT(
             self, cr, uid, ids, context=None):
         """ Button from company
         """
         return self.pool.get('mrp.production.workcenter.line'
-            ).update_product_level_from_production_IT(
-                cr, uid, context=context)
+            ).update_product_level_from_production_IT(cr, uid, context=context)
 
     _columns = {
         'stock_level_days': fields.integer(
