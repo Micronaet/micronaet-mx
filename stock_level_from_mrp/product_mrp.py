@@ -386,6 +386,8 @@ class MrpProductionWorkcenterLine(osv.osv):
             for material in job.bom_material_ids:
                 product = material.product_id
                 default_code = product.default_code or ' '
+                if default_code == 'S1103T--X':
+                    pdb.set_trace()
                 if product.product_type == 'PT':
                     _logger.error('Not used, unload product: %s' % default_code)
                     continue
