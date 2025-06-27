@@ -185,7 +185,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             if default_code not in product_obsolete:  # Starting all as obsolete (after will be removed):
                 product_obsolete[default_code] = True
 
-            # 27/06/2025 Medium alwasy calculated from Account file (MRP is an old management!)
+            # 27/06/2025 Medium always calculated from Account file (MRP is an old management!)
             # if default_code.endswith('X'):
             #    log_f.write('%s|Prodotto saltato finisce per X\n' % default_code)
             #    continue
