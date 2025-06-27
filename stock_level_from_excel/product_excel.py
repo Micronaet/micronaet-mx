@@ -219,8 +219,6 @@ class MrpProductionWorkcenterLine(osv.osv):
         for row in range(ws.nrows):
             date = get_excel_date(ws.cell(row, columns_position['date']).value, wb)
             default_code = ws.cell(row, columns_position['default_code']).value
-            if default_code.startswith('S1103'):
-                pdb.set_trace()
 
             if not start and date == start_test:
                 _logger.info('%s. Line not used: Start line' % (row + 1))
@@ -238,6 +236,9 @@ class MrpProductionWorkcenterLine(osv.osv):
                 _logger.info(
                     '%s. Line not used (no start or no product watched: %s' % (row + 1, default_code))
                 continue
+
+            if default_code.startswith('S1103'):
+                pdb.set_trace()
 
             # Load data for medium
             qty = ws.cell(row, columns_position['qty']).value
