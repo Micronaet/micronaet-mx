@@ -265,6 +265,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         for key in product_medium:
             total, product = product_medium[key]
             default_code = product.default_code
+            if default_code.startwith('S1103%'):
+                pdb.set_trace()
             if product.manual_stock_level:
                 continue
 
@@ -307,6 +309,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # --------------------------------------------------------------------------------------------------------------
         # B. Update original procedure from MRP:
         # --------------------------------------------------------------------------------------------------------------
+        # Update with: Raw materials, Package, Pallet
         return super(MrpProductionWorkcenterLine, self).update_product_level_from_production(
             cr, uid, ids, context=context)
 
