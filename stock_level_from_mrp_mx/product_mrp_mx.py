@@ -340,8 +340,7 @@ class ResCompany(osv.osv):
                 product_type = self.get_type(product)
 
                 # Remove REC and SER product (go in last page):
-                if mode != ws_not_present and product_type == 'REC' or \
-                        default_code.startswith('SER'):
+                if mode != ws_not_present and product_type == 'REC' or default_code.startswith('SER'):
                     removed_ids.append(product.id)
                     continue
 

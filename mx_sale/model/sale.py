@@ -143,7 +143,7 @@ class SaleOrder(orm.Model):
             'Order deadline',
             help='Delivery term for customer'),
         # Fixed by delivery team:
-        'date_booked': fields.date(
+        'date_booked': fields.datetime(
             'Booked date',
             help='Delivery was booked and fixed!'),
         'date_booked_confirmed': fields.boolean(

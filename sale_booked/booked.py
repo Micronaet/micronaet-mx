@@ -39,8 +39,8 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 class SaleOrder(orm.Model):
-    ''' Extra field for order
-    '''    
+    """ Extra field for order
+    """
     _inherit = 'sale.order'    
 
     _columns = {
@@ -54,7 +54,7 @@ class SaleOrder(orm.Model):
         'date_deadline': fields.date('Order deadline', 
             help='Delivery term for customer'),
         # Fixed by delivery team:
-        'date_booked': fields.date('Booked date', 
+        'date_booked': fields.datetime('Booked date',
             help='Delivery was booked and fixed!'),            
         'date_booked_confirmed': fields.boolean('Booked confirmed',
             help='Booked confirmed for this date'),
@@ -65,4 +65,3 @@ class SaleOrder(orm.Model):
             help='Delivery confirmed, product available '
                 '(2 cases depend on incoterms)'),
         }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
