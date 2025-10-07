@@ -142,13 +142,15 @@ class SaleOrder(orm.Model):
         'date_deadline': fields.date(
             'Order deadline',
             help='Delivery term for customer'),
+
         # Fixed by delivery team:
-        'date_booked': fields.datetime(
-            'Booked date',
-            help='Delivery was booked and fixed!'),
+        # todo return date not datetime!
+        'date_booked': fields.datetime('Booked date', help='Delivery was booked and fixed!'),
+        'hour_booked': fields.float('Ora', digits=(10, 4)),
         'date_booked_confirmed': fields.boolean(
             'Booked confirmed',
             help='Booked confirmed for this date'),
+
         'date_delivery': fields.date(
             'Load / Availability',
             help='For ex works is availability date, other clause is '

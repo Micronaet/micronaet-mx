@@ -39,6 +39,7 @@
                             <newline />
                             <field name="date_booked_confirmed" />
                             <field name="date_booked" attrs="{'required': [('date_booked_confirmed','=',True)]}"/>
+                            <field name="hour_booked" widget="float_time"/>
                             <newline />
                             <field name="date_delivery_confirmed" />
                             <field name="date_delivery" attrs="{'required': [('date_delivery_confirmed','=',True)]}"/>
