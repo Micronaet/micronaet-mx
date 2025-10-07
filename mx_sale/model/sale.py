@@ -195,7 +195,7 @@ class SaleOrder(orm.Model):
         }
 
     _defaults = {
-        'uncovered_alert': lambda *x: 'Attenzione: Pagamento scaduto!!!',
+        'uncovered_alert': lambda *x: 'Attenzione: Pagamento!!!',
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
             DEFAULT_SERVER_DATE_FORMAT),
