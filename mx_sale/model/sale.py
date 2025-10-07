@@ -145,7 +145,7 @@ class SaleOrder(orm.Model):
 
         # Fixed by delivery team:
         # todo return date not datetime!
-        'date_booked': fields.datetime('Data booking', help='Data di Booking'),
+        'date_booked': fields.date('Data booking', help='Data di Booking'),
         'hour_booked': fields.float('Ora booking', digits=(10, 4)),
         'date_booked_confirmed': fields.boolean(
             'Booking confermato',
