@@ -148,8 +148,7 @@ class SaleOrder(orm.Model):
         'date_booked': fields.datetime('Booked date', help='Delivery was booked and fixed!'),
         'hour_booked': fields.float('Ora', digits=(10, 4)),
         'date_booked_confirmed': fields.boolean(
-            'Booked confirmed',
-            help='Booked confirmed for this date'),
+            'Booked confirmed', help='Booked confirmed for this date'),
 
         'date_delivery': fields.date(
             'Load / Availability',
