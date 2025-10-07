@@ -38,6 +38,7 @@
                             <button name="button_force_all_deadline_date" string="Force all line" colspan="1" type="object"/>
                             <newline />
                             <field name="date_booked_confirmed" />
+                            <newline />
                             <field name="date_booked" attrs="{'required': [('date_booked_confirmed','=',True)]}"/>
                             <field name="hour_booked" widget="float_time"/>
                             <newline />
