@@ -294,9 +294,7 @@ class ResCompany(osv.osv):
         # Write title / header
         # -----------------------------------------------------------------
         row = 0
-        excel_pool.write_xls_line(
-            ws_name, row, header,
-            default_format=excel_format['header_wrap'])
+        excel_pool.write_xls_line(ws_name, row, header, default_format=excel_format['header_wrap'])
         excel_pool.autofilter(ws_name, row, row, 0, len(header) - 1)
         excel_pool.row_height(ws_name, [row], height=38)
         row += 1  # Jump header
@@ -318,8 +316,7 @@ class ResCompany(osv.osv):
                 context=context)
 
             # todo add also package data!!!
-            for product in sorted(products, key=lambda x: (
-                    self.get_type(x), x.default_code)):
+            for product in sorted(products, key=lambda x: (self.get_type(x), x.default_code)):
                 # Field used:
                 default_code = product.default_code
                 account_qty = int(product.accounting_qty)
