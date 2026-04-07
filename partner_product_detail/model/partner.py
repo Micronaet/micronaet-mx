@@ -114,24 +114,26 @@ class SaleOrderLine(orm.Model):
     _inherit = 'sale.order.line'
 
     def product_id_change(
-            self, cr, uid, ids, pricelist, product, qty=0,
-            uom=False, qty_uos=0, uos=False, name='', partner_id=False,
+            self, cr, uid, ids, pricelist, product, qty=0, uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False,
             fiscal_position=False, flag=False, context=None):
         """ Override function for set up extra fields as partner customization
         """
         _logger.warning('Product change: partner_product_detail '
                         'Integration Pricelist and pack data')
-        context = context or {}
+        if context is None:
+            context = {}
+
         res = super(SaleOrderLine, self).product_id_change(
             cr, uid, ids, pricelist=pricelist, product=product, qty=qty,
-            uom=uom, qty_uos=qty_uos, uos=uos, name=name,
-            partner_id=partner_id, lang=lang, update_tax=update_tax,
-            date_order=date_order, packaging=packaging,
-            fiscal_position=fiscal_position, flag=flag, context=context)
+            uom=uom, qty_uos=qty_uos, uos=uos, name=name, partner_id=partner_id, lang=lang, update_tax=update_tax,
+            date_order=date_order, packaging=packaging, fiscal_position=fiscal_position, flag=flag, context=context)
 
         if 'value' not in res:
             res['value'] = {}
+
+        # Address:
+        address_id = context.get('address_id')
 
         # Reset if partner or product not present:
         if not partner_id or not product:
@@ -153,32 +155,32 @@ class SaleOrderLine(orm.Model):
         fiscal_pool = self.pool.get('account.fiscal.position')
 
         # Update field instead:
-        partner_proxy = partner_pool.browse(
-            cr, uid, partner_id, context=context)
+        partner_proxy = partner_pool.browse(cr, uid, partner_id, context=context)
+        partners = [partner_proxy]
+        if address_id:
+            address_proxy = partner_pool.browse(cr, uid, address_id, context=context)
+            partners.append(address_proxy)  # Has more priority!
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # Check if order confirm (means no update!)
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         accounting_order = False
         try:
             if ids:
                 line = self.browse(cr, uid, ids, context=context)[0]
                 order = line.order_id
                 accounting_order = order.accounting_order
-
         except:
             pass  # In case of error consider not confirmed!
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # VAT Management (patch!):
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         tax_block = False
         if fiscal_position:
-            fiscal_id = fiscal_position or \
-                        partner_proxy.property_account_position.id
+            fiscal_id = fiscal_position or partner_proxy.property_account_position.id
             if fiscal_id:
-                fiscal = \
-                    fiscal_pool.browse(cr, uid, fiscal_id, context=context)
+                fiscal = fiscal_pool.browse(cr, uid, fiscal_id, context=context)
 
                 try:
                     # tax_id = fiscal.tax_ids[0].tax_dest_id.id
@@ -195,47 +197,61 @@ class SaleOrderLine(orm.Model):
         else:
             _logger.error('No VAT setup for this order!')
 
+        # --------------------------------------------------------------------------------------------------------------
         # CASE 1: Update with pricelist partner values:
-        for item in partner_proxy.pricelist_product_ids:
-            if item.product_id.id == product:
-                # item.alias_id.name or \
-                name = item.alias_name or item.product_id.name
-                data = {
-                    'name': name,
-                }
-                if accounting_order:
-                    _logger.error('Accounting order no extra info!')
-                else:
-                    data.update({
-                        'price_unit': item.price,
-                        'product_packaging': item.packaging_id.id,
-                        'pallet_weight':
-                            item.pallet_weight or partner_proxy.pallet_weight,
-                        'load_qty': item.load_qty,
+        # --------------------------------------------------------------------------------------------------------------
+        pricelist_product_found = False
+        data = {}  # Extra data update fron this procedure
+        for partner in partners:  # Partner less priority than address
+            for item in partner.pricelist_product_ids:
+                if item.product_id.id == product:
+                    pricelist_product_found = True
+                    name = item.alias_name or item.product_id.name
+                    data['name'] = name
 
-                        # Sapnaet fields (wrong position here!)
-                        # 'note_packaging': item.note_packaging,
-                        # 'note_delivery': item.note_delivery,
-                        # 'note_accounting': item.note_accounting,
+                    # --------------------------------------------------------------------------------------------------
+                    # Extra data update if order is not confirmed:
+                    # --------------------------------------------------------------------------------------------------
+                    if accounting_order:  # No integration if order was confirmed (only name!):
+                        _logger.error('Accounting order no extra info for partner: {}!'.format(partner.name))
+                    else:  # Integrate when order is still a quotation:
+                        # This is the data to update:
+                        extra_data = {
+                            'price_unit': item.price,
+                            'product_packaging': item.packaging_id.id,
+                            'pallet_weight': item.pallet_weight or partner_proxy.pallet_weight,
+                            'load_qty': item.load_qty,
 
-                        # todo also pallet_weight for company if not present?
-                        # todo use first if not present in customization?
-                        # 'alias_id': item.alias_id.id,
-                    })
-                    _logger.warning(data)
-                break
+                            # Sapnaet fields (wrong position here!)
+                            # 'note_packaging': item.note_packaging,
+                            # 'note_delivery': item.note_delivery,
+                            # 'note_accounting': item.note_accounting,
 
+                            # todo also pallet_weight for company if not present?
+                            # todo use first if not present in customization?
+                        }
+
+                        # This is the data update (only if is present!)
+                        for field_name in extra_data:
+                            value_data = extra_data.get(field_name)
+                            if value_data:
+                                data[field_name] = extra_data.get(field_name)
+
+                    break  # No more read from this partner
+
+        # --------------------------------------------------------------------------------------------------------------
         # CASE 2: Product not in partner pricelist:
-        else:  # Data not found:
-            product_proxy = product_pool.browse(
-                cr, uid, product, context=context)
+        # --------------------------------------------------------------------------------------------------------------
+        if not pricelist_product_found:  # Data not found:
+            # Update only with name:
+            product_proxy = product_pool.browse(cr, uid, product, context=context)
             data = {
                 'name': product_proxy.name,
             }
 
-        # -----------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # Update returned values:
-        # -----------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         res['value'].update(data)
         # Clean package if account order:
         if accounting_order:
