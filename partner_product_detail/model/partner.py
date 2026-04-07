@@ -99,6 +99,9 @@ class ResPartner(orm.Model):
     _inherit = 'res.partner'
 
     _columns = {
+        # 'pricelist_product_on': fields.boolean(
+        #    'Attiva prezzi destinazione',
+        #    help='Se spuntato anche la destinazione può avere una gestione degli alias'),
         'pricelist_product_ids': fields.one2many(
             'res.partner.pricelist.product', 'partner_id',
             'Pricelist products'),
