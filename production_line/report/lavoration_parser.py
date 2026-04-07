@@ -91,5 +91,3 @@ class Parser(report_sxw.rml_parse):
         for key in note:
             res += "[%s] %s\n" % (key, note[key])
         return res
-        
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
