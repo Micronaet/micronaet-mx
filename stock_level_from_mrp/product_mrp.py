@@ -73,7 +73,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         _logger.warning('Product found: %s' % len(product_medium))
 
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
-        log_f = open(os.path.expanduser('~/log/medium/medium.csv'), 'w')
+        log_f = open(os.path.expanduser('~/log/medium/medium.csv'), 'w', encoding='utf-8')
         log_f.write('ID|Codice|Totale periodo|Giorni periodo|Media|Obsoleto\n')
 
         done_product_ids = []
@@ -132,7 +132,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 'ready_stock_level': False,
             }, context=context)
 
-        log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.csv'), 'w')
+        log_obs_f = open(os.path.expanduser('~/log/medium/obsolete.csv'), 'w', encoding='utf-8')
         log_obs_f.write('ID|Codice\n')
 
         # Clean and mark as obsolete the dict passed
@@ -229,7 +229,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # Log files:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
-        log_f = open(os.path.expanduser('~/log/medium/unload.csv'), 'w')
+        log_f = open(os.path.expanduser('~/log/medium/unload.csv'), 'w', encoding='utf-8')
         log_f.write('ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
@@ -274,7 +274,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             ))
         # Note keep same dict of material for collect data and obsolete!
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
-        log_f = open(os.path.expanduser('~/log/medium/load.csv'), 'w')
+        log_f = open(os.path.expanduser('~/log/medium/load.csv'), 'w', encoding='utf-8')
         log_f.write('ID|Codice|CL|Data|Mode\n')
         for load in load_pool.browse(cr, uid, load_ids, context=context):
             date = load.date
@@ -376,8 +376,8 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         # Log to file:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
-        log_f = open(os.path.expanduser('~/log/medium/unload.csv'), 'w')
-        log_pack_f = open(os.path.expanduser('~/log/medium/unload_pack.csv'), 'w')
+        log_f = open(os.path.expanduser('~/log/medium/unload.csv'), 'w', encoding='utf-8')
+        log_pack_f = open(os.path.expanduser('~/log/medium/unload_pack.csv'), 'w', encoding='utf-8')
 
         # Header:
         log_f.write('ID|Code|Job|MRP|Date|Q.\n')
