@@ -75,7 +75,7 @@ class MrpProductionWorkcenterLine(osv.osv):
 
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = io.open(os.path.expanduser('~/log/medium/medium.csv'), 'w', encoding='utf-8')
-        log_f.write('ID|Codice|Totale periodo|Giorni periodo|Media|Obsoleto\n')
+        log_f.write(u'ID|Codice|Totale periodo|Giorni periodo|Media|Obsoleto\n')
 
         done_product_ids = []
         for product in product_medium:
@@ -89,7 +89,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             else:
                 medium_stock_qty = total / stock_level_days
 
-            log_f.write('%s|%s|%s|%s|%s|%s\n' % (
+            log_f.write(u'%s|%s|%s|%s|%s|%s\n' % (
                 product.id,
                 product.default_code,
                 total,
@@ -134,7 +134,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             }, context=context)
 
         log_obs_f = io.open(os.path.expanduser('~/log/medium/obsolete.csv'), 'w', encoding='utf-8')
-        log_obs_f.write('ID|Codice\n')
+        log_obs_f.write(u'ID|Codice\n')
 
         # Clean and mark as obsolete the dict passed
         for product in product_obsolete:
@@ -156,7 +156,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     'stock_obsolete': True,
                 }, context=context)
 
-                log_obs_f.write('%s|%s\n' % (
+                log_obs_f.write(u'%s|%s\n' % (
                     product.id,
                     product.default_code,
                 ))
@@ -231,7 +231,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # Log files:
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = io.open(os.path.expanduser('~/log/medium/unload.csv'), 'w', encoding='utf-8')
-        log_f.write('ID|Code|Job|MRP|Date\n')
+        log_f.write(u'ID|Code|Job|MRP|Date\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
             for material in job.bom_material_ids:
@@ -253,7 +253,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] += quantity
                 else:
                     product_medium[product] = quantity
-                log_f.write('%s|%s|%s|%s|%s\n' % (
+                log_f.write(u'%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
                     job.name,
@@ -276,7 +276,7 @@ class MrpProductionWorkcenterLine(osv.osv):
         # Note keep same dict of material for collect data and obsolete!
         os.system('mkdir -p %s' % os.path.expanduser('~/log/medium'))
         log_f = io.open(os.path.expanduser('~/log/medium/load.csv'), 'w', encoding='utf-8')
-        log_f.write('ID|Codice|CL|Data|Mode\n')
+        log_f.write(u'ID|Codice|CL|Data|Mode\n')
         for load in load_pool.browse(cr, uid, load_ids, context=context):
             date = load.date
             data_list = (
@@ -309,7 +309,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     product_medium[product] += product_qty
                 else:
                     product_medium[product] = product_qty
-                log_f.write('%s|%s|%s|%s|%s\n' % (
+                log_f.write(u'%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
                     load.accounting_cl_code,
@@ -381,8 +381,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         log_pack_f = io.open(os.path.expanduser('~/log/medium/unload_pack.csv'), 'w', encoding='utf-8')
 
         # Header:
-        log_f.write('ID|Code|Job|MRP|Date|Q.\n')
-        log_pack_f.write('ID|Code|Job|MRP|Date|Q.\n')
+        log_f.write(u'ID|Code|Job|MRP|Date|Q.\n')
+        log_pack_f.write(u'ID|Code|Job|MRP|Date|Q.\n')
         for job in self.browse(cr, uid, job_ids, context=context):
             date = job.real_date_planned
 
@@ -410,7 +410,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 else:
                     product_medium[product] = quantity
 
-                log_f.write('%s|%s|%s|%s|%s|%s\n' % (
+                log_f.write(u'%s|%s|%s|%s|%s|%s\n' % (
                     product.id,
                     product.default_code,
                     job.name,
@@ -433,7 +433,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                         else:
                             product_medium[package] = package_qty
 
-                        log_pack_f.write('%s|%s|%s|%s|%s|%s\n' % (
+                        log_pack_f.write(u'%s|%s|%s|%s|%s|%s\n' % (
                             package.id,
                             package.default_code,
                             job.name,
@@ -453,7 +453,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                     else:
                         product_medium[pallet] = pallet_qty
 
-                    log_pack_f.write('%s|%s|%s|%s|%s|%s\n' % (
+                    log_pack_f.write(u'%s|%s|%s|%s|%s|%s\n' % (
                         pallet.id,
                         pallet.default_code,
                         job.name,
