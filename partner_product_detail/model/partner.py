@@ -134,7 +134,7 @@ class SaleOrderLine(orm.Model):
 
         # Address:
         address_id = context.get('address_id')
-        pdb.set_trace()
+        _logger.warning('Address ID: "{]"'.format(address_id))
 
         # Reset if partner or product not present:
         if not partner_id or not product:
