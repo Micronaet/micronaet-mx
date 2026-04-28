@@ -127,9 +127,9 @@ class ResCompany(osv.osv):
             except:
                 _logger.error('Error writing log: %s' % message)
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # Collect order data (Contipaq mode):
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         now = str(datetime.now())[:10]
         move_ids = move_pool.search(cr, uid, [
             ('type', '!=', 'PO'),  # Comes from purchase order
@@ -156,9 +156,9 @@ class ResCompany(osv.osv):
             else:
                 new = 'VECCHIO'
 
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             # Logging mode:
-            # -----------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
             save_log(
                 'contipaq',
                 '%s|%s|%s|%s|%s' % (
@@ -182,9 +182,9 @@ class ResCompany(osv.osv):
                 deadline_text,
                 )
 
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         #                          Excel export:
-        # ---------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         order_col = 7
         parameters = {
             'width': 500,
@@ -311,9 +311,7 @@ class ResCompany(osv.osv):
                 # Add also removed from other loop
                 product_ids = list(set(product_ids).union(set(removed_ids)))
 
-            products = product_pool.browse(
-                cr, uid, product_ids,
-                context=context)
+            products = product_pool.browse(cr, uid, product_ids, context=context)
 
             # todo add also package data!!!
             for product in sorted(products, key=lambda x: (self.get_type(x), x.default_code)):
