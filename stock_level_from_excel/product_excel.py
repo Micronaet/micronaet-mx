@@ -164,11 +164,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             'Selezionati prodotti iniziano per D, E, F, G, H, L, M, O, P, R, S, X\n'
             'Rimosso quelli che iniziano per OLD e SER\n\n')
 
-        _logger.warning('Imported product #%s [%s - %s]' % (
-            len(product_ids),
-            from_text,
-            now_log,
-            ))
+        _logger.warning('Imported product #%s [%s - %s]' % (len(product_ids), from_text, now_log))
 
         # --------------------------------------------------------------------------------------------------------------
         # A2. Prepare dict for medium
@@ -266,12 +262,10 @@ class MrpProductionWorkcenterLine(osv.osv):
 
             if not total:
                 medium_stock_qty = 0.0
-                _logger.info(
-                    'Update product without level: %s' % default_code)
+                _logger.info('Update product without level: %s' % default_code)
             else:
                 medium_stock_qty = total / stock_level_days
-                _logger.info(
-                    'Update product with level: %s' % default_code)
+                _logger.info('Update product with level: %s' % default_code)
 
             min_stock_level = product.day_min_level * medium_stock_qty
             max_stock_level = product.day_max_level * medium_stock_qty

@@ -203,8 +203,7 @@ class PurchaseOrderProvision(orm.Model):
     # -------------------------------------------------------------------------
     # Scheduled operation:
     # -------------------------------------------------------------------------
-    def scheduled_generate_provision_order(self, cr, uid, days=31,
-            context=None):
+    def scheduled_generate_provision_order(self, cr, uid, days=31, context=None):
         """ Generate report to test after the stock level
             Add extra parameter?
         """
