@@ -97,8 +97,7 @@ print('[INFO] Sending using "%s" connection [%s:%s]' % (
     ))
 
 if odoo_mailer.smtp_encryption in ('ssl', 'starttls'):
-    smtp_server = smtplib.SMTP_SSL(
-        odoo_mailer.smtp_host, odoo_mailer.smtp_port)
+    smtp_server = smtplib.SMTP_SSL(odoo_mailer.smtp_host, odoo_mailer.smtp_port)
 else:
     print('[ERR] Connect only SMTP SSL server!')
     sys.exit()
@@ -138,8 +137,7 @@ for to in smtp['report_mode']:
     part = MIMEBase('application', 'octet-stream')
     part.set_payload(open(fullname, 'rb').read())
     Encoders.encode_base64(part)
-    part.add_header(
-        'Content-Disposition', 'attachment; filename="%s"' % filename)
+    part.add_header('Content-Disposition', 'attachment; filename="%s"' % filename)
 
     msg.attach(part)
 
