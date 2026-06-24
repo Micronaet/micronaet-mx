@@ -643,7 +643,7 @@ class ResCompany(osv.osv):
             self, cr, uid, ids, context=None):
         """ Button from company
         """
-        _logger.info('[MICRONAET-MX.STOCK_LEVEL_FROM_EXCEL]\nUpdate production from Italy')
+        _logger.info('0. [MICRONAET-MX.STOCK_LEVEL_FROM_EXCEL]\nUpdate production from IT Italy')
         return self.pool.get('mrp.production.workcenter.line'
             ).update_product_level_from_production_IT(cr, uid, context=context)
 
