@@ -177,7 +177,7 @@ class MrpProductionWorkcenterLine(osv.osv):
             update_product_level_from_production because original procedure
             was a mix of logic from IT to MX so it's not valid from Italy
         """
-        _logger.info('Updating medium from MRP (raw material)')
+        _logger.info('2. [MICRONAET-MX.STOCK_LEVEL_FROM_MRP]\nUpdating medium from MRP (raw material)')
         company_pool = self.pool.get('res.company')
         load_pool = self.pool.get('mrp.production.workcenter.load')
         # Unload from: mrp.production.workcenter.line
@@ -332,7 +332,8 @@ class MrpProductionWorkcenterLine(osv.osv):
         if context is None:
             context = {}
 
-        _logger.info('Updating medium from MRP (raw material only) MX Procedure!')
+        _logger.info('1. [MICRONAET-MX.STOCK_LEVEL_FROM_MRP]\n'
+                     'Updating medium from MRP (raw material only) MX Procedure!')
         company_pool = self.pool.get('res.company')
 
         # Get parameters:
@@ -634,6 +635,7 @@ class ResCompany(osv.osv):
     def update_product_level_from_production(self, cr, uid, ids, context=None):
         """ Button from company
         """
+        _logger.warning('3. [MICRONAET-MX.STOCK_LEVEL_FROM_MRP]\nUpdate product from production')
         return self.pool.get('mrp.production.workcenter.line'
             ).update_product_level_from_production(cr, uid, ids, context=context)
 
@@ -641,6 +643,7 @@ class ResCompany(osv.osv):
             self, cr, uid, ids, context=None):
         """ Button from company
         """
+        _logger.info('[MICRONAET-MX.STOCK_LEVEL_FROM_EXCEL]\nUpdate production from Italy')
         return self.pool.get('mrp.production.workcenter.line'
             ).update_product_level_from_production_IT(cr, uid, context=context)
 

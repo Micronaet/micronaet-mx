@@ -99,7 +99,7 @@ class MrpProductionWorkcenterLine(osv.osv):
                 res = value  # Nothing
             return res
 
-        _logger.info('Update marketed product medium (from Excel)')
+        _logger.info('[MICRONAET-MX.STOCK_LEVEL_FROM_EXCEL]\nUpdate marketed product medium (from Excel)')
         product_pool = self.pool.get('product.product')
         company_pool = self.pool.get('res.company')
 

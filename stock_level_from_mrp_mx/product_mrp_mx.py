@@ -448,7 +448,7 @@ class MrpProductionWorkcenterLineOverride(osv.osv):
         """ Update product level from production (this time also product)
             MX Mode:
         """
-        _logger.info('Updating medium from MRP (final product) MX')
+        _logger.info('[MICRONAET-MX.STOCK_LEVEL_FROM_MRP_MX]\nUpdating medium from MRP (final product) MX')
         # todo 27/06/2025: jump this procedure, maybe is obsolete!
         return super(MrpProductionWorkcenterLineOverride, self).update_product_level_from_production(
             cr, uid, ids, context=context)
