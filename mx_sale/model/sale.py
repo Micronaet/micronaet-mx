@@ -129,31 +129,35 @@ class SaleOrder(orm.Model):
     # Remove calerndar houd
     # ------------------------------------------------------------------------------------------------------------------
     def _get_calendar_dates(self, cr, uid, ids, name, arg, context=None):
-        res = {}
-        # Fuso orario di riferimento (es. Europe/Rome)
-        local_tz = pytz.timezone('Europe/Rome')
+        if context is None:
+            context = {}
 
+        user_tz_name = context.get('tz') or 'Europe/Rome'
+        try:
+            local_tz = pytz.timezone(user_tz_name)
+        except Exception:
+            local_tz = pytz.timezone('Europe/Rome')
+
+        res = {}
         for order in self.browse(cr, uid, ids, context=context):
             if order.date_booked:
-                # 1. Creiamo la data a mezzanotte locale (00:00:00)
-                local_dt = datetime.strptime(order.date_booked, '%Y-%m-%d')
-                local_dt_start = local_tz.localize(datetime(local_dt.year, local_dt.month, local_dt.day, 0, 0, 0))
+                try:
+                    local_dt = datetime.strptime(order.date_booked, '%Y-%m-%d')
+                    local_dt_start = local_tz.localize(datetime(local_dt.year, local_dt.month, local_dt.day, 0, 0, 0))
 
-                # 2. La convertiamo in UTC (sarà 22:00 in estate, 23:00 in inverno)
-                utc_dt_start = local_dt_start.astimezone(pytz.utc)
-                utc_dt_stop = utc_dt_start + timedelta(hours=24)
+                    utc_dt_start = local_dt_start.astimezone(pytz.utc)
+                    utc_dt_stop = utc_dt_start + timedelta(hours=24)
 
-                res[order.id] = {
-                    'date_booked_start': utc_dt_start.strftime('%Y-%m-%d %H:%M:%S'),
-                    'date_booked_stop': utc_dt_stop.strftime('%Y-%m-%d %H:%M:%S'),
-                    'booking_duration': 24.0,
-                }
+                    res[order.id] = {
+                        'date_booked_start': utc_dt_start.strftime('%Y-%m-%d %H:%M:%S'),
+                        'date_booked_stop': utc_dt_stop.strftime('%Y-%m-%d %H:%M:%S'),
+                        'booking_duration': 24.0,
+                    }
+                except Exception:
+                    res[order.id] = {'date_booked_start': False, 'date_booked_stop': False, 'booking_duration': 0.0}
             else:
-                res[order.id] = {
-                    'date_booked_start': False,
-                    'date_booked_stop': False,
-                    'booking_duration': 0.0
-                }
+                res[order.id] = {'date_booked_start': False, 'date_booked_stop': False, 'booking_duration': 0.0}
+
         return res
 
     _columns = {
