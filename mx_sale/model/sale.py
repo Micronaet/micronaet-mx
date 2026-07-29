@@ -124,7 +124,6 @@ class SaleOrder(orm.Model):
 
         return res
 
-    '''
     def _get_datetime_calendar(self, cr, uid, ids, name, arg, context=None):
         """ Use data booked as date but in calendar change with datetime 
         """
@@ -135,7 +134,6 @@ class SaleOrder(orm.Model):
             else:
                 res[order.id] = False
         return res
-    '''
 
     _columns = {
         # ---------------------------------------------------------------------
@@ -196,13 +194,14 @@ class SaleOrder(orm.Model):
         'uncovered_payment': fields.boolean('Pagamenti scoperti'),
         'uncovered_alert': fields.char('Alert', size=64, readonly=True),
 
-        # TODO Not solve calendar problem 11.00:
-        # 'date_booked_calendar': fields.function(
-        #     _get_datetime_calendar,
-        #     type='datetime',
-        #     string='Data Booking Calendario',
-        # ),
-        # 'allday': fields.boolean('Tutto il giorno'),
+        # Solve calendar problem 11.00:
+        'date_booked_calendar': fields.function(
+            _get_datetime_calendar,
+            type='datetime',
+            string='Data Booking Calendario',
+        ),
+        'allday': fields.boolean('Tutto il giorno'),
+        'booking_duration': fields.integer('Durata'),
         }
 
     _defaults = {
@@ -210,7 +209,8 @@ class SaleOrder(orm.Model):
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
             DEFAULT_SERVER_DATE_FORMAT),
-        # 'allday': lambda *x: True,
+        'allday': lambda *x: True,
+        'booking_duration': lambda *x: 24,
     }
     
     
