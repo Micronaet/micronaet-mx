@@ -133,13 +133,12 @@ class SaleOrder(orm.Model):
         res = {}
         for order in self.browse(cr, uid, ids, context=context):
             if order.date_booked:
-                # 22:00:00 UTC corrisponde alla mezzanotte del giorno dopo in Italia (UTC+2)
-                start_dt = order.date_booked + " 00:00:00"
-                stop_dt = order.date_booked + " 23:59:59"
+                # Impostando 12:00:00 UTC, qualsiasi fuso orario rimarrà sempre all'interno dello stesso giorno
+                dt_str = order.date_booked + " 12:00:00"
                 res[order.id] = {
-                    'date_booked_start': start_dt,
-                    'date_booked_stop': stop_dt,
-                    'booking_duration': 24.0,
+                    'date_booked_start': dt_str,
+                    'date_booked_stop': dt_str,
+                    'booking_duration': 1.0,
                 }
             else:
                 res[order.id] = {
