@@ -39,6 +39,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
     DEFAULT_SERVER_DATETIME_FORMAT,
     DATETIME_FORMATS_MAP,
     float_compare)
+import pytz
 
 
 _logger = logging.getLogger(__name__)
@@ -128,17 +129,24 @@ class SaleOrder(orm.Model):
     # Remove calerndar houd
     # ------------------------------------------------------------------------------------------------------------------
     def _get_calendar_dates(self, cr, uid, ids, name, arg, context=None):
-        """ Extract correct datetime ref.
-        """
         res = {}
+        # Fuso orario di riferimento (es. Europe/Rome)
+        local_tz = pytz.timezone('Europe/Rome')
+
         for order in self.browse(cr, uid, ids, context=context):
             if order.date_booked:
-                # Impostando 12:00:00 UTC, qualsiasi fuso orario rimarrà sempre all'interno dello stesso giorno
-                dt_str = order.date_booked + " 12:00:00"
+                # 1. Creiamo la data a mezzanotte locale (00:00:00)
+                local_dt = datetime.strptime(order.date_booked, '%Y-%m-%d')
+                local_dt_start = local_tz.localize(datetime(local_dt.year, local_dt.month, local_dt.day, 0, 0, 0))
+
+                # 2. La convertiamo in UTC (sarà 22:00 in estate, 23:00 in inverno)
+                utc_dt_start = local_dt_start.astimezone(pytz.utc)
+                utc_dt_stop = utc_dt_start + timedelta(hours=24)
+
                 res[order.id] = {
-                    'date_booked_start': dt_str,
-                    'date_booked_stop': dt_str,
-                    'booking_duration': 1.0,
+                    'date_booked_start': utc_dt_start.strftime('%Y-%m-%d %H:%M:%S'),
+                    'date_booked_stop': utc_dt_stop.strftime('%Y-%m-%d %H:%M:%S'),
+                    'booking_duration': 24.0,
                 }
             else:
                 res[order.id] = {
