@@ -124,6 +124,18 @@ class SaleOrder(orm.Model):
 
         return res
 
+    def _get_datetime_calendar(self, cr, uid, ids, name, arg, context=None):
+        """ Use data booked as date but in calendar change with datetime 
+        """
+        res = {}
+        for order in self.browse(cr, uid, ids, context=context):
+            if order.date_booked:
+                res[order.id] = order.date_booked + " 12:00:00"
+            else:
+                res[order.id] = False
+        return res
+
+
     _columns = {
         # ---------------------------------------------------------------------
         # todo sale_booked module:
@@ -136,12 +148,8 @@ class SaleOrder(orm.Model):
         # ORDER:
         # ---------------------------------------------------------------------
         # todo yet present in order?
-        'date_confirm': fields.date(
-            'Date confirm',
-            help='Order confirm by the customer'),
-        'date_deadline': fields.date(
-            'Order deadline',
-            help='Delivery term for customer'),
+        'date_confirm': fields.date('Date confirm', help='Order confirm by the customer'),
+        'date_deadline': fields.date('Order deadline', help='Delivery term for customer'),
 
         # Fixed by delivery team:
         # todo return date not datetime!
@@ -192,6 +200,14 @@ class SaleOrder(orm.Model):
         # Alert:
         'uncovered_payment': fields.boolean('Pagamenti scoperti'),
         'uncovered_alert': fields.char('Alert', size=64, readonly=True),
+
+        # Solve calendar problem 11.00:
+        'date_booked_calendar': fields.function(
+            _get_datetime_calendar,
+            type='datetime',
+            string='Data Booking Calendario',
+        ),
+        'allday': fields.boolean('Tutto il giorno'),
         }
 
     _defaults = {
@@ -199,9 +215,10 @@ class SaleOrder(orm.Model):
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
             DEFAULT_SERVER_DATE_FORMAT),
-        }
-
-
+        'allday': lambda *x: True,
+    }
+    
+    
 class SaleOrderLine(orm.Model):
     """ Extra field for order line
     """

@@ -53,11 +53,10 @@ class SaleOrder(orm.Model):
             help='Order confirm by the customer'), # TODO yet present in order?
         'date_deadline': fields.date('Order deadline', 
             help='Delivery term for customer'),
+
         # Fixed by delivery team:
-        'date_booked': fields.datetime('Booked date',
-            help='Delivery was booked and fixed!'),            
-        'date_booked_confirmed': fields.boolean('Booked confirmed',
-            help='Booked confirmed for this date'),
+        'date_booked': fields.datetime('Booked date', help='Delivery was booked and fixed!'),            
+        'date_booked_confirmed': fields.boolean('Booked confirmed', help='Booked confirmed for this date'),
         'date_delivery': fields.date('Load / Availability',
             help='For ex works is availability date, other clause is '
                 'load date'),
