@@ -124,6 +124,7 @@ class SaleOrder(orm.Model):
 
         return res
 
+    '''
     def _get_datetime_calendar(self, cr, uid, ids, name, arg, context=None):
         """ Use data booked as date but in calendar change with datetime 
         """
@@ -134,7 +135,7 @@ class SaleOrder(orm.Model):
             else:
                 res[order.id] = False
         return res
-
+    '''
 
     _columns = {
         # ---------------------------------------------------------------------
@@ -184,30 +185,24 @@ class SaleOrder(orm.Model):
         # Account extra field saved in sale.order:
         'default_carrier_id': fields.many2one('delivery.carrier', 'Carrier',
             domain=[('is_vector', '=', True)]),
-        'carriage_condition_id': fields.many2one(
-            'stock.picking.carriage_condition', 'Carriage condition'),
-        'goods_description_id': fields.many2one(
-            'stock.picking.goods_description', 'Goods description'),
-        'transportation_reason_id': fields.many2one(
-            'stock.picking.transportation_reason', 'Transportation reason'),
-        'payment_term_id': fields.many2one(
-            'account.payment.term', 'Payment term'),
-        'bank_account_id': fields.many2one(
-            'res.partner.bank', 'Partner bank account'),
-        'bank_account_company_id': fields.many2one(
-            'res.partner.bank', 'Company bank account'),
+        'carriage_condition_id': fields.many2one('stock.picking.carriage_condition', 'Carriage condition'),
+        'goods_description_id': fields.many2one('stock.picking.goods_description', 'Goods description'),
+        'transportation_reason_id': fields.many2one('stock.picking.transportation_reason', 'Transportation reason'),
+        'payment_term_id': fields.many2one('account.payment.term', 'Payment term'),
+        'bank_account_id': fields.many2one('res.partner.bank', 'Partner bank account'),
+        'bank_account_company_id': fields.many2one('res.partner.bank', 'Company bank account'),
 
         # Alert:
         'uncovered_payment': fields.boolean('Pagamenti scoperti'),
         'uncovered_alert': fields.char('Alert', size=64, readonly=True),
 
-        # Solve calendar problem 11.00:
-        'date_booked_calendar': fields.function(
-            _get_datetime_calendar,
-            type='datetime',
-            string='Data Booking Calendario',
-        ),
-        'allday': fields.boolean('Tutto il giorno'),
+        # TODO Not solve calendar problem 11.00:
+        # 'date_booked_calendar': fields.function(
+        #     _get_datetime_calendar,
+        #     type='datetime',
+        #     string='Data Booking Calendario',
+        # ),
+        # 'allday': fields.boolean('Tutto il giorno'),
         }
 
     _defaults = {
@@ -215,7 +210,7 @@ class SaleOrder(orm.Model):
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
             DEFAULT_SERVER_DATE_FORMAT),
-        'allday': lambda *x: True,
+        # 'allday': lambda *x: True,
     }
     
     
