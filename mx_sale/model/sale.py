@@ -201,7 +201,7 @@ class SaleOrder(orm.Model):
             string='Data Booking Calendario',
         ),
         'allday': fields.boolean('Tutto il giorno'),
-        'booking_duration': fields.integer('Durata'),
+        'booking_duration': fields.float('Durata'),
         }
 
     _defaults = {
@@ -210,7 +210,7 @@ class SaleOrder(orm.Model):
             datetime.now() + timedelta(days=15)).strftime(
             DEFAULT_SERVER_DATE_FORMAT),
         'allday': lambda *x: True,
-        'booking_duration': lambda *x: 24,
+        'booking_duration': lambda *x: 24.0,
     }
     
     
