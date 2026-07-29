@@ -160,6 +160,10 @@ class SaleOrder(orm.Model):
 
         return res
 
+    _store_calendar = {
+        'sale.order': (lambda self, cr, uid, ids, c={}: ids, ['date_booked'], 10),
+    }
+
     _columns = {
         # ---------------------------------------------------------------------
         # todo sale_booked module:
@@ -222,9 +226,13 @@ class SaleOrder(orm.Model):
         # --------------------------------------------------------------------------------------------------------------
         # Solve calendar problem 11.00:
         # --------------------------------------------------------------------------------------------------------------
-        'date_booked_start': fields.function(_get_calendar_dates, type='datetime', string='Start', multi='cal_dates'),
-        'date_booked_stop': fields.function(_get_calendar_dates, type='datetime', string='Stop', multi='cal_dates'),
-        'booking_duration': fields.function(_get_calendar_dates, type='float', string='Duration', multi='cal_dates'),
+        # Campi calcolati memorizzati su DB (store=True)
+        'date_booked_start': fields.function(
+            _get_calendar_dates, type='datetime', string='Start', multi='cal_dates', store=_store_calendar),
+        'date_booked_stop': fields.function(
+            _get_calendar_dates, type='datetime', string='Stop', multi='cal_dates', store=_store_calendar),
+        'booking_duration': fields.function(
+            _get_calendar_dates, type='float', string='Duration', multi='cal_dates', store=_store_calendar),
         # --------------------------------------------------------------------------------------------------------------
         }
 
