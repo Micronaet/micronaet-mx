@@ -124,15 +124,29 @@ class SaleOrder(orm.Model):
 
         return res
 
-    def _get_datetime_calendar(self, cr, uid, ids, name, arg, context=None):
-        """ Use data booked as date but in calendar change with datetime 
+    # ------------------------------------------------------------------------------------------------------------------
+    # Remove calerndar houd
+    # ------------------------------------------------------------------------------------------------------------------
+    def _get_calendar_dates(self, cr, uid, ids, name, arg, context=None):
+        """ Extract correct datetime ref.
         """
         res = {}
         for order in self.browse(cr, uid, ids, context=context):
             if order.date_booked:
-                res[order.id] = order.date_booked + " 12:00:00"
+                # 22:00:00 UTC corrisponde alla mezzanotte del giorno dopo in Italia (UTC+2)
+                start_dt = order.date_booked + " 00:00:00"
+                stop_dt = order.date_booked + " 23:59:59"
+                res[order.id] = {
+                    'date_booked_start': start_dt,
+                    'date_booked_stop': stop_dt,
+                    'booking_duration': 24.0,
+                }
             else:
-                res[order.id] = False
+                res[order.id] = {
+                    'date_booked_start': False,
+                    'date_booked_stop': False,
+                    'booking_duration': 0.0
+                }
         return res
 
     _columns = {
@@ -194,14 +208,13 @@ class SaleOrder(orm.Model):
         'uncovered_payment': fields.boolean('Pagamenti scoperti'),
         'uncovered_alert': fields.char('Alert', size=64, readonly=True),
 
+        # --------------------------------------------------------------------------------------------------------------
         # Solve calendar problem 11.00:
-        'date_booked_calendar': fields.function(
-            _get_datetime_calendar,
-            type='datetime',
-            string='Data Booking Calendario',
-        ),
-        'allday': fields.boolean('Tutto il giorno'),
-        'booking_duration': fields.float('Durata'),
+        # --------------------------------------------------------------------------------------------------------------
+        'date_booked_start': fields.function(_get_calendar_dates, type='datetime', string='Start', multi='cal_dates'),
+        'date_booked_stop': fields.function(_get_calendar_dates, type='datetime', string='Stop', multi='cal_dates'),
+        'booking_duration': fields.function(_get_calendar_dates, type='float', string='Duration', multi='cal_dates'),
+        # --------------------------------------------------------------------------------------------------------------
         }
 
     _defaults = {
@@ -209,8 +222,6 @@ class SaleOrder(orm.Model):
         'date_valid': lambda *x: (
             datetime.now() + timedelta(days=15)).strftime(
             DEFAULT_SERVER_DATE_FORMAT),
-        'allday': lambda *x: True,
-        'booking_duration': lambda *x: 24.0,
     }
     
     
